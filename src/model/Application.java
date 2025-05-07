@@ -36,6 +36,7 @@ public class Application {
         return status;
     }
 
+
     // setter
     public void setMessage(String message) {
         this.message = message;
