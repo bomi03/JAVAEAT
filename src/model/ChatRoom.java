@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChatRoom {
@@ -8,8 +9,17 @@ public class ChatRoom {
     private List<Profile> participants;
     private List<Message> messages;
 
-    public void createRoom() {}
+    public void createRoom(int chatRoomID,int postID,List<Profile> participants) {
+        this.chatRoomID =chatRoomID;
+        this.postID = postID;
+        this.participants = new ArrayList<>(participants);
+        this.messages= new ArrayList<>();
+
+    }
     public List<Message> getMessages() {
-        return messages;
+        System.out.println("채팅방 메시지 목록");
+        for(string msg : messages){
+            System.out.println("-"+ msg);
+        }
     }
 }
