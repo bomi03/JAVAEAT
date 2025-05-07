@@ -1,15 +1,31 @@
 package model;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Management {
-    private Map<String, SongiType> answerToQuestion;
-    private List<SongiType> songiTypes;
-    private Map<SongiType, String> songiImagePath;
+    private final Map<String, SongiType> answerToQuestion;
+    private final Map<SongiType, String> songiImagePath;
+
+    public Management(Map<String, SongiType> answerToQuestion, Map<SongiType, String> songiImagePath) {
+        this.answerToQuestion = answerToQuestion;
+        this.songiImagePath = songiImagePath;
+    }
 
     public SongiType evaluate(List<String> userAnswers) {
-        return null; // 로직 미구현
+        Map<SongiType, Integer> counts = new HashMap<>();
+
+        for (String key : userAnswers) {
+            SongiType type = answerToQuestion.get(key);
+            if (type != null) {
+                counts.put(type, counts.getOrDefault(type, 0) + 1);
+            }
+        }
+
+        return counts.entrySet().stream()
+                .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(null);
     }
 
     public String getImagePath(SongiType type) {

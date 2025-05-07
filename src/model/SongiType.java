@@ -1,12 +1,22 @@
 package model;
 
 public enum SongiType {
-    샘송이,
-    저요송이,
-    똑송이,
-    논리송이,
-    꾸꾸송이,
-    침착송이,
-    평화송이,
-    피티송이
+    샘송이("샘송이.png"),
+    저요송이("저요송이.png"),
+    똑송이("똑송이.png"),
+    논리송이("논리송이.png"),
+    꾸꾸송이("꾸꾸송이.png"),
+    침착송이("침착송이.png"),
+    평화송이("평화송이.png"),
+    피티송이("피티송이.png");
+
+    private final String imagePath;
+
+    SongiType(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
 }
