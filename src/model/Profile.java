@@ -119,7 +119,7 @@ public class Profile {
     public String getResultImagePath() {
         return resultImagePath;
     }
-    // 추가한 메서드 (하원원)
+    // 추가한 메서드 (하원)
     public int getProfileID() {
 
         return profileID;
