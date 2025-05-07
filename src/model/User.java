@@ -236,6 +236,18 @@ public class User {
 
         System.out.println("탈퇴가 완료되었습니다.");
     }
+    //Getter 메서드
+    public String getUsername() {
+        return username;
+    }
+    
+    public String getUserID() {
+        return userID;
+    }
+    
+    public String getEmail() {
+        return email;
+    }   
 
     //사용자가 스크랩한 글 불러오기
     public List<Post> getBookmarkedPosts() { 
@@ -254,4 +266,37 @@ public class User {
     public void apply(Application application) {
         myApplications.add(application);
     }
+
+    //비밀번호 변경 메서드
+
+    public boolean changePassword(String oldPw, String newPw) {
+        // 1. 기존 비밀번호 일치 확인
+        if (!this.password.equals(oldPw)) {
+            System.out.println("기존 비밀번호가 일치하지 않습니다.");
+            return false;
+        }
+    
+        // 2. 새 비밀번호 조건 확인 (영문+숫자+특수문자, 8~12자)
+        if (newPw == null || newPw.trim().isEmpty()) {
+            System.out.println("새 비밀번호를 입력해주세요.");
+            return false;
+        }
+    
+        if (!newPw.matches("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=]).{8,12}$")) {
+            System.out.println("새 비밀번호는 영문/숫자/특수문자를 포함한 8~12자리여야 합니다.");
+            return false;
+        }
+    
+        // 3. 기존과 같은 비밀번호로 변경하는 것 방지 (선택 사항)
+        if (newPw.equals(oldPw)) {
+            System.out.println("이전과 다른 비밀번호를 입력해주세요.");
+            return false;
+        }
+    
+        // 4. 변경 처리
+        this.password = newPw;
+        System.out.println("비밀번호가 성공적으로 변경되었습니다.");
+        return true;
+    }
+    
 }
