@@ -17,9 +17,6 @@ public class ChatRoom {
 
     }
     public List<Message> getMessages() {
-        System.out.println("채팅방 메시지 목록");
-        for(string msg : messages){
-            System.out.println("-"+ msg);
-        }
+       
     }
 }

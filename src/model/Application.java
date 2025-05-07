@@ -10,4 +10,9 @@ public class Application {
     public String getStatus() {
         return status;
     }
+    //추가한 메서드드(하원)
+    public int getProfileID() {
+        
+        return profileID;
+    }
 }

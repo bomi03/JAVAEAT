@@ -1,15 +1,24 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class Team {
 
     private List<Profile> memberProfiles;
+    private int teamID;
+    private int postID;
     Map<Profile, String> memberRoles;
 
-    public void accept(Profile profile,Post post) {
-        if(post.closePost()){
+    public Team (int teamID, int postID){
+        this.teamID = teamID;
+        this.postID = postID;
+        this.memberProfiles= new ArrayList<>();
+    }
+
+    public void accept(Profile profile,Post post) throws IllegalAccessException {
+        if(post.isClosed()){
 
             throw new IllegalAccessException("모집이 마감 되어 팀원을 추가할 수 없습니다.");
         }
@@ -23,23 +32,21 @@ public class Team {
     public void reject(Profile profile, Post post) {
 
        
-         String targetProfiledId = profile.getProfileId();
-         //getProfileId() -> 현재는 없는 메서드 profile 클래스에 추가해야함//
-         post.getApplications().removeIf(application -> 
-         application.getProfileId().equlas(targetProfiledId));
-         //getApplications() -> 추가해야하는 메서드 //
-
+         int targetProfiledId = profile.getProfileID();
+         post.removeApplicationByProfileId(targetProfiledId);
+        
         System.out.println("지원이 거절되었습니다.");
 
 
     }
     public void assignRole(Profile profile,Post post) {
 
-        int authorId = post.author.getProfileId();
+
+        int authorId = post.getProfileID();
 
         if(!memberProfiles.contains(profile)) return;
 
-        if(profile.getProfileId().equals(authorId)){
+        if(profile.getProfileID() == authorId){
             memberRoles.put(profile, "리더");
         } else{
             memberRoles.put(profile, "팀원");

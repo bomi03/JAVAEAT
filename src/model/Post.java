@@ -1,6 +1,8 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Post {
     // Post 클래스의 속성
@@ -14,6 +16,20 @@ public class Post {
     private int maxApplicants;  // 최대 모집 인원
     private int currentApplicants;  // 모집된 인원
     private String description;  // 팀 설명
+    
+    //새로 만든 필드
+    private List <Application> applications = new ArrayList<>();
+
+    public List<Application> getApplications(){
+        return applications;
+    }
+
+    public void addApplication(Application application){
+        applications.add(application);
+    }
+    public void removeApplicationByProfileId(int profileID){
+        applications.removeIf(app -> app.getProfileID() == profileID);
+    }
 
     // Post 클래스의 생성자
     public Post(int postID, int profileID, String postImagePath, String category, String title, String status, 
@@ -75,6 +91,11 @@ public class Post {
         Date today = new Date();
         return today.after(recruitDeadline);
     }
+    //post 클래스의 메소드 - 모집이 마감됬는지 확인하는 메소드(임의로 추가(하원))
+    public boolean isClosed(){
+
+        return "모집완료".equals(this.status);
+    }
 
     // Post 클래스의 메소드 - 마감일이 지났으면 자동으로 상태 변경 (임의로 추가)
     public void autoClosePost() {
@@ -123,4 +144,10 @@ public class Post {
     public String getDescription() {
         return description;
     }
+    public int getProfileID() {
+        
+        return profileID;
+    }
+    
+
 }

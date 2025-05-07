@@ -14,6 +14,7 @@ public class Test {
         questionAnswerMap.put(questionNumber, answer);
     }
     public void takeTest(User user, Management manager) {
+        
         this.testResult = manager.evaluate(questionAnswerMap);
         this.resultImagePath = manager.getImagePath(testResult);
 
