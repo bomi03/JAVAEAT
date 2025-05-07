@@ -12,7 +12,7 @@ public class Management {
         return songiImagePath.get(type);
     }
 
-    public SongiType evaluate(Map<Integer, questionAnswerMap>) {
+    public SongiType evaluate(Map<Integer, String>questionAnswerMap) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'evaluate'");
     }
