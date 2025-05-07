@@ -46,19 +46,6 @@ public class Post {
         this.description = description;
     }
 
-    // Post 클래스의 메소드 - 모집글 생성 메소드(생성자 생성 및 수정 메소드와 동일)
-    /* public void createPost(String postImagePath, String category, String title, String status, 
-                           Date recruitDeadline, int maxApplicants, int currentApplicants, String description) {
-        this.postImagePath = postImagePath;
-        this.category = category;
-        this.title = title;
-        this.status = status;
-        this.recruitDeadline = recruitDeadline;
-        this.maxApplicants = maxApplicants;
-        this.currentApplicants = currentApplicants;
-        this.description = description;
-    } */
-
     // Post 클래스의 메소드 - 모집글 수정 메소드
     public void editPost(String postImagePath, String category, String title, String status, 
                            Date recruitDeadline, int maxApplicants, int currentApplicants, String description) {
@@ -91,6 +78,7 @@ public class Post {
         Date today = new Date();
         return today.after(recruitDeadline);
     }
+
     //post 클래스의 메소드 - 모집이 마감됬는지 확인하는 메소드(임의로 추가(하원))
     public boolean isClosed(){
 
@@ -104,8 +92,7 @@ public class Post {
         }
     }
 
-    // Getter 메소드 (임의로 추가)
-    // Getter 메소드 - 모집글 이미지 경로로
+    // Getter 메소드 - 모집글 이미지 경로
     public String getPostImagePath() {
         return postImagePath;
     }
