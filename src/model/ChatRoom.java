@@ -17,6 +17,12 @@ public class ChatRoom {
 
     }
     public List<Message> getMessages() {
+        return messages;
        
     }
-}
+    public List<Message> getRecentMessages(int count){
+        int size = messages.size();
+        return messages.subList(Math.max(0,size - count), size);
+        //가장 최근 메시지 count만큼 불러오는 메서드
+    }
+}  

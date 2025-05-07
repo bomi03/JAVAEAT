@@ -8,10 +8,6 @@ public class Management {
     private List<SongiType> songiTypes;
     private Map<SongiType, String> songiImagePath;
 
-    public SongiType evaluate(Map<Integer, String> questionAnswerMap) {
-        return null; // 로직 미구현
-    }
-
     public String getImagePath(SongiType type) {
         return songiImagePath.get(type);
     }
