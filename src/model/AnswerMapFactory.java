@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class AnswerMapFactory {
 
+    // 사용자 답변에 따라 어떤 송이 타입에 해당하는지 매핑
     public static Map<String, SongiType> createAnswerMap() {
         Map<String, SongiType> map = new HashMap<>();
 
@@ -60,14 +61,4 @@ public class AnswerMapFactory {
 
         return map;
     }
-
-    public static Map<SongiType, String> createImageMap() {
-        Map<SongiType, String> imageMap = new HashMap<>();
-
-        for (SongiType type : SongiType.values()) {
-            imageMap.put(type, type.getImagePath());
-        }
-
-        return imageMap;
-    }
-} 
+}
