@@ -10,13 +10,14 @@ public enum SongiType {
     평화송이("평화송이.png"),
     피티송이("피티송이.png");
 
-    private final String imagePath;
+    private final String fileName;
 
-    SongiType(String imagePath) {
-        this.imagePath = imagePath;
+    SongiType(String fileName) {
+        this.fileName = fileName;
     }
 
+    // 전체 이미지 경로 반환
     public String getImagePath() {
-        return imagePath;
+        return "/model/assets/management/" + fileName;
     }
 }
