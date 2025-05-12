@@ -93,7 +93,7 @@ public class Post {
 
     // Post 클래스의 메소드 - 마감일이 지났으면 자동으로 상태 변경 (임의로 추가)
     public void autoClosePost() {
-        if(this.isRecruitDeadlinePassed() && this.status.equals("모집 중")) {
+        if(this.isRecruitDeadlinePassed() && this.status.equals("모집중")) {
             this.status = "모집완료";
         }
     }

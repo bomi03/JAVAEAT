@@ -1,3 +1,5 @@
+// MyPostsPage.java - 마이페이지-작성한 글 페이지
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;

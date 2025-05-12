@@ -1,3 +1,5 @@
+// TeamBuildPage.java - 팀 생성 페이지
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.text.JTextComponent;
@@ -357,6 +359,12 @@ public class TeamBuildPage extends JFrame {
             Team.addTeam(team);
 
             JOptionPane.showMessageDialog(this, "팀 모집글이 생성되었습니다.");
+
+            // TeamListPage로 이동
+            SwingUtilities.invokeLater(() -> {
+                new TeamListPage(profileID);  // profileID나 필요 파라미터를 넘겨주세요
+            });
+
             dispose();
         });
     }

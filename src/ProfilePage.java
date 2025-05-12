@@ -1,3 +1,5 @@
+// ProfilePage.java - 프로필 작성 페이지
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
