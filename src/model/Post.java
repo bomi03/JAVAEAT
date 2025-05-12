@@ -77,6 +77,10 @@ public class Post {
 
     //Post 클래스의 메소드 - 마감일이 지났는지 확인하는 메소드 (임의로 추가)
     public boolean isRecruitDeadlinePassed() {
+        // 마감일이 설정되지 않은 경우(=null)이면 false 반환
+        if (recruitDeadline == null) {
+            return false;
+        }
         Date today = new Date();
         return today.after(recruitDeadline);
     }
