@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import model.Post;
 
 public class TeamListPage extends JFrame {
-    private int profileID;
     private JTextField searchField;
     private JButton searchBtn;
     private JPanel categoryPanel;
@@ -23,8 +22,7 @@ public class TeamListPage extends JFrame {
         "전체", "공모전", "스터디", "수업 팀플", "교내 대회", "프로젝트", "기타"
     };
 
-    public TeamListPage(int profileID) {
-        this.profileID = profileID;
+    public TeamListPage() {
         setTitle("팀 목록");
         setSize(393, 852);
         setLocationRelativeTo(null);
@@ -59,7 +57,7 @@ public class TeamListPage extends JFrame {
         categoryPanel = new JPanel();
         categoryPanel.setLayout(new BoxLayout(categoryPanel, BoxLayout.X_AXIS));
         categoryPanel.setBackground(Color.WHITE);
-        // 왼쪽 여백 추가
+        // 왼쪽 여백
         categoryPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 
         ButtonGroup group = new ButtonGroup();
@@ -72,7 +70,7 @@ public class TeamListPage extends JFrame {
             categoryPanel.add(Box.createRigidArea(new Dimension(8, 0)));
             if (cat.equals("전체")) {
                 btn.setSelected(true);
-                // 스타일 갱신
+                // 스타일 즉시 갱신
                 btn.getModel().setPressed(true);
                 btn.getModel().setPressed(false);
             }
@@ -94,7 +92,7 @@ public class TeamListPage extends JFrame {
         listPanel.setBackground(Color.WHITE);
 
         listScroll = new JScrollPane(listPanel);
-        listScroll.setBounds(0, 100, 393, 660); // 카테고리 아래 간격 좁힘
+        listScroll.setBounds(0, 100, 393, 660);
         listScroll.getVerticalScrollBar().setUnitIncrement(16);
         listScroll.setBorder(null);
         add(listScroll);
@@ -105,18 +103,17 @@ public class TeamListPage extends JFrame {
     private void buildCreateButton() {
         createBtn = new JButton("<html>&#43; 팀 생성</html>");
         styleBlueButton(createBtn);
-        createBtn.setBounds(250, 770, 120, 40); // 버튼 살짝 상향
+        createBtn.setBounds(250, 770, 120, 40);
         add(createBtn);
         createBtn.addActionListener(e -> {
-            new TeamBuildPage(profileID);
+            new TeamBuildPage();
             dispose();
-        });
+            });
     }
 
     private void refreshList() {
         listPanel.removeAll();
 
-        // 1) 모든 게시글 가져오기 (profileID 필터 제거)
         List<Post> all = Post.getAllPosts();
 
         boolean isSearching = !searchField.getText().trim().isEmpty();
@@ -126,34 +123,17 @@ public class TeamListPage extends JFrame {
             .map(c -> ((JToggleButton)c).getText())
             .findFirst().orElse("전체");
 
-        // 2) 검색 + 카테고리 필터 적용
         List<Post> filtered = all.stream()
             .filter(p -> p.getTitle().toLowerCase().contains(keyword))
             .filter(p -> selectedCat.equals("전체") || p.getCategory().equals(selectedCat))
             .collect(Collectors.toList());
 
-        // 3) 빈 화면 메시지 분기
         if (!isSearching && all.isEmpty()) {
-            JLabel empty = new JLabel("모집글이 없습니다.", SwingConstants.CENTER);
-            empty.setFont(empty.getFont().deriveFont(14f));
-            empty.setForeground(Color.GRAY);
-            empty.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
-            listPanel.add(empty);
-
+            addEmptyLabel("모집글이 없습니다.");
         } else if (isSearching && filtered.isEmpty()) {
-            JLabel empty = new JLabel("검색 결과가 없습니다.", SwingConstants.CENTER);
-            empty.setFont(empty.getFont().deriveFont(14f));
-            empty.setForeground(Color.GRAY);
-            empty.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
-            listPanel.add(empty);
-
+            addEmptyLabel("검색 결과가 없습니다.");
         } else if (!isSearching && filtered.isEmpty()) {
-            JLabel empty = new JLabel("해당 카테고리에 모집글이 없습니다.", SwingConstants.CENTER);
-            empty.setFont(empty.getFont().deriveFont(14f));
-            empty.setForeground(Color.GRAY);
-            empty.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
-            listPanel.add(empty);
-
+            addEmptyLabel("해당 카테고리에 모집글이 없습니다.");
         } else {
             for (Post p : filtered) {
                 listPanel.add(createRow(p));
@@ -163,6 +143,14 @@ public class TeamListPage extends JFrame {
 
         listPanel.revalidate();
         listPanel.repaint();
+    }
+
+    private void addEmptyLabel(String text) {
+        JLabel empty = new JLabel(text, SwingConstants.CENTER);
+        empty.setFont(empty.getFont().deriveFont(14f));
+        empty.setForeground(Color.GRAY);
+        empty.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
+        listPanel.add(empty);
     }
 
     private JPanel createRow(Post p) {
@@ -202,6 +190,13 @@ public class TeamListPage extends JFrame {
         JLabel thumb = new JLabel();
         thumb.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         thumb.setBounds(275, 5, 90, 70);
+
+        String path = p.getPostImagePath();
+        if (path != null && !path.isEmpty()) {
+            ImageIcon raw = new ImageIcon(path);
+            Image scaled = raw.getImage().getScaledInstance(90, 70, Image.SCALE_SMOOTH);
+            thumb.setIcon(new ImageIcon(scaled));
+        }
 
         row.addMouseListener(new MouseAdapter() {
             @Override public void mouseClicked(MouseEvent e) {
@@ -255,7 +250,8 @@ public class TeamListPage extends JFrame {
         });
     }
 
+    // 테스트용 main
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new TeamListPage(1));
+        SwingUtilities.invokeLater(TeamListPage::new);
     }
 }

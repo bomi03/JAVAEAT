@@ -135,6 +135,13 @@ public class MyPostsPage extends JFrame {
         img.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         img.setBounds(275, 5, 90, 60);
 
+        String path = p.getPostImagePath();
+        if (path != null && !path.isEmpty()) {
+            ImageIcon raw = new ImageIcon(path);
+            Image scaled = raw.getImage().getScaledInstance(90, 60, Image.SCALE_SMOOTH);
+            img.setIcon(new ImageIcon(scaled));
+        }
+
         row.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

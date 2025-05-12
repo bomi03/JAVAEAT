@@ -1,5 +1,6 @@
 // TeamBuildPage.java - 팀 생성 페이지
 
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.text.JTextComponent;
@@ -16,27 +17,22 @@ public class TeamBuildPage extends JFrame {
     private static int nextPostId = 1;
     private static final SimpleDateFormat DATE_FMT = new SimpleDateFormat("yyyy/MM/dd");
 
-    private int profileID;
-
+    // UI 컴포넌트
     private JPanel mainPanel;
     private JScrollPane scrollPane;
     private JLabel warningLabel;
-
     private JLabel imgLabel;
     private JButton uploadImgBtn;
-
-    private JComboBox<String> categoryBox;
     private JTextField titleField;
-
+    private JComboBox<String> categoryBox;
     private JToggleButton recruitingBtn, closedBtn;
     private ButtonGroup statusGroup;
-
-    private JTextField deadlineField;
-    private JTextField maxField;
-    private JTextField currentField;
+    private JTextField deadlineField, maxField, currentField;
     private JTextArea descArea;
-
     private JButton completeBtn;
+
+    // 이미지 파일 참조
+    private File selectedImageFile;
 
     private static final String[] CATEGORIES = {
         "카테고리 선택", "공모전", "스터디", "수업 팀플", "교내 대회", "프로젝트", "기타"
@@ -44,9 +40,7 @@ public class TeamBuildPage extends JFrame {
     private static final Color PLACEHOLDER_COLOR = Color.decode("#ADADAD");
     private static final Color TEXT_COLOR = Color.BLACK;
 
-    public TeamBuildPage(int profileID) {
-        this.profileID = profileID;
-
+    public TeamBuildPage() {
         setTitle("팀원 모집 글 작성");
         setSize(393, 852);
         setLocationRelativeTo(null);
@@ -65,6 +59,7 @@ public class TeamBuildPage extends JFrame {
 
         int y = 0;
 
+        // 뒤로가기 버튼
         JButton backBtn = new JButton("<html>&lt;-</html>");
         styleGrayButton(backBtn);
         backBtn.setBounds(10, y + 20, 40, 30);
@@ -82,6 +77,7 @@ public class TeamBuildPage extends JFrame {
         mainPanel.add(sep);
         y += 22;
 
+        // 이미지 업로드 영역
         imgLabel = new JLabel();
         imgLabel.setBorder(new LineBorder(Color.GRAY, 1, true));
         imgLabel.setBounds((393 - 100) / 2, y, 100, 100);
@@ -94,12 +90,14 @@ public class TeamBuildPage extends JFrame {
         mainPanel.add(uploadImgBtn);
         y += 50;
 
+        // 경고 라벨
         warningLabel = new JLabel();
         warningLabel.setForeground(Color.RED);
         warningLabel.setBounds(20, y, 360, 20);
         mainPanel.add(warningLabel);
         y += 30;
 
+        // 카테고리
         mainPanel.add(labeled("카테고리 *", "필수 입력 항목입니다.", 20, y));
         y += 20;
         categoryBox = new JComboBox<>(CATEGORIES);
@@ -108,6 +106,7 @@ public class TeamBuildPage extends JFrame {
         mainPanel.add(categoryBox);
         y += 50;
 
+        // 제목
         mainPanel.add(labeled("제목 *", "필수 입력 항목입니다.", 20, y));
         y += 20;
         titleField = new JTextField();
@@ -117,6 +116,7 @@ public class TeamBuildPage extends JFrame {
         mainPanel.add(titleField);
         y += 50;
 
+        // 모집 상태
         mainPanel.add(labeled("모집 상태 *", "필수 입력 항목입니다.", 20, y));
         y += 20;
         recruitingBtn = new JToggleButton("모집중");
@@ -132,6 +132,7 @@ public class TeamBuildPage extends JFrame {
         mainPanel.add(closedBtn);
         y += 60;
 
+        // 모집 기간
         mainPanel.add(labeled("모집 기간", "", 20, y));
         y += 20;
         deadlineField = new JTextField();
@@ -141,6 +142,7 @@ public class TeamBuildPage extends JFrame {
         mainPanel.add(deadlineField);
         y += 50;
 
+        // 모집 인원
         mainPanel.add(labeled("모집 인원 *", "필수 입력 항목입니다.", 20, y));
         y += 20;
         maxField = new JTextField();
@@ -150,6 +152,7 @@ public class TeamBuildPage extends JFrame {
         mainPanel.add(maxField);
         y += 50;
 
+        // 모집된 인원
         mainPanel.add(labeled("모집된 인원", "", 20, y));
         y += 20;
         currentField = new JTextField();
@@ -159,6 +162,7 @@ public class TeamBuildPage extends JFrame {
         mainPanel.add(currentField);
         y += 50;
 
+        // 팀 설명
         mainPanel.add(labeled("팀 설명 *", "필수 입력 항목입니다.", 20, y));
         y += 20;
         descArea = new JTextArea();
@@ -177,11 +181,13 @@ public class TeamBuildPage extends JFrame {
         mainPanel.add(descArea);
         y += 380;
 
+        // 완료 버튼
         completeBtn = new JButton("완료");
         styleBlueButton(completeBtn);
         completeBtn.setBounds(20, y, 350, 40);
         mainPanel.add(completeBtn);
 
+        // 스크롤
         scrollPane = new JScrollPane(mainPanel);
         scrollPane.setBounds(0, 0, 393, 852);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
@@ -246,17 +252,26 @@ public class TeamBuildPage extends JFrame {
     }
 
     private void registerListeners() {
+        // 뒤로가기
+        ((JButton)mainPanel.getComponent(0)).addActionListener(e -> {
+            dispose();
+            new TeamListPage();
+        });
+
+        // 이미지 업로드
         uploadImgBtn.addActionListener(e -> {
             JFileChooser ch = new JFileChooser();
             if (ch.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                File f = ch.getSelectedFile();
-                imgLabel.setIcon(new ImageIcon(
-                    new ImageIcon(f.getAbsolutePath())
+                selectedImageFile = ch.getSelectedFile();
+                ImageIcon icon = new ImageIcon(
+                    new ImageIcon(selectedImageFile.getAbsolutePath())
                         .getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)
-                ));
+                );
+                imgLabel.setIcon(icon);
             }
         });
 
+        // 완료 버튼
         completeBtn.addActionListener(e -> {
             warningLabel.setText("");
 
@@ -281,15 +296,14 @@ public class TeamBuildPage extends JFrame {
                     warningLabel.setText("날짜 형식은 YYYY/MM/DD로 입력해주세요.");
                     return;
                 }
-                int mm, dd;
                 try {
-                    mm = Integer.parseInt(parts[1]);
-                    dd = Integer.parseInt(parts[2]);
+                    int mm = Integer.parseInt(parts[1]);
+                    int dd = Integer.parseInt(parts[2]);
+                    if (mm < 1 || mm > 12 || dd < 1 || dd > 31) {
+                        warningLabel.setText("날짜를 확인해주세요.");
+                        return;
+                    }
                 } catch (NumberFormatException ex) {
-                    warningLabel.setText("날짜를 확인해주세요.");
-                    return;
-                }
-                if (mm < 1 || mm > 12 || dd < 1 || dd > 31) {
                     warningLabel.setText("날짜를 확인해주세요.");
                     return;
                 }
@@ -338,39 +352,35 @@ public class TeamBuildPage extends JFrame {
                 }
             }
 
+            // Post 생성
+            String imgPath = (selectedImageFile != null ? selectedImageFile.getAbsolutePath() : "");
             Post p = new Post(
                 nextPostId++,
-                profileID,
-                "",
+                0,
+                imgPath,
                 (String) categoryBox.getSelectedItem(),
-                title,
+                titleField.getText().trim(),
                 recruitingBtn.isSelected() ? "모집중" : "모집완료",
                 deadline,
                 max,
                 curr,
-                desc
+                descArea.getText().trim()
             );
-
-            // 저장소에 추가
             Post.addPost(p);
 
-            // Team 생성 및 저장
+            // Team 생성
             Team team = new Team(p.getPostID());
             Team.addTeam(team);
 
             JOptionPane.showMessageDialog(this, "팀 모집글이 생성되었습니다.");
 
-            // TeamListPage로 이동
-            SwingUtilities.invokeLater(() -> {
-                new TeamListPage(profileID);  // profileID나 필요 파라미터를 넘겨주세요
-            });
-
             dispose();
+            new TeamListPage();
         });
     }
 
     public static void main(String[] args) {
-        // 예시로 1
-        new TeamBuildPage(1);
+        SwingUtilities.invokeLater(TeamBuildPage::new);
     }
 }
+
