@@ -349,6 +349,10 @@ public class TeamBuildPage extends JFrame {
                 desc
             );
 
+            // 저장소에 추가
+            Post.addPost(p);
+
+            // Team 생성 및 저장
             Team team = new Team(p.getPostID());
             Team.addTeam(team);
 
