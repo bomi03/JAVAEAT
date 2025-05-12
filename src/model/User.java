@@ -157,6 +157,11 @@ public class User {
     return true;
 }
 
+    // set함수 추가 - 보미
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
     public Profile getProfile() { return profile; }
     //User 객체 안에 있는 profile 객체를 외부에서 접근할 수 있게 
 

@@ -29,8 +29,13 @@ public class Profile {
     }
 
     // Profile 클래스의 메소드 - 프로필 정보 수정 메소드
-    public void editProfile(String profileImagePath, String nickname, String admissionYear, String grade, 
-                            boolean isEnrolled, String introduction, SongiType resultType, String resultImagePath) {
+    public boolean editProfile(String profileImagePath, String nickname, String admissionYear, 
+                            String grade, boolean isEnrolled, String introduction, 
+                            SongiType resultType, String resultImagePath) {
+        if (nickname == null || nickname.isEmpty() || admissionYear == null || admissionYear.isEmpty() 
+            || grade == null || grade.isEmpty() || majors.isEmpty() || introduction == null || introduction.isEmpty()) {
+            return false; // 필수 항목이 비어있으면 false
+        }
         this.profileImagePath = profileImagePath;
         this.nickname = nickname;
         this.admissionYear = admissionYear;
@@ -39,18 +44,27 @@ public class Profile {
         this.introduction = introduction;
         this.resultType = resultType;
         this.resultImagePath = resultImagePath;
+        return true; // 성공적으로 수정된 경우 true
     }
 
     // Profile 클래스의 메소드 - 전공 추가 메소드 (전공명 + 유형)
-    public void addMajor(String name, String type) {
+    public boolean addMajor(String name, String type) {
         String formattedMajor = name + " (" + type + ")";
+        if (majors.contains(formattedMajor)) {
+            return false; // 이미 존재하는 전공이면 false
+        }
         this.majors.add(formattedMajor);
+        return true;
     }
 
     // Profile 클래스의 메소드 - 경력 추가 메소드 (경력명 + 유형형)
-    public void addCareer(String name, String type) {
+    public boolean addCareer(String name, String type) {
         String formattedCareer = name + " (" + type + ")";
+        if (careers.contains(formattedCareer)) {
+            return false; // 이미 존재하는 경력사항이면 false
+        }
         this.careers.add(formattedCareer); 
+        return true;
     }
 
     // Profile 클래스의 메소드 - 자격증 추가 메소드
@@ -64,7 +78,31 @@ public class Profile {
         this.resultImagePath = imagePath;
     }
 
-    // Getter 메소드 (임의로 추가)
+    // Set 메소드
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void setAdmissionYear(String admissionYear) {
+        this.admissionYear = admissionYear;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
+    public void setEnrolled(boolean isEnrolled) {
+        this.isEnrolled = isEnrolled;
+    }
+
+    public void setProfileImagePath(String profileImagePath) {
+        this.profileImagePath = profileImagePath;
+    }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
     // Getter 메소드 - 프로필 이미지 경로
     public String getProfileImagePath() {
         return profileImagePath;
@@ -119,9 +157,34 @@ public class Profile {
     public String getResultImagePath() {
         return resultImagePath;
     }
+
+    // Getter 메소드 - 테스트 결과 이미지 경로
+    public String getUserID() {
+        return userID;
+    }
+
     // 추가한 메서드 (하원)
     public int getProfileID() {
-
         return profileID;
+    }
+
+    // 프로필 유효성 검증 메소드
+    public boolean isValidProfile() {
+        if (nickname == null || nickname.isEmpty()) {
+            return false;  // 닉네임이 비어 있으면 false
+        }
+        if (admissionYear == null || admissionYear.isEmpty()) {
+            return false;  // 입학년도 비어 있으면 false
+        }
+        if (grade == null || grade.isEmpty()) {
+            return false;  // 학년 비어 있으면 false
+        }
+        if (majors.isEmpty()) {
+            return false;  // 전공이 비어 있으면 false
+        }
+        if (introduction == null || introduction.isEmpty()) {
+            return false;  // 자기소개 비어 있으면 false
+        }
+        return true;
     }
 }
