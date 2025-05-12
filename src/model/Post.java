@@ -136,5 +136,9 @@ public class Post {
         return profileID;
     }
     
+    public int getPostID() {
+        
+        return postID;
+    }
 
 }
