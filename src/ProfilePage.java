@@ -1,3 +1,5 @@
+// ProfilePage.java - 프로필 작성 페이지
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -42,12 +44,13 @@ public class ProfilePage extends JFrame {
     private JLabel styleResultLabel, styleResultImage;
 
     private static final String[] YEARS = {
+        "연도 선택(학번)",
         "2009학번","2010학번","2011학번","2012학번","2013학번",
         "2014학번","2015학번","2016학번","2017학번","2018학번",
         "2019학번","2020학번","2021학번","2022학번","2023학번",
         "2024학번","2025학번"
     };
-    private static final String[] GRADES = {"1학년","2학년","3학년","4학년","추가학기"};
+    private static final String[] GRADES = {"학년 선택", "1학년","2학년","3학년","4학년","추가학기"};
     private static final String[] MAJOR_TYPES = {"주전공","복수전공","연계전공","부전공"};
     private static final String[] EXP_TYPES = {"수상","동아리","교내 팀플","공모전","아르바이트"};
 
@@ -466,10 +469,20 @@ public class ProfilePage extends JFrame {
             scrollTo(yearBox);
             warningLabel.setText("입학년도를 선택해 주세요."); return false;
         }
+        if (yearBox.getSelectedIndex() == 0) {
+            scrollTo(yearBox);
+            warningLabel.setText("입학년도를 선택해 주세요.");
+            return false;
+        }   
         if (gradeBox.getSelectedIndex() < 0) {
             scrollTo(gradeBox);
             warningLabel.setText("학년을 선택해 주세요."); return false;
         }
+        if (gradeBox.getSelectedIndex() == 0) {
+            scrollTo(gradeBox);
+            warningLabel.setText("학년을 선택해 주세요.");
+            return false;
+        }   
         if (!enrolledBtn.isSelected() && !leaveBtn.isSelected()) {
             scrollTo(enrolledBtn);
             warningLabel.setText("재학 여부를 선택해 주세요."); return false;

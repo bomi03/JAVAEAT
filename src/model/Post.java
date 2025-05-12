@@ -1,11 +1,13 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 public class Post {
     // Post 클래스의 속성
+    private static List<Post> allPosts = new ArrayList<>();  // 모집글 리스트 (마이페이지-작성한 글에 사용하기 위해서)
     private int postID;  // 모집글 고유 ID
     private int profileID;  // 작성자의 프로필 ID
     private String postImagePath;  // 모집글 이미지 경로 
@@ -75,6 +77,10 @@ public class Post {
 
     //Post 클래스의 메소드 - 마감일이 지났는지 확인하는 메소드 (임의로 추가)
     public boolean isRecruitDeadlinePassed() {
+        // 마감일이 설정되지 않은 경우(=null)이면 false 반환
+        if (recruitDeadline == null) {
+            return false;
+        }
         Date today = new Date();
         return today.after(recruitDeadline);
     }
@@ -87,9 +93,19 @@ public class Post {
 
     // Post 클래스의 메소드 - 마감일이 지났으면 자동으로 상태 변경 (임의로 추가)
     public void autoClosePost() {
-        if(this.isRecruitDeadlinePassed() && this.status.equals("모집 중")) {
+        if(this.isRecruitDeadlinePassed() && this.status.equals("모집중")) {
             this.status = "모집완료";
         }
+    }
+
+    // Post 클래스의 메소드 - 모집글 리스트에 모집글 추가
+    public static void addPost(Post p) {
+        allPosts.add(p);
+    }
+
+    // Getter 메소드 - 모집글 리스트
+    public static List<Post> getAllPosts() {
+        return Collections.unmodifiableList(allPosts);
     }
 
     // Getter 메소드 - 모집글 이미지 경로
@@ -136,5 +152,9 @@ public class Post {
         return profileID;
     }
     
+    public int getPostID() {
+        
+        return postID;
+    }
 
 }
