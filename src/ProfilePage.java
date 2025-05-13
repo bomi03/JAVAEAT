@@ -1,4 +1,5 @@
-// ProfilePage.java - 298, 308 라인 협업 테스트 구현되면 바꾸기!
+// ProfilePage.java - 프로필 작성 및 프로필 편집 페이지
+
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -19,10 +20,12 @@ public class ProfilePage extends JFrame {
     private Test test;
     private Management manager;
 
+    private boolean isEditMode;
+    private MyPage parentPage;
+
     private JScrollPane scrollPane;
     private JPanel mainPanel;
-    private JLabel warningLabel;
-    private JLabel imgLabel;
+    private JLabel warningLabel, imgLabel;
     private JButton uploadImgBtn;
 
     private JTextField nicknameField;
@@ -30,25 +33,17 @@ public class ProfilePage extends JFrame {
     private JToggleButton enrolledBtn, leaveBtn;
     private ButtonGroup enrolledGroup;
 
-    private JPanel majorsPanel;
-    private JButton addMajorBtn;
+    private JPanel majorsPanel, careersPanel, certsPanel;
+    private JButton addMajorBtn, addCareerBtn, addCertBtn;
     private java.util.List<JTextField> majorNameFields = new ArrayList<>();
     private java.util.List<JComboBox<String>> majorTypeBoxes = new ArrayList<>();
-
-    private JPanel careersPanel;
-    private JButton addCareerBtn;
     private java.util.List<JTextField> careerNameFields = new ArrayList<>();
     private java.util.List<JComboBox<String>> careerTypeBoxes = new ArrayList<>();
-
-    private JPanel certsPanel;
-    private JButton addCertBtn;
     private java.util.List<JTextField> certFields = new ArrayList<>();
 
     private JTextArea introArea;
-    private JButton testBtn;
-    private JButton completeBtn;
+    private JButton testBtn, completeBtn;
 
-    // 결과 패널: 이제 설명 이미지만 보여줍니다
     private JPanel resultPanel;
     private JLabel resultImageLabel;
 
@@ -69,11 +64,21 @@ public class ProfilePage extends JFrame {
     }
 
     private static final Color PLACEHOLDER = Color.decode("#ADADAD");
-    private static final Color TEXT_COLOR = Color.BLACK;
+    private static final Color TEXT_COLOR   = Color.BLACK;
+
+    // 높이 상수
+    private static final int H20 = 20, H30 = 30, H40 = 40, H60 = 60, H110 = 110, H150 = 150;
 
     public ProfilePage(User user, Management manager) {
+        this(user, manager, false, null);
+    }
+
+    public ProfilePage(User user, Management manager, boolean isEditMode, MyPage parentPage) {
         this.user = user;
         this.manager = manager;
+        this.isEditMode = isEditMode;
+        this.parentPage = parentPage;
+
         Profile p = user.getProfile();
         if (p == null) {
             p = new Profile(nextProfileId++, user.getUserID());
@@ -82,12 +87,13 @@ public class ProfilePage extends JFrame {
         this.profile = p;
         this.test = new Test();
 
-        setTitle("회원가입 - 프로필 작성");
+        setTitle(isEditMode ? "프로필 편집" : "회원가입 - 프로필 작성");
         setSize(393, 900);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         buildUI();
+        if (isEditMode) prefillFields();
         registerListeners();
 
         setVisible(true);
@@ -100,77 +106,81 @@ public class ProfilePage extends JFrame {
         int y = 0;
 
         // 뒤로가기 + 헤더
-        JButton back = new JButton("<html>&lt;-</html>");
+        JButton back = new JButton(isEditMode ? "←" : "<html>&lt;-</html>");
         styleGray(back);
-        back.setBounds(10, 20, 40, 30);
+        back.setBounds(10, 20, 60, H30);
         mainPanel.add(back);
-        JLabel header = new JLabel("회원가입", SwingConstants.CENTER);
+
+        JLabel header = new JLabel(isEditMode ? "프로필 편집" : "회원가입", SwingConstants.CENTER);
         header.setForeground(Color.decode("#4A4A4A"));
-        header.setBounds(0, 20, 393, 30);
+        header.setBounds(0, 20, 393, H30);
         mainPanel.add(header);
+
         y += 60;
         newSeparator(y); y += 20;
 
-        // 안내문
-        JLabel instr = new JLabel("눈송님께 딱 맞는 팀 매칭을 위한 프로필을 완성해 주세요 :)", SwingConstants.LEFT);
-        instr.setBounds(20, y, 350, 30);
-        mainPanel.add(instr);
-        y += 40;
+        if (!isEditMode) {
+            JLabel instr = new JLabel("눈송님께 딱 맞는 팀 매칭을 위한 프로필을 완성해 주세요 :)");
+            instr.setBounds(20, y, 350, H30);
+            mainPanel.add(instr);
+            y += 40;
+        }
 
         // 이미지 업로드
         imgLabel = new JLabel();
-        imgLabel.setBorder(new LineBorder(Color.GRAY, 1, true));
-        imgLabel.setBounds((393 - 100) / 2, y, 100, 100);
+        imgLabel.setBorder(new LineBorder(Color.GRAY,1,true));
+        imgLabel.setBounds((393-100)/2, y, 100, 100);
         mainPanel.add(imgLabel);
         y += 110;
+
         uploadImgBtn = new JButton("이미지 업로드");
         styleGray(uploadImgBtn);
-        uploadImgBtn.setBounds((393 - 120) / 2, y, 120, 30);
+        uploadImgBtn.setBounds((393-120)/2, y, 120, H30);
         mainPanel.add(uploadImgBtn);
         y += 50;
 
-        // 경고 라벨
         warningLabel = new JLabel("", SwingConstants.LEFT);
         warningLabel.setForeground(Color.RED);
-        warningLabel.setBounds(20, y, 360, 20);
+        warningLabel.setBounds(20, y, 360, H20);
         mainPanel.add(warningLabel);
         y += 30;
 
         // 닉네임
-        mainPanel.add(labeled("닉네임 *", "필수 입력 항목입니다.", 20, y));
-        y += 20;
+        mainPanel.add(labeled("닉네임 *","필수 입력 항목입니다.",20,y));
+        y += H20;
         nicknameField = new JTextField();
-        nicknameField.setBounds(20, y, 350, 30);
+        nicknameField.setBounds(20, y, 350, H30);
         nicknameField.setBorder(new LineBorder(Color.decode("#D9D9D9")));
-        setPlaceholder(nicknameField, "2~16자 이내로 입력해 주세요.");
+        setPlaceholder(nicknameField,"2~16자 이내로 입력해 주세요.");
         mainPanel.add(nicknameField);
         y += 50;
 
         // 입학년도 / 학년
-        mainPanel.add(labeled("입학년도 *", "필수 입력 항목입니다.", 20, y));
-        y += 20;
+        mainPanel.add(labeled("입학년도 *","필수 입력 항목입니다.",20,y));
+        y += H20;
         yearBox = new JComboBox<>(YEARS);
-        yearBox.setBounds(20, y, 350, 30);
+        yearBox.setBounds(20, y, 350, H30);
         yearBox.setBorder(new LineBorder(Color.decode("#D9D9D9")));
         mainPanel.add(yearBox);
         y += 50;
-        mainPanel.add(labeled("학년 *", "필수 입력 항목입니다.", 20, y));
-        y += 20;
+
+        mainPanel.add(labeled("학년 *","필수 입력 항목입니다.",20,y));
+        y += H20;
         gradeBox = new JComboBox<>(concat(new String[]{"학년 선택"}, GRADES));
-        gradeBox.setBounds(20, y, 350, 30);
+        gradeBox.setBounds(20, y, 350, H30);
         gradeBox.setBorder(new LineBorder(Color.decode("#D9D9D9")));
         mainPanel.add(gradeBox);
         y += 50;
 
         // 재학 여부
-        mainPanel.add(labeled("재학 여부 *", "필수 입력 항목입니다.", 20, y));
-        y += 20;
+        mainPanel.add(labeled("재학 여부 *","필수 입력 항목입니다.",20,y));
+        y += H20;
         enrolledBtn = new JToggleButton("재학");
-        leaveBtn = new JToggleButton("휴학");
+        leaveBtn    = new JToggleButton("휴학");
         styleToggle(enrolledBtn);
         styleToggle(leaveBtn);
-        enrolledBtn.setBounds(20, y, 170, 40);
-        leaveBtn.setBounds(200, y, 170, 40);
+        enrolledBtn.setBounds(20, y, 170, H40);
+        leaveBtn   .setBounds(200, y, 170, H40);
         enrolledGroup = new ButtonGroup();
         enrolledGroup.add(enrolledBtn);
         enrolledGroup.add(leaveBtn);
@@ -178,47 +188,47 @@ public class ProfilePage extends JFrame {
         mainPanel.add(leaveBtn);
         y += 60;
 
-        // 전공 (BoxLayout + no bg)
-        mainPanel.add(labeled("전공 *", "필수 입력 항목입니다.", 20, y));
-        y += 20;
+        // 전공
+        mainPanel.add(labeled("전공 *","필수 입력 항목입니다.",20,y));
+        y += H20;
         majorsPanel = new JPanel();
-        majorsPanel.setLayout(new BoxLayout(majorsPanel, BoxLayout.Y_AXIS));
+        majorsPanel.setLayout(new BoxLayout(majorsPanel,BoxLayout.Y_AXIS));
         majorsPanel.setBackground(Color.WHITE);
         JScrollPane majorsScroll = new JScrollPane(majorsPanel);
-        majorsScroll.setBounds(20, y, 350, 100);
+        majorsScroll.setBounds(20, y, 350, H110);
         majorsScroll.setBorder(null);
         majorsScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         mainPanel.add(majorsScroll);
         addMajorBtn = new JButton("+ 항목 추가");
         styleBlue(addMajorBtn);
-        addMajorBtn.setBounds(20, y + 110, 350, 30);
+        addMajorBtn.setBounds(20, y+H110, 350, H30);
         mainPanel.add(addMajorBtn);
-        y += 150;
+        y += H150;
         addMajorRow();
 
         // 경력사항
-        mainPanel.add(labeled("경력사항", "", 20, y));
-        y += 20;
+        mainPanel.add(labeled("경력사항","",20,y));
+        y += H20;
         careersPanel = new JPanel();
-        careersPanel.setLayout(new BoxLayout(careersPanel, BoxLayout.Y_AXIS));
+        careersPanel.setLayout(new BoxLayout(careersPanel,BoxLayout.Y_AXIS));
         careersPanel.setBackground(Color.WHITE);
         JScrollPane careersScroll = new JScrollPane(careersPanel);
-        careersScroll.setBounds(20, y, 350, 100);
+        careersScroll.setBounds(20, y, 350, H110);
         careersScroll.setBorder(null);
         careersScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         mainPanel.add(careersScroll);
         addCareerBtn = new JButton("+ 항목 추가");
         styleBlue(addCareerBtn);
-        addCareerBtn.setBounds(20, y + 110, 350, 30);
+        addCareerBtn.setBounds(20, y+H110, 350, H30);
         mainPanel.add(addCareerBtn);
-        y += 150;
+        y += H150;
         addCareerRow();
 
         // 자격증
-        mainPanel.add(labeled("자격증", "", 20, y));
-        y += 20;
+        mainPanel.add(labeled("자격증","",20,y));
+        y += H20;
         certsPanel = new JPanel();
-        certsPanel.setLayout(new BoxLayout(certsPanel, BoxLayout.Y_AXIS));
+        certsPanel.setLayout(new BoxLayout(certsPanel,BoxLayout.Y_AXIS));
         certsPanel.setBackground(Color.WHITE);
         JScrollPane certsScroll = new JScrollPane(certsPanel);
         certsScroll.setBounds(20, y, 350, 80);
@@ -227,30 +237,30 @@ public class ProfilePage extends JFrame {
         mainPanel.add(certsScroll);
         addCertBtn = new JButton("+ 항목 추가");
         styleBlue(addCertBtn);
-        addCertBtn.setBounds(20, y + 90, 350, 30);
+        addCertBtn.setBounds(20, y+90, 350, H30);
         mainPanel.add(addCertBtn);
         y += 120;
         addCertRow();
 
         // 자기소개
-        mainPanel.add(labeled("한 줄 자기소개 *", "필수 입력 항목입니다.", 20, y));
-        y += 20;
+        mainPanel.add(labeled("한 줄 자기소개 *","필수 입력 항목입니다.",20,y));
+        y += H20;
         introArea = new JTextArea();
         introArea.setLineWrap(true);
         introArea.setBounds(20, y, 350, 80);
         introArea.setBorder(new LineBorder(Color.decode("#D9D9D9")));
-        setPlaceholder(introArea, "자기소개를 70자 이내로 작성해 주세요.");
+        setPlaceholder(introArea,"자기소개를 70자 이내로 작성해 주세요.");
         mainPanel.add(introArea);
         y += 100;
 
         // 테스트 버튼
         testBtn = new JButton("협업 유형 테스트 하러 가기");
         styleBlue(testBtn);
-        testBtn.setBounds(20, y, 350, 40);
+        testBtn.setBounds(20, y, 350, H40);
         mainPanel.add(testBtn);
         y += 60;
 
-        // 결과 패널 (설명 이미지만)
+        // 결과 패널
         resultPanel = new JPanel(null);
         resultPanel.setBackground(Color.WHITE);
         resultPanel.setBounds(20, y, 350, 200);
@@ -261,10 +271,10 @@ public class ProfilePage extends JFrame {
         resultImageLabel.setBounds(0, 0, 350, 200);
         resultPanel.add(resultImageLabel);
 
-        // 완료 버튼
+        // 완료/저장 버튼
         completeBtn = new JButton("완료");
         styleBlue(completeBtn);
-        completeBtn.setBounds(20, y + 220, 350, 40);
+        completeBtn.setBounds(20, y+220, 350, H40);
         mainPanel.add(completeBtn);
 
         // 스크롤
@@ -275,94 +285,151 @@ public class ProfilePage extends JFrame {
         add(scrollPane);
     }
 
+    private void prefillFields() {
+        // 이미지
+        String imgPath = profile.getProfileImagePath();
+        if (imgPath != null && !imgPath.isEmpty()) {
+            selectedImageFile = new File(imgPath);
+            imgLabel.setIcon(new ImageIcon(
+                new ImageIcon(imgPath).getImage()
+                    .getScaledInstance(100,100,Image.SCALE_SMOOTH)
+            ));
+        }
+        // 기본 필드
+        nicknameField.setText(profile.getNickname());
+        yearBox.setSelectedItem(profile.getAdmissionYear());
+        gradeBox.setSelectedItem(profile.getGrade());
+        if (profile.getisEnrolled()) enrolledBtn.setSelected(true);
+        else leaveBtn.setSelected(true);
+
+        // 전공들
+        majorsPanel.removeAll();
+        majorNameFields.clear();
+        majorTypeBoxes.clear();
+        for (String m: profile.getMajors()) {
+            String[] sp = m.split(" \\(");
+            addMajorRow();
+            int idx = majorNameFields.size()-1;
+            majorNameFields.get(idx).setText(sp[0]);
+            majorTypeBoxes.get(idx).setSelectedItem(sp[1].replace(")",""));
+        }
+        // 경력들
+        careersPanel.removeAll();
+        careerNameFields.clear();
+        careerTypeBoxes.clear();
+        for (String c: profile.getCareers()) {
+            String[] sp = c.split(" \\(");
+            addCareerRow();
+            int idx = careerNameFields.size()-1;
+            careerNameFields.get(idx).setText(sp[0]);
+            careerTypeBoxes.get(idx).setSelectedItem(sp[1].replace(")",""));
+        }
+        // 자격증들
+        certsPanel.removeAll();
+        certFields.clear();
+        for (String c: profile.getCertificates()) {
+            addCertRow();
+            certFields.get(certFields.size()-1).setText(c);
+        }
+        // 소개
+        introArea.setText(profile.getIntroduction());
+
+        // 이미 테스트 결과가 있으면
+        if (profile.getResultType()!=null) {
+            resultPanel.setVisible(true);
+            resultImageLabel.setIcon(new ImageIcon(
+                new ImageIcon(profile.getResultImagePath()).getImage()
+                    .getScaledInstance(350,200,Image.SCALE_SMOOTH)
+            ));
+        }
+    }
+
     private void registerListeners() {
+        // 뒤로가기/취소
         ((JButton)mainPanel.getComponent(0)).addActionListener(e -> {
             dispose();
-            new TeamListPage();
+            if (isEditMode) parentPage.setVisible(true);
+            else new TeamListPage();
         });
+
         uploadImgBtn.addActionListener(e -> {
             JFileChooser ch = new JFileChooser();
-            if (ch.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            if (ch.showOpenDialog(this)==JFileChooser.APPROVE_OPTION) {
                 selectedImageFile = ch.getSelectedFile();
-                ImageIcon icon = new ImageIcon(
+                imgLabel.setIcon(new ImageIcon(
                     new ImageIcon(selectedImageFile.getAbsolutePath())
-                        .getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)
-                );
-                imgLabel.setIcon(icon);
+                        .getImage().getScaledInstance(100,100,Image.SCALE_SMOOTH)
+                ));
             }
         });
+
         addMajorBtn.addActionListener(e -> addMajorRow());
         addCareerBtn.addActionListener(e -> addCareerRow());
         addCertBtn.addActionListener(e -> addCertRow());
+
         testBtn.addActionListener(e -> {
-            // TODO: 나중에 TestPage 연결  testBtn.addActionListener(e ->new TestPage(user, manager, test, this));
-            // 지금은 더미로 '평화송이' 타입 결과를 강제로 세팅
+            // TODO: 추후 협업 테스트 구현되면 아래 주석 로직으로 대체
             profile.updateType(
                 SongiType.평화송이,
                 SongiType.평화송이.getImagePath()
             );
-            showResultPanel(); 
-            JOptionPane.showMessageDialog(this, "테스트 결과를 미리 보기입니다!");
-        });
-        completeBtn.addActionListener(e -> {
-            // 테스트가 안 되어 있을 때도 결과 패널을 보려면 똑같이 스텁 처리 - 테스트 안하고 다음 페이지 넘어가려고 추가한 것 나중에 바꾸기!
-            if (profile.getResultType() == null) {
-                profile.updateType(
-                    SongiType.평화송이,
-                    SongiType.평화송이.getImagePath()
-                );
-            }
             showResultPanel();
-            JOptionPane.showMessageDialog(this, "회원가입이 완료되었습니다!");
+            JOptionPane.showMessageDialog(this,"테스트 결과 미리 보기");
+        });
+
+        completeBtn.addActionListener(e -> {
+            onSubmit();
             dispose();
-            new TeamListPage();
+            if (isEditMode) {
+                parentPage.setVisible(true);
+                parentPage.refreshProfileDisplay();  // MyPage에 갱신 메소드 구현 필요
+            } else {
+                new TeamListPage();
+            }
         });
     }
 
     private void onSubmit() {
         warningLabel.setText("");
 
+        // **필수 유효성 검사** (닉네임/입학년도/학년/전공/소개/테스트)
         String nick = nicknameField.getText().trim();
         if (nick.isEmpty() || nick.equals("2~16자 이내로 입력해 주세요.")) {
             warningLabel.setText("닉네임을 입력해 주세요."); return;
         }
-        if (nick.length() < 2 || nick.length() > 16) {
-            warningLabel.setText("닉네임은 2~16자 이내여야 합니다."); return;
+        if (nick.length()<2||nick.length()>16) {
+            warningLabel.setText("닉네임은 2~16자 이내여야 합니다.");return;
         }
-        if (yearBox.getSelectedIndex() == 0) {
+        if (yearBox.getSelectedIndex()==0) {
             warningLabel.setText("입학년도를 선택해 주세요."); return;
         }
-        if (gradeBox.getSelectedIndex() == 0) {
+        if (gradeBox.getSelectedIndex()==0) {
             warningLabel.setText("학년을 선택해 주세요."); return;
         }
         if (!enrolledBtn.isSelected() && !leaveBtn.isSelected()) {
             warningLabel.setText("재학 여부를 선택해 주세요."); return;
         }
-
-        boolean hasMajor = majorNameFields.stream()
-            .anyMatch(f -> {
-                String t = f.getText().trim();
-                return !t.isEmpty() && !t.equals("전공명을 작성해 주세요.");
-            });
+        boolean hasMajor = majorNameFields.stream().anyMatch(f->{
+            String t=f.getText().trim();
+            return !t.isEmpty()&&!t.equals("전공명을 작성해 주세요.");
+        });
         if (!hasMajor) {
             warningLabel.setText("전공을 한 개 이상 작성해 주세요."); return;
         }
-
         String intro = introArea.getText().trim();
         if (intro.isEmpty() || intro.equals("자기소개를 70자 이내로 작성해 주세요.")) {
             warningLabel.setText("자기소개를 작성해 주세요."); return;
         }
-        if (intro.length() > 70) {
+        if (intro.length()>70) {
             warningLabel.setText("자기소개는 70자 이내여야 합니다."); return;
         }
-
-        if (profile.getResultType() == null) {
+        if (profile.getResultType()==null) {
             warningLabel.setText("협업 유형 테스트를 완료해 주세요."); return;
         }
 
-        // Profile 업데이트
+        // **Profile 모델 업데이트**
         profile.setProfileImagePath(
-            selectedImageFile != null ? selectedImageFile.getAbsolutePath() : ""
+            selectedImageFile!=null ? selectedImageFile.getAbsolutePath() : ""
         );
         profile.setNickname(nick);
         profile.setAdmissionYear((String)yearBox.getSelectedItem());
@@ -370,110 +437,57 @@ public class ProfilePage extends JFrame {
         profile.setEnrolled(enrolledBtn.isSelected());
         profile.setIntroduction(intro);
 
-        for (int i = 0; i < majorNameFields.size(); i++) {
-            JTextField f = majorNameFields.get(i);
-            String m = f.getText().trim();
-            String t = (String) majorTypeBoxes.get(i).getSelectedItem();
-            if (!m.isEmpty() && !"전공명을 작성해 주세요.".equals(m)) {
-                profile.addMajor(m, t);
+        // reset lists
+        profile.getMajors().clear();
+        profile.getCareers().clear();
+        profile.getCertificates().clear();
+
+        for (int i=0; i<majorNameFields.size(); i++) {
+            String m = majorNameFields.get(i).getText().trim();
+            String t = (String)majorTypeBoxes.get(i).getSelectedItem();
+            if (!m.isEmpty() && !m.equals("전공명을 작성해 주세요.")) {
+                profile.addMajor(m,t);
             }
         }
-        for (int i = 0; i < careerNameFields.size(); i++) {
-            JTextField f = careerNameFields.get(i);
-            String c = f.getText().trim();
-            String t = (String) careerTypeBoxes.get(i).getSelectedItem();
-            if (!c.isEmpty() && !"활동명을 작성해 주세요.".equals(c)) {
-                    profile.addCareer(c, t);
+        for (int i=0; i<careerNameFields.size(); i++) {
+            String c = careerNameFields.get(i).getText().trim();
+            String t = (String)careerTypeBoxes.get(i).getSelectedItem();
+            if (!c.isEmpty() && !c.equals("활동명을 작성해 주세요.")) {
+                profile.addCareer(c,t);
             }
-    }
-       for (JTextField f : certFields) {
-            String c = f.getText().trim();
-            if (!c.isEmpty() && !"취득한 자격증명을 작성해 주세요.".equals(c)) {
-                    profile.addCertification(c);
         }
-    }
+        for (JTextField f: certFields) {
+            String c = f.getText().trim();
+            if (!c.isEmpty() && !c.equals("취득한 자격증명을 작성해 주세요.")) {
+                profile.addCertification(c);
+            }
+        }
 
         user.setProfile(profile);
-        JOptionPane.showMessageDialog(this, "회원가입이 완료되었습니다!");
-        dispose();
-        new TeamListPage();
+        JOptionPane.showMessageDialog(this,
+            isEditMode ? "프로필이 저장되었습니다." : "회원가입이 완료되었습니다!");
     }
 
-    /**
-     * 결과 패널에 이미지만 보여줍니다.
-     */
     public void showResultPanel() {
         SongiType type = profile.getResultType();
-        if (type == null) return;
-
-        // Profile.getResultImagePath() 에서 설명 이미지 경로를 반환한다고 가정
+        if (type==null) return;
         String imgPath = profile.getResultImagePath();
-        ImageIcon icon = new ImageIcon(
-            new ImageIcon(imgPath)
-                .getImage().getScaledInstance(350, 200, Image.SCALE_SMOOTH)
-        );
-        resultImageLabel.setIcon(icon);
-
+        resultImageLabel.setIcon(new ImageIcon(
+            new ImageIcon(imgPath).getImage()
+                .getScaledInstance(350,200,Image.SCALE_SMOOTH)
+        ));
         resultPanel.setVisible(true);
         mainPanel.revalidate();
         mainPanel.repaint();
     }
 
-    private void addMajorRow() {
-        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        row.setOpaque(false);
-        row.setMaximumSize(new Dimension(350, 35));
-        JTextField name = new JTextField();
-        name.setPreferredSize(new Dimension(230, 30));
-        setPlaceholder(name, "전공명을 작성해 주세요.");
-        JComboBox<String> type = new JComboBox<>(MAJOR_TYPES);
-        type.setPreferredSize(new Dimension(110, 30));
-        row.add(name);
-        row.add(type);
-        majorsPanel.add(row);
-        majorsPanel.revalidate();
-        majorsPanel.repaint();
-        majorNameFields.add(name);
-        majorTypeBoxes.add(type);
-    }
-
-    private void addCareerRow() {
-        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        row.setOpaque(false);
-        row.setMaximumSize(new Dimension(350, 35));
-        JTextField name = new JTextField();
-        name.setPreferredSize(new Dimension(230, 30));
-        setPlaceholder(name, "활동명을 작성해 주세요.");
-        JComboBox<String> type = new JComboBox<>(CAREER_TYPES);
-        type.setPreferredSize(new Dimension(110, 30));
-        row.add(name);
-        row.add(type);
-        careersPanel.add(row);
-        careersPanel.revalidate();
-        careersPanel.repaint();
-        careerNameFields.add(name);
-        careerTypeBoxes.add(type);
-    }
-
-    private void addCertRow() {
-        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        row.setOpaque(false);
-        row.setMaximumSize(new Dimension(350, 35));
-        JTextField cert = new JTextField();
-        cert.setPreferredSize(new Dimension(350, 30));
-        setPlaceholder(cert, "취득한 자격증명을 작성해 주세요.");
-        row.add(cert);
-        certsPanel.add(row);
-        certsPanel.revalidate();
-        certsPanel.repaint();
-        certFields.add(cert);
-    }
+    // ——— UI 헬퍼 메서드 ———
 
     private JLabel labeled(String text, String hint, int x, int y) {
         JLabel l = new JLabel(String.format(
-            "<html><span style='color:#4A4A4A'><b>%s</b></span> <span style='color:#BABABA'>%s</span></html>",
-            text, hint));
-        l.setBounds(x, y, 360, 20);
+            "<html><span style='color:#4A4A4A'><b>%s</b></span> " +
+            "<span style='color:#BABABA'>%s</span></html>", text, hint));
+        l.setBounds(x, y, 360, H20);
         return l;
     }
 
@@ -537,14 +551,57 @@ public class ProfilePage extends JFrame {
         return c;
     }
 
+    private void addMajorRow() {
+        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
+        row.setOpaque(false);
+        row.setMaximumSize(new Dimension(350,35));
+        JTextField name = new JTextField();
+        name.setPreferredSize(new Dimension(230,30));
+        setPlaceholder(name,"전공명을 작성해 주세요.");
+        JComboBox<String> type = new JComboBox<>(MAJOR_TYPES);
+        type.setPreferredSize(new Dimension(110,30));
+        row.add(name); row.add(type);
+        majorsPanel.add(row);
+        majorsPanel.revalidate(); majorsPanel.repaint();
+        majorNameFields.add(name);
+        majorTypeBoxes.add(type);
+    }
+
+    private void addCareerRow() {
+        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
+        row.setOpaque(false);
+        row.setMaximumSize(new Dimension(350,35));
+        JTextField name = new JTextField();
+        name.setPreferredSize(new Dimension(230,30));
+        setPlaceholder(name,"활동명을 작성해 주세요.");
+        JComboBox<String> type = new JComboBox<>(CAREER_TYPES);
+        type.setPreferredSize(new Dimension(110,30));
+        row.add(name); row.add(type);
+        careersPanel.add(row);
+        careersPanel.revalidate(); careersPanel.repaint();
+        careerNameFields.add(name);
+        careerTypeBoxes.add(type);
+    }
+
+    private void addCertRow() {
+        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
+        row.setOpaque(false);
+        row.setMaximumSize(new Dimension(350,35));
+        JTextField cert = new JTextField();
+        cert.setPreferredSize(new Dimension(350,30));
+        setPlaceholder(cert,"취득한 자격증명을 작성해 주세요.");
+        row.add(cert);
+        certsPanel.add(row);
+        certsPanel.revalidate(); certsPanel.repaint();
+        certFields.add(cert);
+    }
+
+    // 테스트용 main
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            Map<String, SongiType> map = new HashMap<>();
-            Management manager = new Management(map);
-            User u = new User("홍길동", "hg123", "pw", "hg@sookmyung.ac.kr");
-            Profile p = new Profile(1, "hg123");
-            u.setProfile(p);
-            new ProfilePage(u, manager);
+            Management mgr = new Management(new HashMap<>());
+            User u = new User("홍길동","hg123","pw","hg@sookmyung.ac.kr");
+            new ProfilePage(u, mgr);
         });
     }
 }
