@@ -39,9 +39,16 @@ public class Management {
 
         return null;
     }
+    // 25.05.13 추가 - test.java와의 호환
+    // Management.java 안에 추가
+    public SongiType evaluate(Map<Integer, String> answerMap) {
+        List<String> answers = new ArrayList<>(answerMap.values());
+        return evaluate(answers);
+    }
 
     // 특정 송이 타입에 해당하는 이미지 경로를 반환 (enum 내부에서 경로 조합)
     public String getImagePath(SongiType type) {
         return type.getImagePath();
     }
 } 
+
