@@ -8,8 +8,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import model.Post;
+import model.User;
+import model.Management;
+
 
 public class TeamListPage extends JFrame {
+    private User user;
+    private Management manager; 
     private JTextField searchField;
     private JButton searchBtn;
     private JPanel categoryPanel;
@@ -22,38 +27,57 @@ public class TeamListPage extends JFrame {
         "전체", "공모전", "스터디", "수업 팀플", "교내 대회", "프로젝트", "기타"
     };
 
-    public TeamListPage() {
+     public TeamListPage(User user, Management manager) {
+        this.user = user;
+        this.manager = manager;
+
         setTitle("팀 목록");
         setSize(393, 852);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLayout(null);
+        setLayout(new BorderLayout());
 
-        buildSearchBar();
-        buildCategoryBar();
-        buildListPanel();
-        buildCreateButton();
+       JPanel center = new JPanel(null);
+       center.setBackground(Color.WHITE);
+       center.setBounds(0,0,393,852);
+       center.setLayout(null);
+       buildSearchBar(center);
+       buildCategoryBar(center);
+       buildListPanel(center);
+       buildCreateButton(center);
+       add(center, BorderLayout.CENTER);
+
+       // 하단바
+       BottomNavBar nav = new BottomNavBar(
+           e -> { new TeamListPage(user, manager); dispose(); },
+           e -> { /* 나중에 채팅 페이지 연결 */ },
+           e -> { /* 나중에 알림 페이지 연결 */ },
+           e -> { new MyPage(user, manager); dispose(); }
+       );
+       add(nav, BorderLayout.SOUTH);
+
+
 
         setVisible(true);
     }
 
-    private void buildSearchBar() {
+    private void buildSearchBar(JPanel parent) {
         searchField = new JTextField();
         searchField.setBounds(10, 10, 300, 36);
         searchField.setBorder(new LineBorder(Color.decode("#D9D9D9")));
-        add(searchField);
+        parent.add(searchField);
 
         searchBtn = new JButton("검색");
         searchBtn.setBounds(318, 10, 60, 36);
         styleGrayButton(searchBtn);
-        add(searchBtn);
+        parent.add(searchBtn);
 
         ActionListener doSearch = e -> refreshList();
         searchBtn.addActionListener(doSearch);
         searchField.addActionListener(doSearch);
     }
 
-    private void buildCategoryBar() {
+    private void buildCategoryBar(JPanel parent) { 
         categoryPanel = new JPanel();
         categoryPanel.setLayout(new BoxLayout(categoryPanel, BoxLayout.X_AXIS));
         categoryPanel.setBackground(Color.WHITE);
@@ -83,30 +107,30 @@ public class TeamListPage extends JFrame {
         );
         categoryScroll.setBounds(0, 56, 393, 40);
         categoryScroll.setBorder(null);
-        add(categoryScroll);
+        parent.add(categoryScroll);
     }
 
-    private void buildListPanel() {
+    private void buildListPanel(JPanel parent) {
         listPanel = new JPanel();
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
         listPanel.setBackground(Color.WHITE);
 
         listScroll = new JScrollPane(listPanel);
-        listScroll.setBounds(0, 100, 393, 660);
+        listScroll.setBounds(0, 100, 393, 620);
         listScroll.getVerticalScrollBar().setUnitIncrement(16);
         listScroll.setBorder(null);
-        add(listScroll);
+        parent.add(listScroll);
 
         refreshList();
     }
 
-    private void buildCreateButton() {
+    private void buildCreateButton(JPanel parent) {
         createBtn = new JButton("<html>&#43; 팀 생성</html>");
         styleBlueButton(createBtn);
-        createBtn.setBounds(250, 770, 120, 40);
-        add(createBtn);
+        createBtn.setBounds(250, 720, 120, 40);
+        parent.add(createBtn);
         createBtn.addActionListener(e -> {
-            new TeamBuildPage();
+            new TeamBuildPage(user, manager);
             dispose();
             });
     }
@@ -250,8 +274,13 @@ public class TeamListPage extends JFrame {
         });
     }
 
-    // 테스트용 main
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(TeamListPage::new);
+   public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            // 더미 User/Management 인스턴스 생성
+            Management mgr = new Management(new java.util.HashMap<>());
+            User u = new User("홍길동", "hg123", "pw", "hg@sookmyung.ac.kr");
+            // 생성자에 user, manager 전달
+            new TeamListPage(u, mgr);
+        });
     }
 }

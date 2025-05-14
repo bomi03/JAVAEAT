@@ -3,6 +3,7 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
+
 import model.User;
 import model.Profile;
 import model.Management;
@@ -188,19 +189,33 @@ public class MyPage extends JFrame {
         scrollPane = new JScrollPane(mainPanel);
         scrollPane.setBounds(0, 0, 393, 852);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        setContentPane(scrollPane);
+
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.add(scrollPane, BorderLayout.CENTER);
+
+        BottomNavBar nav = new BottomNavBar(
+            e -> { new TeamListPage(user, manager); dispose(); },
+            e -> { /* 나중에 채팅 페이지 */ },
+            e -> { /* 나중에 알림 페이지 */ },
+            e -> { new MyPage(user, manager); dispose(); }
+        );
+        wrapper.add(nav, BorderLayout.SOUTH);
+        setContentPane(wrapper);
     }
 
     private void registerListeners() {
         editProfileBtn.addActionListener(e -> {
-            setVisible(false);
+            dispose();
             new ProfilePage(user, manager, true, this);
         });
         supportStatusBtn.addActionListener(e ->
             JOptionPane.showMessageDialog(this, "지원 현황")
         );
         myPostsBtn.addActionListener(e ->
-            new MyPostsPage(user, manager, profile.getProfileID())
+            {                                  // ← 중괄호로 묶고
+               new MyPostsPage(user, manager, profile.getProfileID());
+             dispose();                     // ← 창 닫기
+            }
         );
         testBtn.addActionListener(e -> {
             test.takeTest(user, manager);

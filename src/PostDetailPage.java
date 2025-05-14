@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import model.User;
+import model.Management;
 
 public class PostDetailPage {
 
@@ -175,3 +177,156 @@ public class PostDetailPage {
         frame.setVisible(true);
     }
 }
+
+
+
+
+
+
+
+// 수정 코드 - 보미
+// // PostDetailPage.java
+// import javax.swing.*;
+// import java.awt.*;
+// import model.User;
+// import model.Management;
+
+// public class PostDetailPage extends JFrame {
+//     private User user;
+//     private Management manager;
+
+//     public PostDetailPage(User user, Management manager) {
+//         super("모집글 상세 (팀장)");
+//         this.user = user;
+//         this.manager = manager;
+
+//         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+//         setSize(393, 800);
+//         setLocationRelativeTo(null);
+
+//         buildUI();
+
+//         setVisible(true);
+//     }
+
+//     private void buildUI() {
+//         // contentPanel 세팅
+//         JPanel contentPanel = new JPanel();
+//         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+//         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+//         contentPanel.setBackground(Color.WHITE);
+
+//         // ─── 상단 바 ───
+//         JPanel topBar = new JPanel(new BorderLayout());
+//         topBar.setBackground(Color.WHITE);
+//         topBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+//         topBar.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+
+//         JButton backButton = new JButton("←");
+//         backButton.setPreferredSize(new Dimension(50, 30));
+//         backButton.setFocusPainted(false);
+//         backButton.addActionListener(e -> {
+//             dispose();
+//             new TeamListPage(user, manager);
+//         });
+
+//         JLabel titleLabel = new JLabel("팀원 모집", SwingConstants.CENTER);
+//         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 18f));
+
+//         topBar.add(backButton, BorderLayout.WEST);
+//         topBar.add(titleLabel, BorderLayout.CENTER);
+//         contentPanel.add(topBar);
+
+//         // 구분선
+//         JSeparator sep = new JSeparator();
+//         sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+//         sep.setForeground(Color.LIGHT_GRAY);
+//         contentPanel.add(sep);
+
+//         // ─── 모집글 정보 ───
+//         JPanel postInfo = new JPanel();
+//         postInfo.setLayout(new BoxLayout(postInfo, BoxLayout.Y_AXIS));
+//         postInfo.setBackground(Color.WHITE);
+//         postInfo.setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
+
+//         JLabel postTitle = new JLabel("[공모전] 0000공모전 팀원 모집");
+//         postTitle.setFont(postTitle.getFont().deriveFont(Font.BOLD, 14f));
+//         postInfo.add(postTitle);
+
+//         JLabel postPeriod = new JLabel("모집기간 ~ 2025.06.15");
+//         postPeriod.setFont(postPeriod.getFont().deriveFont(Font.PLAIN, 12f));
+//         postPeriod.setForeground(Color.DARK_GRAY);
+//         postInfo.add(postPeriod);
+
+//         JPanel statusPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+//         statusPanel.setBackground(Color.WHITE);
+//         statusPanel.add(new JLabel("모집중"));
+//         statusPanel.add(new JLabel("0/5명"));
+//         postInfo.add(statusPanel);
+
+//         contentPanel.add(postInfo);
+
+//         // ─── 모집 설명 ───
+//         JPanel descPanel = new JPanel(new BorderLayout());
+//         descPanel.setBackground(Color.WHITE);
+//         descPanel.setBorder(BorderFactory.createTitledBorder("모집 내용"));
+//         JTextArea descArea = new JTextArea(
+//             "<실전 웹 서비스 개발 프로젝트 팀원 모집>...\n(내용 생략)"
+//         );
+//         descArea.setLineWrap(true);
+//         descArea.setWrapStyleWord(true);
+//         descArea.setEditable(false);
+//         descArea.setBackground(Color.WHITE);
+//         JScrollPane descScroll = new JScrollPane(descArea);
+//         descScroll.setBorder(null);
+//         descPanel.add(descScroll, BorderLayout.CENTER);
+//         contentPanel.add(descPanel);
+
+//         // ─── 지원자 목록 ───
+//         JPanel applPanel = new JPanel();
+//         applPanel.setLayout(new BoxLayout(applPanel, BoxLayout.Y_AXIS));
+//         applPanel.setBackground(Color.WHITE);
+//         applPanel.setBorder(BorderFactory.createTitledBorder("지원자 목록"));
+//         String[] names = {"새송이버섯","눈송이","김숙명"};
+//         for (String nm : names) {
+//             JPanel card = new JPanel(new BorderLayout());
+//             card.setBackground(Color.WHITE);
+//             card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+//             card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
+
+//             JLabel lbl = new JLabel(nm);
+//             lbl.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+//             card.add(lbl, BorderLayout.WEST);
+
+//             JButton detail = new JButton(">");
+//             detail.setFocusPainted(false);
+//             detail.addActionListener(e -> {
+//                 // TODO: ApplicantDetailPage 로 전환
+//                 // dispose();
+//                 // new ApplicantDetailPage(user, manager, /*...*/);
+//             });
+//             JPanel btnP = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+//             btnP.setBackground(Color.WHITE);
+//             btnP.add(detail);
+//             card.add(btnP, BorderLayout.EAST);
+
+//             contentPanel.add(card);
+//             contentPanel.add(Box.createVerticalStrut(10));
+//         }
+
+//         // 전체를 스크롤에
+//         JScrollPane scroll = new JScrollPane(contentPanel);
+//         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+//         scroll.getVerticalScrollBar().setUnitIncrement(16);
+//         add(scroll, BorderLayout.CENTER);
+//     }
+
+//     // 테스트용 main
+//     public static void main(String[] args) {
+//         SwingUtilities.invokeLater(() -> {
+//             Management mgr = new Management(new java.util.HashMap<>());
+//             User u = new User("홍길동","hg123","pw","hg@sookmyung.ac.kr");
+//             new PostDetailPage(u, mgr);
+//         });
+//     }
+// }

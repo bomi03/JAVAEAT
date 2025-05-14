@@ -10,10 +10,16 @@ import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+
 import model.Post;
 import model.Team;
+import model.User;
+import model.Management;
 
 public class TeamBuildPage extends JFrame {
+    private User user;
+    private Management manager;
     private static int nextPostId = 1;
     private static final SimpleDateFormat DATE_FMT = new SimpleDateFormat("yyyy/MM/dd");
 
@@ -40,7 +46,9 @@ public class TeamBuildPage extends JFrame {
     private static final Color PLACEHOLDER_COLOR = Color.decode("#ADADAD");
     private static final Color TEXT_COLOR = Color.BLACK;
 
-    public TeamBuildPage() {
+    public TeamBuildPage(User user, Management manager) {
+        this.user = user;
+        this.manager = manager; 
         setTitle("팀원 모집 글 작성");
         setSize(393, 852);
         setLocationRelativeTo(null);
@@ -255,7 +263,7 @@ public class TeamBuildPage extends JFrame {
         // 뒤로가기
         ((JButton)mainPanel.getComponent(0)).addActionListener(e -> {
             dispose();
-            new TeamListPage();
+            new TeamListPage(user, manager);
         });
 
         // 이미지 업로드
@@ -375,12 +383,18 @@ public class TeamBuildPage extends JFrame {
             JOptionPane.showMessageDialog(this, "팀 모집글이 생성되었습니다.");
 
             dispose();
-            new TeamListPage();
+            new TeamListPage(user, manager);
         });
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(TeamBuildPage::new);
+        SwingUtilities.invokeLater(() -> {
+            // 더미 User/Management 인스턴스 생성
+            Management mgr = new Management(new HashMap<>());
+            User u = new User("테스트유저", "test", "pw", "test@example.com");
+            // 바뀐 생성자에 맞춰 인자 전달
+            new TeamBuildPage(u, mgr);
+        });
     }
 }
 
