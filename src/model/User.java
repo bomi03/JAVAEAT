@@ -147,7 +147,7 @@ return "회원가입이 완료되었습니다!";
 
 
      //모집글 스크랩 하기 
-     public void bookmark(Post post) {
+    public void bookmark(Post post) {
         if (post == null) {
             System.out.println("유효하지 않은 게시글입니다.");
             return;
@@ -194,9 +194,9 @@ return "회원가입이 완료되었습니다!";
     }
 
     /*
-     사용 예시
-     user.receiveNotification("새로운 댓글이 있습니다.")
-     user.receiveNotification("새로운 지원자가 있습니다.")
+    사용 예시
+    user.receiveNotification("새로운 댓글이 있습니다.")
+    user.receiveNotification("새로운 지원자가 있습니다.")
      */
     
 
@@ -288,5 +288,23 @@ return "회원가입이 완료되었습니다!";
         System.out.println("비밀번호가 성공적으로 변경되었습니다.");
         return true;
     }
+
+    // User.java 안에 추가
+public boolean signup(String username, String userID, String password, String passwordCheck,
+                      String email, String inputAuthCode, String actualAuthCode,
+                      boolean isVerified, boolean isAgreed, List<User> allUsers) {
+
+    String result = validateSignup(username, userID, password, passwordCheck, email,
+                                   inputAuthCode, actualAuthCode, isVerified, isAgreed, allUsers);
+
+    if (result.equals("회원가입이 완료되었습니다!")) {
+        allUsers.add(this);
+        return true;
+    } else {
+        System.out.println(result);  // 나중에 라벨로 연결 가능
+        return false;
+    }
+}
+
     
 }

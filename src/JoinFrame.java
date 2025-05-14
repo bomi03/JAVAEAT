@@ -1,6 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
-import ProfilePage;
+import java.util.HashMap;
+
+import model.Management;
+import model.User;
 
 public class JoinFrame extends JFrame {
     public JoinFrame() {
@@ -181,9 +184,16 @@ public class JoinFrame extends JFrame {
         add(nextButton);
 
 
-        nextButton.addActionListener(e -> {
-            new ProfilePage(); // 프로필 입력 화면 띄우기
-        });
+        String username = nameField.getText().trim();
+        String userID = idField.getText().trim();
+        String password = new String(pwField.getPassword()).trim();
+        String email = emailField.getText().trim();
+
+        User newUser = new User(username, userID, password, email);
+        Management manager = new Management(new HashMap<>());
+
+
+        new ProfilePage(newUser, manager);
 
         //dispose(); // JoinFrame 닫기
 

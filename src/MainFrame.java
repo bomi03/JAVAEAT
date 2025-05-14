@@ -2,12 +2,9 @@ import java.awt.Font;
 import javax.swing.*;
 
 
-
 import model.User;
 import java.awt.Color;
 import java.awt.event.*;
-
-
 
 
 public class MainFrame {
