@@ -10,6 +10,8 @@ import java.awt.event.*;
 
 
 
+
+
 public class MainFrame {
     // main()에서 user 생성 + panel 전달
 public static void main(String[] args) {
@@ -79,11 +81,24 @@ private static void placeComponents(JPanel panel, User user) {
     findIdLabel.setBounds(160, 300, 80, 25);
     panel.add(findIdLabel);
 
+    findIdLabel.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(java.awt.event.MouseEvent e) {
+            new FindIdFrame(); // 아이디 찾기기 창 열기
+        }
+    });
+
     // 비밀번호 찾기
     JLabel findPwLabel = new JLabel("비밀번호 찾기");
     findPwLabel.setBounds(250, 300, 100, 25);
     panel.add(findPwLabel);
 
+    findPwLabel.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(java.awt.event.MouseEvent e) {
+            new FindPwFrame(); // 비밀번호 찾기기 창 열기
+        }
+    });
 
     // 🌟 로그인 버튼 클릭 시 처리
     loginButton.addActionListener(e -> {
