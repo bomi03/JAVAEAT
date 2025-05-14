@@ -1,6 +1,13 @@
 package model;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
+import model.Profile;
+import model.Post;
+import model.Application;
+
+
 
 public class User {
     // [1] 필드 선언
@@ -26,32 +33,32 @@ public class User {
     }
 
     //[3] 메서드
-    public void login(String inputID, String inputPassword) {
-        //메인에서 입력을 받아
-        //그 값과 유저 객체의 정보가 일치하면 로그인 성공 
-        //DB 사용 안함
-
+    public String login(String inputID, String inputPassword) {
         if (inputID == null || inputID.trim().isEmpty()) {
-            System.out.println("아이디를 입력해주세요.");
-            return;
+            isLoggedIn = false;
+            return "아이디를 입력해주세요.";
         }
     
         if (inputPassword == null || inputPassword.trim().isEmpty()) {
-            System.out.println("비밀번호를 입력해주세요.");
-            return;
+            isLoggedIn = false;
+            return "비밀번호를 입력해주세요.";
         }
     
         if (this.userID.equals(inputID) && this.password.equals(inputPassword)) {
-            // 로그인 성공
             isLoggedIn = true;
+            return "로그인 성공!";
         } else {
-            System.out.println("아이디와 비밀번호를 정확히 입력해주세요.");
+            isLoggedIn = false;
+            return "아이디 또는 비밀번호가 일치하지 않습니다.";
         }
+    }
+    
+    
 
         // 저장된 정보를 불러와야 할 것 같음 그 정보들이 마이페이지에 보이게끔? 
         // 로그인 성공했을 때 메인 화면으로 이동하는 코드 추후 추가
         // +) 이거 둘 다 따로 하는게 낫다고 그럼 지피티가 
-    }
+    
     
     public boolean isLoggedIn() { //로그인 성공여부 다른곳에서 확인할 수 있도록
         return isLoggedIn;
@@ -73,87 +80,52 @@ public class User {
     // 입력 받아서 회원가입하고 정보 저장
     // 회원가입시 받아와야하는 정보 
     // 이름, 아이디(중복확인 기능), 비밀번호, 비밀번호 확인, 이메일주소(도메인 @sookmyung.ac.kr 이어야함), 이메일 인증, 약관 동의 여부,  
-    public boolean signup(String username, String userID, String password, String passwordCheck,
-                      String email, boolean isEmailVerified, boolean isAgreed,
-                      List<User> allUsers) {
-    
-    // 이름 입력 확인
-    if (username == null || username.trim().isEmpty()) { 
-        System.out.println("이름을 입력해주세요.");
-        return false;
-    }
+    public String validateSignup(String username, String userID, String password, String passwordCheck,
+    String email, String inputAuthCode, String actualAuthCode,
+    boolean isEmailVerified, boolean isAgreed,
+    List<User> allUsers) {
+if (username == null || username.trim().isEmpty()) {
+return "이름을 입력해주세요.";
+}
+if (userID == null || userID.trim().isEmpty()) {
+return "아이디를 입력해주세요.";
+}
+if (!userID.matches("^[a-z0-9]{4,12}$")) {
+return "아이디는 영문소문자/숫자, 4~12자여야 합니다.";
+}
+for (User u : allUsers) {
+if (u.getUserID().equals(userID)) {
+return "사용할 수 없는 아이디입니다.";
+}
+}
+if (password == null || password.trim().isEmpty()) {
+return "비밀번호를 입력해주세요.";
+}
+if (!password.matches("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=]).{8,12}$")) {
+return "비밀번호는 영문/숫자/특수문자를 포함한 8~12자리여야 합니다.";
+}
+if (!password.equals(passwordCheck)) {
+return "비밀번호가 일치하지 않습니다.";
+}
+if (email == null || email.trim().isEmpty()) {
+return "이메일을 입력해주세요.";
+}
+if (!email.endsWith("@sookmyung.ac.kr")) {
+return "올바른 이메일 형식이 아닙니다.";
+}
+if (inputAuthCode == null || inputAuthCode.trim().isEmpty() || !inputAuthCode.equals(actualAuthCode)) {
+return "인증번호가 일치하지 않습니다.";
+}
+if (!isAgreed) {
+return "필수 약관을 모두 체크해주세요.";
+}
 
-    // 아이디- 입력 확인
-    if (userID == null || userID.trim().isEmpty()) {
-        System.out.println("아이디를 입력해주세요.");
-        return false;
-    }
+this.username = username;
+this.userID = userID;
+this.password = password;
+this.email = email;
 
-    // 아이디- 조건 검사: 영문소문자+숫자, 4~12자
-    if (!userID.matches("^[a-z0-9]{4,12}$")) {
-        System.out.println("아이디는 영문소문자/숫자, 4~12자여야 합니다.");
-        return false;
-    }
-
-    // 아이디- 중복 검사
-    for (User u : allUsers) {
-        if (u.getUserID().equals(userID)) {
-            System.out.println("사용할 수 없는 아이디입니다.");
-            return false;
-        }
-    }
-
-    // 비밀번호 - 입력 확인 
-    if (password == null || password.trim().isEmpty()) {
-        System.out.println("비밀번호를 입력해주세요.");
-        return false;
-    }
-    
-    // 비밀번호 - 조건 검사 (영문+숫자+특수문자 포함, 8~12자)
-    if (!password.matches("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=]).{8,12}$")) {
-        System.out.println("비밀번호는 영문/숫자/특수문자를 포함한 8~12자리여야 합니다.");
-        return false;
-    }
-    
-    // 비밀번호 - 확인 일치 여부
-    if (!password.equals(passwordCheck)) {
-        System.out.println("비밀번호가 일치하지 않습니다.");
-        return false;
-    }
-    
-    // 이메일 - 입력 확인
-    if (email == null || email.trim().isEmpty()) {
-        System.out.println("이메일을 입력해주세요.");
-        return false;
-    }
-
-    // 이메일 - 형식 검사 (숙명 메일 도메인 확인)
-    if (!email.endsWith("@sookmyung.ac.kr")) {
-        System.out.println("올바른 이메일 형식이 아닙니다.");
-        return false;
-    }
-
-    // 이메일 - 인증번호 입력 여부 & 일치 확인
-    if (inputAuthCode == null || inputAuthCode.trim().isEmpty() || !inputAuthCode.equals(actualAuthCode)) {
-        System.out.println("인증번호가 일치하지 않습니다.");
-        return false;
-    }
-
-    if (!isAgreed) {
-        System.out.println("필수 약관을 모두 체크해주세요.");
-        return false;
-    }
-
-    // 모든 조건 충족하면, 정보 저장
-    this.username = username;
-    this.userID = userID;
-    this.password = password;
-    this.email = email;
-
-    //인증번호, 약관은 저장 안 해도 됨 
-
-    System.out.println("회원가입이 완료되었습니다!");
-    return true;
+return "회원가입이 완료되었습니다!";
 }
 
     public Profile getProfile() { return profile; }
@@ -247,6 +219,19 @@ public class User {
     //사용자가 지원한 글 불러오기
     public List<Application> getMyApplications() { 
         return myApplications; }
+
+        public String getUsername() {
+            return username;
+        }
+        
+        public String getUserID() {
+            return userID;
+        }
+        
+        public String getEmail() {
+            return email;
+        }
+        
 
     //모집글에 지원하기 
     //Application 클래스의 값 받아와서 리스트에 추가 후 사용
