@@ -1,12 +1,12 @@
 package model;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.List;
+=======
+>>>>>>> User
 import java.util.ArrayList;
 import java.util.List;
-import model.Profile;
-import model.Post;
-import model.Application;
 
 
 
@@ -85,49 +85,49 @@ public class User {
     String email, String inputAuthCode, String actualAuthCode,
     boolean isEmailVerified, boolean isAgreed,
     List<User> allUsers) {
-if (username == null || username.trim().isEmpty()) {
-return "이름을 입력해주세요.";
-}
-if (userID == null || userID.trim().isEmpty()) {
-return "아이디를 입력해주세요.";
-}
-if (!userID.matches("^[a-z0-9]{4,12}$")) {
-return "아이디는 영문소문자/숫자, 4~12자여야 합니다.";
-}
-for (User u : allUsers) {
-if (u.getUserID().equals(userID)) {
-return "사용할 수 없는 아이디입니다.";
-}
-}
-if (password == null || password.trim().isEmpty()) {
-return "비밀번호를 입력해주세요.";
-}
-if (!password.matches("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=]).{8,12}$")) {
-return "비밀번호는 영문/숫자/특수문자를 포함한 8~12자리여야 합니다.";
-}
-if (!password.equals(passwordCheck)) {
-return "비밀번호가 일치하지 않습니다.";
-}
-if (email == null || email.trim().isEmpty()) {
-return "이메일을 입력해주세요.";
-}
-if (!email.endsWith("@sookmyung.ac.kr")) {
-return "올바른 이메일 형식이 아닙니다.";
-}
-if (inputAuthCode == null || inputAuthCode.trim().isEmpty() || !inputAuthCode.equals(actualAuthCode)) {
-return "인증번호가 일치하지 않습니다.";
-}
-if (!isAgreed) {
-return "필수 약관을 모두 체크해주세요.";
-}
+        if (username == null || username.trim().isEmpty()) {
+        return "이름을 입력해주세요.";
+        }
+        if (userID == null || userID.trim().isEmpty()) {
+        return "아이디를 입력해주세요.";
+        }
+        if (!userID.matches("^[a-z0-9]{4,12}$")) {
+        return "아이디는 영문소문자/숫자, 4~12자여야 합니다.";
+        }
+        for (User u : allUsers) {
+        if (u.getUserID().equals(userID)) {
+        return "사용할 수 없는 아이디입니다.";
+        }
+        }
+        if (password == null || password.trim().isEmpty()) {
+        return "비밀번호를 입력해주세요.";
+        }
+        if (!password.matches("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=]).{8,12}$")) {
+        return "비밀번호는 영문/숫자/특수문자를 포함한 8~12자리여야 합니다.";
+        }
+        if (!password.equals(passwordCheck)) {
+        return "비밀번호가 일치하지 않습니다.";
+        }
+        if (email == null || email.trim().isEmpty()) {
+        return "이메일을 입력해주세요.";
+        }
+        if (!email.endsWith("@sookmyung.ac.kr")) {
+        return "올바른 이메일 형식이 아닙니다.";
+        }
+        if (inputAuthCode == null || inputAuthCode.trim().isEmpty() || !inputAuthCode.equals(actualAuthCode)) {
+        return "인증번호가 일치하지 않습니다.";
+        }
+        if (!isAgreed) {
+        return "필수 약관을 모두 체크해주세요.";
+        }
 
-this.username = username;
-this.userID = userID;
-this.password = password;
-this.email = email;
+        this.username = username;
+        this.userID = userID;
+        this.password = password;
+        this.email = email;
 
-return "회원가입이 완료되었습니다!";
-}
+        return "회원가입이 완료되었습니다!";
+        }
 
     // set함수 추가 - 보미
     public void setProfile(Profile profile) {
@@ -250,6 +250,40 @@ return "회원가입이 완료되었습니다!";
             return email;
         }
         
+
+        public static String findUserIdByEmail(String email, List<User> allUsers) {
+            for (User u : allUsers) {
+                if (u.getEmail().equals(email)) {
+                    return "아이디: " + u.getUserID();
+                }
+            }
+            return "해당 이메일로 등록된 아이디가 없습니다.";
+        }
+
+        public static String findPasswordByIdAndEmail(String userID, String email, List<User> allUsers) {
+            for (User u : allUsers) {
+                if (u.getUserID().equals(userID) && u.getEmail().equals(email)) {
+                    return "비밀번호: " + u.password;
+                }
+            }
+            return "입력하신 정보와 일치하는 계정이 없습니다.";
+}
+
+public boolean signup(String username, String userID, String password, String passwordCheck,
+                      String email, String inputAuthCode, String actualAuthCode,
+                      boolean isEmailVerified, boolean isAgreed,
+                      List<User> allUsers) {
+    String result = validateSignup(username, userID, password, passwordCheck, email, inputAuthCode, actualAuthCode, isEmailVerified, isAgreed, allUsers);
+
+    if (result.equals("회원가입이 완료되었습니다!")) {
+        allUsers.add(this); // 회원 목록에 추가
+        return true;
+    } else {
+        System.out.println(result); // 콘솔에 메시지 출력 (UI 반영은 JoinFrame에서)
+        return false;
+    }
+}
+
 
     //모집글에 지원하기 
     //Application 클래스의 값 받아와서 리스트에 추가 후 사용
