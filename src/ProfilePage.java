@@ -349,7 +349,7 @@ public class ProfilePage extends JFrame {
         ((JButton)mainPanel.getComponent(0)).addActionListener(e -> {
             dispose();
             if (isEditMode) parentPage.setVisible(true);
-            else new TeamListPage();
+            else new TeamListPage(user, manager);
         });
 
         uploadImgBtn.addActionListener(e -> {
@@ -384,7 +384,7 @@ public class ProfilePage extends JFrame {
                 parentPage.setVisible(true);
                 parentPage.refreshProfileDisplay();  // MyPage에 갱신 메소드 구현 필요
             } else {
-                new TeamListPage();
+                new TeamListPage(user, manager);
             }
         });
     }
