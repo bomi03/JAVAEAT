@@ -11,10 +11,9 @@ import model.Post;
 import model.User;
 import model.Management;
 
-
 public class TeamListPage extends JFrame {
     private User user;
-    private Management manager; 
+    private Management manager;
     private JTextField searchField;
     private JButton searchBtn;
     private JPanel categoryPanel;
@@ -27,7 +26,7 @@ public class TeamListPage extends JFrame {
         "전체", "공모전", "스터디", "수업 팀플", "교내 대회", "프로젝트", "기타"
     };
 
-     public TeamListPage(User user, Management manager) {
+    public TeamListPage(User user, Management manager) {
         this.user = user;
         this.manager = manager;
 
@@ -37,26 +36,26 @@ public class TeamListPage extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
-       JPanel center = new JPanel(null);
-       center.setBackground(Color.WHITE);
-       center.setBounds(0,0,393,852);
-       center.setLayout(null);
-       buildSearchBar(center);
-       buildCategoryBar(center);
-       buildListPanel(center);
-       buildCreateButton(center);
-       add(center, BorderLayout.CENTER);
+        JPanel center = new JPanel(null);
+        center.setBackground(Color.WHITE);
+        center.setBounds(0,0,393,852);
+        center.setLayout(null);
 
-       // 하단바
-       BottomNavBar nav = new BottomNavBar(
-           e -> { new TeamListPage(user, manager); dispose(); },
-           e -> { /* 나중에 채팅 페이지 연결 */ },
-           e -> { /* 나중에 알림 페이지 연결 */ },
-           e -> { new MyPage(user, manager); dispose(); }
-       );
-       add(nav, BorderLayout.SOUTH);
+        buildSearchBar(center);
+        buildCategoryBar(center);
+        buildListPanel(center);
+        buildCreateButton(center);
 
+        add(center, BorderLayout.CENTER);
 
+        // 하단바
+        BottomNavBar nav = new BottomNavBar(
+            e -> { new TeamListPage(user, manager); dispose(); },
+            e -> { /* 채팅 연결 예정 */ },
+            e -> { /* 알림 연결 예정 */ },
+            e -> { new MyPage(user, manager); dispose(); }
+        );
+        add(nav, BorderLayout.SOUTH);
 
         setVisible(true);
     }
@@ -77,11 +76,10 @@ public class TeamListPage extends JFrame {
         searchField.addActionListener(doSearch);
     }
 
-    private void buildCategoryBar(JPanel parent) { 
+    private void buildCategoryBar(JPanel parent) {
         categoryPanel = new JPanel();
         categoryPanel.setLayout(new BoxLayout(categoryPanel, BoxLayout.X_AXIS));
         categoryPanel.setBackground(Color.WHITE);
-        // 왼쪽 여백
         categoryPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 
         ButtonGroup group = new ButtonGroup();
@@ -94,7 +92,6 @@ public class TeamListPage extends JFrame {
             categoryPanel.add(Box.createRigidArea(new Dimension(8, 0)));
             if (cat.equals("전체")) {
                 btn.setSelected(true);
-                // 스타일 즉시 갱신
                 btn.getModel().setPressed(true);
                 btn.getModel().setPressed(false);
             }
@@ -103,7 +100,7 @@ public class TeamListPage extends JFrame {
         categoryScroll = new JScrollPane(
             categoryPanel,
             JScrollPane.VERTICAL_SCROLLBAR_NEVER,
-            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER // 가로 스크롤 제거
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
         );
         categoryScroll.setBounds(0, 56, 393, 40);
         categoryScroll.setBorder(null);
@@ -132,14 +129,13 @@ public class TeamListPage extends JFrame {
         createBtn.addActionListener(e -> {
             new TeamBuildPage(user, manager);
             dispose();
-            });
+        });
     }
 
     private void refreshList() {
         listPanel.removeAll();
 
         List<Post> all = Post.getAllPosts();
-
         boolean isSearching = !searchField.getText().trim().isEmpty();
         String keyword = searchField.getText().trim().toLowerCase();
         String selectedCat = Arrays.stream(categoryPanel.getComponents())
@@ -214,7 +210,6 @@ public class TeamListPage extends JFrame {
         JLabel thumb = new JLabel();
         thumb.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         thumb.setBounds(275, 5, 90, 70);
-
         String path = p.getPostImagePath();
         if (path != null && !path.isEmpty()) {
             ImageIcon raw = new ImageIcon(path);
@@ -224,7 +219,8 @@ public class TeamListPage extends JFrame {
 
         row.addMouseListener(new MouseAdapter() {
             @Override public void mouseClicked(MouseEvent e) {
-                // TODO: 상세 페이지 연결
+                // 나중에 PostDetailPage 연결 시점에 여기를 바꿔 주세요.
+                // 예: new PostDetailPage(user, manager, p);
             }
         });
 
@@ -274,12 +270,10 @@ public class TeamListPage extends JFrame {
         });
     }
 
-   public static void main(String[] args) {
+    public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            // 더미 User/Management 인스턴스 생성
             Management mgr = new Management(new java.util.HashMap<>());
             User u = new User("홍길동", "hg123", "pw", "hg@sookmyung.ac.kr");
-            // 생성자에 user, manager 전달
             new TeamListPage(u, mgr);
         });
     }

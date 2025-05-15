@@ -1,10 +1,5 @@
 package model;
 
-<<<<<<< HEAD
-import java.util.ArrayList;
-import java.util.List;
-=======
->>>>>>> User
 import java.util.ArrayList;
 import java.util.List;
 
