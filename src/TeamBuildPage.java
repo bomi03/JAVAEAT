@@ -196,7 +196,7 @@ public class TeamBuildPage extends JFrame {
         y += 420;
 
         // 완료/수정
-        completeBtn = new JButton(isEditMode?"수정":"완료");
+        completeBtn = new JButton("완료");
         styleBlueButton(completeBtn);
         completeBtn.setBounds(20,y,350,40);
         mainPanel.add(completeBtn);
