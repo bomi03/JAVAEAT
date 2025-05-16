@@ -25,4 +25,11 @@ public class Test {
     public SongiType getUserResultType() {
         return testResult;
     }
+    // 테스트 다시하기 위해서 응답 초기화하는 메서드 추가함
+    // clearAnswers() - 유림 수정
+    public void clearAnswers() {
+        questionAnswerMap.clear();
+        testResult = null;
+        resultImagePath = null;
+    }        
 }
