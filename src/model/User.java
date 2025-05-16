@@ -1,10 +1,6 @@
 package model;
 
-<<<<<<< HEAD
-import java.util.ArrayList;
-import java.util.List;
-=======
->>>>>>> User
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -238,18 +234,6 @@ public class User {
     public List<Application> getMyApplications() { 
         return myApplications; }
 
-        public String getUsername() {
-            return username;
-        }
-        
-        public String getUserID() {
-            return userID;
-        }
-        
-        public String getEmail() {
-            return email;
-        }
-        
 
         public static String findUserIdByEmail(String email, List<User> allUsers) {
             for (User u : allUsers) {
@@ -323,22 +307,6 @@ public boolean signup(String username, String userID, String password, String pa
         return true;
     }
 
-    // User.java 안에 추가
-public boolean signup(String username, String userID, String password, String passwordCheck,
-                      String email, String inputAuthCode, String actualAuthCode,
-                      boolean isVerified, boolean isAgreed, List<User> allUsers) {
-
-    String result = validateSignup(username, userID, password, passwordCheck, email,
-                                   inputAuthCode, actualAuthCode, isVerified, isAgreed, allUsers);
-
-    if (result.equals("회원가입이 완료되었습니다!")) {
-        allUsers.add(this);
-        return true;
-    } else {
-        System.out.println(result);  // 나중에 라벨로 연결 가능
-        return false;
-    }
-}
 
     
 }

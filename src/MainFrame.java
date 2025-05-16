@@ -1,36 +1,32 @@
 import java.awt.Font;
 import javax.swing.*;
 
-
+import model.Management;
 import model.User;
 import java.awt.Color;
 import java.awt.event.*;
+import java.util.HashMap;
 
 
-<<<<<<< HEAD
-=======
-
-
-
-
->>>>>>> User
 public class MainFrame {
     // main()에서 user 생성 + panel 전달
 public static void main(String[] args) {
-    User testUser = new User("서연", "sysy", "q1234!", "seo@sookmyung.ac.kr");
+    User testUser = new User("서연", "test", "1234", "123@sookmyung.ac.kr");
+    Management manager = new Management(new HashMap<>());
 
     JFrame frame = new JFrame("눈뭉치 로그인");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setSize(393, 852);
 
     JPanel panel = new JPanel();
+    panel.setBackground(Color.decode("#FfFfFf"));
     frame.add(panel);
 
-    placeComponents(panel, testUser); // 유저 전달
+    placeComponents(panel, testUser, manager); // ✅ 매개변수에 manager도 포함
     frame.setVisible(true);
 }
 
-private static void placeComponents(JPanel panel, User user) {
+private static void placeComponents(JPanel panel, User user, Management manager) {
     panel.setLayout(null);
 
     final JLabel messageLabel = new JLabel("");
@@ -104,22 +100,21 @@ private static void placeComponents(JPanel panel, User user) {
 
     // 🌟 로그인 버튼 클릭 시 처리
     loginButton.addActionListener(e -> {
-        String id = userText.getText();
-        String pw = new String(passwordText.getPassword());
-        String resultMessage = user.login(id, pw);  // 로그인 시도 + 메시지 받기
-    
-        // 결과 메시지를 라벨에 그대로 출력
-        messageLabel.setText(resultMessage);
-    
-        // 성공일 때 초록색, 실패일 때 빨간색
-        if (user.isLoggedIn()) {
-            messageLabel.setForeground(new Color(0, 128, 0)); // 초록색
-        } else {
-            messageLabel.setForeground(Color.RED); // 빨간색
-        }
-    });
-    
-    
+    String id = userText.getText();
+    String pw = new String(passwordText.getPassword());
+    String resultMessage = user.login(id, pw);  // 로그인 시도 + 메시지 받기
+
+    messageLabel.setText(resultMessage);
+
+    if (user.isLoggedIn()) {
+    messageLabel.setForeground(new Color(0, 128, 0));
+    SwingUtilities.getWindowAncestor(panel).dispose();
+    new TeamListPage(user, manager); // ✅ manager 함께 전달
+
+    } else {
+        messageLabel.setForeground(Color.RED);
+    }
+});
 };
 
 }

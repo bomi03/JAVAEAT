@@ -1,19 +1,22 @@
 import javax.swing.*;
 import model.Management;
 import model.User;
-import model.ProfilePage;
+
 import java.awt.*;
 import java.util.HashMap;
-<<<<<<< HEAD
 
 import model.Management;
 import model.User;
-=======
 import java.util.List;
 import java.util.ArrayList;
->>>>>>> User
+
 
 public class JoinFrame extends JFrame {
+
+    
+getContentPane().setBackground(Color.decode("#FfFfFf")); // 배경색
+
+    private JTextField authCodeField;
     public JoinFrame() {
         setTitle("회원가입");
         setSize(393, 852);
@@ -129,6 +132,22 @@ public class JoinFrame extends JFrame {
         emailErrorLabel.setBounds(30, 420, 300, 15);
         add(emailErrorLabel);
 
+        // 인증번호
+        JLabel authLabel = new JLabel("인증번호");
+        authLabel.setBounds(30, 550, 100, 25);
+        add(authLabel);
+
+        authCodeField = new JTextField();
+        authCodeField.setBounds(30, 580, 320, 30);
+        add(authCodeField);
+
+        JLabel authErrorLabel = new JLabel("");
+        authErrorLabel.setFont(new Font("SansSerif", Font.PLAIN, 10));
+        authErrorLabel.setForeground(Color.RED);
+        authErrorLabel.setBounds(30, 610, 300, 15);
+        add(authErrorLabel);
+
+
         // 약관 동의
         JCheckBox term1 = new JCheckBox("이용약관 동의");
         term1.setBounds(30, 450, 200, 20);
@@ -143,54 +162,53 @@ public class JoinFrame extends JFrame {
         add(term3);
 
         // 다음 버튼
-        JButton nextButton = new JButton("다음");
-        nextButton.setBounds(30, 700, 320, 40);
-        add(nextButton);
+JButton nextButton = new JButton("다음");
+nextButton.setBounds(30, 700, 320, 40);
+add(nextButton);
 
-<<<<<<< HEAD
+// 버튼 클릭 이벤트
+nextButton.addActionListener(e -> {
+    // 1. 입력값 수집
+    String username = nameField.getText().trim();
+    String userID = idField.getText().trim();
+    String password = new String(pwField.getPassword()).trim();
+    String passwordCheck = new String(pwCheckField.getPassword()).trim();
+    String email = emailField.getText().trim();
+    String inputAuthCode = authCodeField.getText().trim();  // 인증번호 입력 필드
+    String actualAuthCode = "1234"; // 실제 구현 시에는 메일로 보낸 코드
+    boolean isVerified = true; // 인증 성공 여부 (현재는 테스트용으로 true 고정)
+    boolean isAgreed = term1.isSelected() && term2.isSelected() && term3.isSelected();
 
-        String username = nameField.getText().trim();
-        String userID = idField.getText().trim();
-        String password = new String(pwField.getPassword()).trim();
-        String email = emailField.getText().trim();
+    // 2. 라벨 초기화
+    nameErrorLabel.setText("");
+    idErrorLabel.setText("");
+    pwErrorLabel.setText("");
+    pwCheckErrorLabel.setText("");
+    emailErrorLabel.setText("");
 
-        User newUser = new User(username, userID, password, email);
+    // 3. 가입 유효성 검사 및 처리
+    List<User> userList = new ArrayList<>();  // 실제로는 전체 유저 리스트를 받아와야 함
+    User newUser = new User("", "", "", "");
+    String result = newUser.validateSignup(username, userID, password, passwordCheck, email,
+            inputAuthCode, actualAuthCode, isVerified, isAgreed, userList);
+
+    if (!result.equals("회원가입이 완료되었습니다!")) {
+        // 오류 메시지 내용에 따라 라벨 출력
+        if (result.contains("이름")) nameErrorLabel.setText(result);
+        else if (result.contains("아이디")) idErrorLabel.setText(result);
+        else if (result.contains("비밀번호") && !result.contains("일치")) pwErrorLabel.setText(result);
+        else if (result.contains("일치")) pwCheckErrorLabel.setText(result);
+        else if (result.contains("이메일")) emailErrorLabel.setText(result);
+        else JOptionPane.showMessageDialog(null, result); // 기타 메시지는 팝업 처리
+    } else {
+        // 4. 가입 성공 → 정보 저장 후 ProfilePage로 이동
+        newUser = new User(username, userID, password, email);
         Management manager = new Management(new HashMap<>());
-
-
         new ProfilePage(newUser, manager);
-=======
-        nextButton.addActionListener(e -> {
-            String username = nameField.getText().trim();
-            String userID = idField.getText().trim();
-            String password = new String(pwField.getPassword()).trim();
-            String passwordCheck = new String(pwCheckField.getPassword()).trim();
-            String email = emailField.getText().trim();
-            String inputAuthCode = "1234"; // 예시
-            String actualAuthCode = "1234";
-            boolean isVerified = true;
-            boolean isAgreed = term1.isSelected() && term2.isSelected() && term3.isSelected();
->>>>>>> User
-
-            List<User> userList = new ArrayList<>();
-            User newUser = new User("", "", "", "");
-            boolean success = newUser.signup(username, userID, password, passwordCheck, email,
-                    inputAuthCode, actualAuthCode, isVerified, isAgreed, userList);
-
-            if (!success) {
-                // 라벨에 에러 메시지 설정 예시
-                nameErrorLabel.setText("이름을 확인해주세요.");
-                idErrorLabel.setText("아이디를 확인해주세요.");
-                pwErrorLabel.setText("비밀번호를 확인해주세요.");
-                pwCheckErrorLabel.setText("비밀번호가 일치하지 않습니다.");
-                emailErrorLabel.setText("이메일을 확인해주세요.");
-            } else {
-                Management manager = new Management(new HashMap<>());
-                new ProfilePage(newUser, manager);
-                dispose();
-            }
-        });
-
-        setVisible(true);
+        dispose();
     }
+});
+setVisible(true);
 }
+}
+
