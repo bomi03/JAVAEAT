@@ -1,7 +1,5 @@
-import javax.swing.*;
 import java.awt.*;
-import model.User;
-import model.Management;
+import javax.swing.*;
 
 public class PostDetailPage {
 
@@ -42,7 +40,7 @@ public class PostDetailPage {
         backButton.addActionListener(e -> {
             // PostDetailPage 창을 닫고, TeamListPage를 다시 여는 방식으로 돌아가기
             frame.dispose(); // 현재 창 닫기
-            new TeamListPage(); // TeamListPage 열기
+            //new TeamListPage(); // TeamListPage 열기
         });
 
         // 구분선

@@ -6,9 +6,15 @@ public class Management {
     // 답변 ID(String)와 송이 타입(SongiType) 간의 매핑
     private final Map<String, SongiType> answerToQuestion;
 
+
+    //사용자 리스트 필드 선언
+    private final List<User> allUsers; 
+
     // 생성자: 답변-타입 매핑만 받음
     public Management(Map<String, SongiType> answerToQuestion) {
         this.answerToQuestion = answerToQuestion;
+        this.allUsers = new ArrayList<>();
+
     }
 
     // 사용자 답변 리스트를 기반으로 가장 많이 선택된 송이 타입을 평가
@@ -50,5 +56,31 @@ public class Management {
     public String getImagePath(SongiType type) {
         return type.getImagePath();
     }
-} 
+
+    // 05.17 서연 추가 - 새 생성자 (일반 로그인/회원가입용)
+    public Management() {
+        this.answerToQuestion = new HashMap<>();
+        this.allUsers = new ArrayList<>();
+    }
+
+     // ✅ 사용자 등록
+    public void addUser(User user) {
+        allUsers.add(user);
+    }
+
+    // ✅ 전체 사용자 리스트 반환
+    public List<User> getAllUsers() {
+        return allUsers;
+    }
+
+    // ✅ ID로 사용자 찾기
+    public User getUserById(String userID) {
+        for (User user : allUsers) {
+            if (user.getUserID().equals(userID)) {
+                return user;
+            }
+        }
+        return null;
+    }
+}
 
