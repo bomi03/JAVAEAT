@@ -8,7 +8,6 @@ public class CollaborationTypeTest extends JFrame {
     private int currentPage = 0;
     private final int TOTAL_PAGES = 10;
 
-    private JButton[] optionButtons;
     private int selectedOptionIndex = -1;
     private Test test = new Test();
     private Management manager = new Management(AnswerMapFactory.createAnswerMap());
@@ -75,12 +74,17 @@ public class CollaborationTypeTest extends JFrame {
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
 
-        for (int i = 0; i < TOTAL_PAGES; i++) {
-            cardPanel.add(createQuestionPage(i), "question" + i);
-        }
+        rebuildQuestions();
 
         add(cardPanel);
         setVisible(true);
+    }
+
+    private void rebuildQuestions() {
+        cardPanel.removeAll();
+        for (int i = 0; i < TOTAL_PAGES; i++) {
+            cardPanel.add(createQuestionPage(i), "question" + i);
+        }
     }
 
     private JPanel createQuestionPage(int index) {
@@ -97,16 +101,24 @@ public class CollaborationTypeTest extends JFrame {
         progressBar.setBounds(30, 60, 330, 8);
         panel.add(progressBar);
 
-        JLabel questionLabel = new JLabel("<html><div style='text-align:center;'>" + questions[index][0] + "</div></html>", SwingConstants.CENTER);
-        questionLabel.setBounds(0, 100, 393, 60);
+        JLabel questionLabel = new JLabel(
+            "<html><div style='text-align:center;'>" + questions[index][0] + "</div></html>",
+            SwingConstants.CENTER
+        );
+        questionLabel.setBounds(25, 100, 343, 80);
         questionLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 15));
         panel.add(questionLabel);
 
-        optionButtons = new JButton[4];
+        final JButton[] buttons = new JButton[4];
+        Color defaultBg = UIManager.getColor("Button.background");
+
         int y = 180;
         for (int i = 0; i < 4; i++) {
-            char optionLetter = (char) ('A' + i);
-            JButton btn = new JButton("<html><div style='text-align:left; width:260px; padding:8px; white-space:normal;'>" + optionLetter + ". " + questions[index][i + 1] + "</div></html>");
+            char optionLetter = (char)('A' + i);
+            JButton btn = new JButton(
+                "<html><div style='text-align:left; width:200px; padding:8px; white-space:normal;'>"
+                + optionLetter + ". " + questions[index][i+1] + "</div></html>"
+            );
             btn.setBounds(50, y, 290, 60);
             btn.setFont(new Font("맑은 고딕", Font.PLAIN, 13));
             btn.setHorizontalAlignment(SwingConstants.LEFT);
@@ -114,19 +126,19 @@ public class CollaborationTypeTest extends JFrame {
             btn.setFocusPainted(false);
             btn.setContentAreaFilled(true);
             btn.setOpaque(true);
-            int choice = i;
+
+            final int choice = i;
+            buttons[i] = btn;
             btn.addActionListener(e -> {
-                selectedOptionIndex = choice;
-                for (int j = 0; j < optionButtons.length; j++) {
-                    optionButtons[j].setBackground(UIManager.getColor("Button.background"));
-                    optionButtons[j].setForeground(Color.BLACK);
+                for (JButton b : buttons) {
+                    b.setBackground(defaultBg);
+                    b.setForeground(Color.BLACK);
                 }
                 btn.setBackground(new Color(0, 45, 114));
                 btn.setForeground(Color.WHITE);
-                btn.setOpaque(true);
-                btn.repaint();
+                selectedOptionIndex = choice;
             });
-            optionButtons[i] = btn;
+
             panel.add(btn);
             y += 70;
         }
@@ -138,8 +150,7 @@ public class CollaborationTypeTest extends JFrame {
         nextBtn.setFont(new Font("맑은 고딕", Font.BOLD, 15));
         nextBtn.addActionListener(e -> {
             if (selectedOptionIndex != -1) {
-                String answerKey = "Q" + (index + 1) + (char) ('A' + selectedOptionIndex);
-                test.addAnswer(index + 1, answerKey);
+                test.addAnswer(index+1, "Q" + (index+1) + (char)('A'+selectedOptionIndex));
                 selectedOptionIndex = -1;
                 goToNextPage();
             } else {
@@ -154,7 +165,6 @@ public class CollaborationTypeTest extends JFrame {
     private JPanel createResultPage() {
         test.takeTest(null, manager);
         SongiType result = test.getUserResultType();
-
         if (result == null) {
             JOptionPane.showMessageDialog(this, "결과를 계산할 수 없습니다. 기본값을 보여줍니다.");
             result = SongiType.샘송이;
@@ -174,19 +184,9 @@ public class CollaborationTypeTest extends JFrame {
 
         ImageIcon icon = new ImageIcon(getClass().getResource(result.getImagePath()));
         JLabel imgLabel = new JLabel(icon);
-        imgLabel.setBounds((393 - icon.getIconWidth()) / 2, 90, icon.getIconWidth(), icon.getIconHeight());
+        imgLabel.setBounds((393 - icon.getIconWidth())/2, 90, icon.getIconWidth(), icon.getIconHeight());
         panel.add(imgLabel);
-// ✅ 공유하기 버튼 result 참조 오류 해결
-// SongiType result -> finalResult로 람다 안에서 안전하게 참조되도록 수정됨
 
-// (중략) 기존 코드 유지
-        // typeName 라벨 제거 (이미 이미지에 포함됨)
-        // JLabel typeName = new JLabel(result.name(), SwingConstants.CENTER);
-        // typeName.setBounds(0, 90 + icon.getIconHeight() + 20, 393, 30);
-        // typeName.setFont(new Font("맑은 고딕", Font.BOLD, 17));
-        // panel.add(typeName);
-
-        // 결과 화면용 버튼들 추가
         JButton retryBtn = new JButton("다시하기");
         retryBtn.setBounds(60, 700, 120, 40);
         retryBtn.setBackground(new Color(200, 200, 200));
@@ -194,19 +194,20 @@ public class CollaborationTypeTest extends JFrame {
         retryBtn.addActionListener(e -> {
             test = new Test();
             currentPage = 0;
+            rebuildQuestions();
+            cardPanel.revalidate();
+            cardPanel.repaint();
             cardLayout.show(cardPanel, "question0");
         });
         panel.add(retryBtn);
 
-        SongiType finalResult = result; // 람다 내 참조 위해 별도 변수 선언
+        SongiType finalResult = result;
         JButton shareBtn = new JButton("공유하기");
         shareBtn.setBounds(210, 700, 120, 40);
         shareBtn.setBackground(new Color(0, 120, 215));
         shareBtn.setForeground(Color.WHITE);
         shareBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 13));
-        shareBtn.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "[공유하기 기능] 당신의 유형은: " + (finalResult != null ? finalResult.name() : "(없음)"));
-        });
+        shareBtn.addActionListener(e -> JOptionPane.showMessageDialog(this, "[공유하기 기능] 당신의 유형은: " + finalResult.name()));
         panel.add(shareBtn);
 
         return panel;
@@ -223,6 +224,6 @@ public class CollaborationTypeTest extends JFrame {
     }
 
     public static void main(String[] args) {
-        new CollaborationTypeTest();
+        SwingUtilities.invokeLater(CollaborationTypeTest::new);
     }
 }
