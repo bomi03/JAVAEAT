@@ -1,11 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class MainFrame extends JFrame {
+public class chatMainFrame extends JFrame {
     CardLayout cardLayout;
     JPanel mainPanel;
 
-    public MainFrame() {
+    public chatMainFrame() {
 
         setTitle("팀매칭 채팅 UI");
         setSize(400, 700);
