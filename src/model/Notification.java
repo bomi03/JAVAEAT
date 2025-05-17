@@ -15,7 +15,7 @@ public class Notification {
     private boolean isRead;
     private final String redirectUrl;
 
-    // 전체 필드 초기화화
+    // 전체 필드 초기화
     public Notification(int notificationId,
                         String receiverId,
                         String message,
