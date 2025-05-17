@@ -1,13 +1,17 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import model.Application;
+import model.Profile;
 
 public class ApplicantDetailPage extends JFrame {
     private Application application;
+    private Profile profile;
 
-    public ApplicantDetailPage(Application application) {
+    public ApplicantDetailPage(Application application, Profile profile) {
         super("지원자 상세 정보");
         this.application = application;
+        this.profile = profile;
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setSize(393, 853);
@@ -31,11 +35,7 @@ public class ApplicantDetailPage extends JFrame {
         JButton backButton = new JButton("←");
         backButton.setPreferredSize(new Dimension(50, 30));
         backButton.setFocusPainted(false);
-        //backButton.addActionListener(e -> dispose());
-        backButton.addActionListener(e -> {
-            dispose();
-            new PostDetailPage(null, null, null);
-        });
+        backButton.addActionListener(e -> dispose());
 
         JLabel titleLabel = new JLabel("지원자 확인하기", SwingConstants.CENTER);
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 18f));
@@ -69,15 +69,24 @@ public class ApplicantDetailPage extends JFrame {
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         imageLabel.setText("IMG");
 
+        imageLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new ProfilePopup(ApplicantDetailPage.this, profile);
+            }
+        });
+
         profilePanel.add(textPanel, BorderLayout.WEST);
         profilePanel.add(imageLabel, BorderLayout.EAST);
 
         contentPanel.add(profilePanel);
 
         // 자기소개 영역
-        JLabel introLabel = new JLabel("자기소개", SwingConstants.LEFT);
+        JLabel introLabel = new JLabel("자기소개");
         introLabel.setFont(introLabel.getFont().deriveFont(Font.BOLD, 14f));
-        
+        introLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        introLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        introLabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, introLabel.getPreferredSize().height));
 
         JTextArea introArea = new JTextArea(application.getMessage());
         introArea.setLineWrap(true);
@@ -128,10 +137,26 @@ public class ApplicantDetailPage extends JFrame {
         add(contentPanel);
     }
 
-    // 테스트용 main
     public static void main(String[] args) {
-        Application dummy = new Application(1, 1, 1001, "안녕하세요. 팀원으로 함께 하고 싶어요!");
-        new ApplicantDetailPage(dummy);
-    }
+    SwingUtilities.invokeLater(() -> {
+        // 더미 Application
+        Application dummyApp = new Application(1, 1, 1001, "안녕하세요. 팀원으로 함께 하고 싶어요!");
+
+        // 더미 Profile
+        Profile dummyProfile = new Profile(1001, "tester");
+        dummyProfile.setNickname("새송이버섯");
+        dummyProfile.setAdmissionYear("22학번");
+        dummyProfile.setIntroduction("자바 스윙으로 프로젝트 해보고 싶어요!");
+        dummyProfile.setProfileImagePath("");  // 이미지 경로 없으면 기본 처리됨
+
+        // 팝업 테스트
+        new ApplicantDetailPage(dummyApp, dummyProfile);
+    });
 }
+
+}
+
+
+    
+
 
