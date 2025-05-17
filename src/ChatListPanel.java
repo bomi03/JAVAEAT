@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class ChatListPanel extends JPanel {
-    public ChatListPanel(ChatFrame frame) {
+    public ChatListPanel(chatMainFrame frame) {
         setLayout(new BorderLayout());
 
        
@@ -18,7 +18,7 @@ public class ChatListPanel extends JPanel {
         add(scroll, BorderLayout.CENTER);
     }
 
-    private JPanel createChatItem(ChatFrame frame, String name, String message, String panelName) {
+    private JPanel createChatItem(chatMainFrame frame, String name, String message, String panelName) {
         JPanel item = new JPanel(new BorderLayout());
         item.setPreferredSize(new Dimension(350, 60));
         item.setMaximumSize(new Dimension(1000, 60));

@@ -1,11 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class ChatFrame extends JFrame {
+public class chatMainFrame extends JFrame {
     CardLayout cardLayout;
     JPanel mainPanel;
 
-    public ChatFrame() {
+    public chatMainFrame() {
+
         setTitle("팀매칭 채팅 UI");
         setSize(400, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -51,7 +52,7 @@ public class ChatFrame extends JFrame {
         add(headerPanel, BorderLayout.NORTH);
         add(mainPanel,BorderLayout.CENTER);
 
-        // 하단  네비게이션 바바
+        // 하단  네비게이션 바
         BottomNavBar bottomNavBar = new BottomNavBar(
             e -> MainFrame.main(null),
             e -> showPanel("list"),
@@ -70,6 +71,6 @@ public class ChatFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-        new ChatFrame();
+        new chatMainFrame();
     }
 }
