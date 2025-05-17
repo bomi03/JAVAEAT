@@ -3,10 +3,13 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class ChatListPanel extends JPanel {
-    public ChatListPanel(ChatFrame frame) {
+    public ChatListPanel(MainFrame frame) {
         setLayout(new BorderLayout());
 
-       
+        JLabel title = new JLabel("채팅", SwingConstants.CENTER);
+        title.setFont(new Font("SansSerif", Font.BOLD, 20));
+        add(title, BorderLayout.NORTH);
+
         JPanel listPanel = new JPanel();
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
 
@@ -18,7 +21,7 @@ public class ChatListPanel extends JPanel {
         add(scroll, BorderLayout.CENTER);
     }
 
-    private JPanel createChatItem(ChatFrame frame, String name, String message, String panelName) {
+    private JPanel createChatItem(MainFrame frame, String name, String message, String panelName) {
         JPanel item = new JPanel(new BorderLayout());
         item.setPreferredSize(new Dimension(350, 60));
         item.setMaximumSize(new Dimension(1000, 60));
@@ -31,9 +34,10 @@ public class ChatListPanel extends JPanel {
         profilePic.setBackground(Color.GRAY);
         profilePic.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         profilePic.setOpaque(true);
-        profilePic.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
 
-        JLabel profileRound = new JLabel(); // 이미지도 가능
+        // 둥글게 만들기 (옵션)
+        profilePic.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+        JLabel profileRound = new JLabel(); // 빈 라벨 대신 이미지도 가능
         profileRound.setPreferredSize(new Dimension(40, 40));
         profilePic.add(profileRound);
 

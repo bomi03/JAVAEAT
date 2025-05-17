@@ -1,6 +1,17 @@
 import javax.swing.*;
+import model.Management;
+import model.User;
+import model.ProfilePage;
 import java.awt.*;
-import ProfilePage;
+import java.util.HashMap;
+<<<<<<< HEAD
+
+import model.Management;
+import model.User;
+=======
+import java.util.List;
+import java.util.ArrayList;
+>>>>>>> User
 
 public class JoinFrame extends JFrame {
     public JoinFrame() {
@@ -25,8 +36,7 @@ public class JoinFrame extends JFrame {
         separator.setBounds(20, 50, 350, 1);
         add(separator);
 
-
-         // 이름
+        // 이름
         JLabel nameLabel = new JLabel("이름");
         nameLabel.setBounds(30, 70, 100, 25);
         add(nameLabel);
@@ -91,101 +101,95 @@ public class JoinFrame extends JFrame {
 
         // 비밀번호 확인
         JLabel pwCheckLabel = new JLabel("비밀번호 확인");
-        pwCheckLabel.setBounds(30, 280, 100, 25);
+        pwCheckLabel.setBounds(30, 290, 100, 25);
         add(pwCheckLabel);
 
         JPasswordField pwCheckField = new JPasswordField();
-        pwCheckField.setBounds(30, 310, 320, 30);
+        pwCheckField.setBounds(30, 320, 320, 30);
         add(pwCheckField);
 
         JLabel pwCheckErrorLabel = new JLabel("");
         pwCheckErrorLabel.setFont(new Font("SansSerif", Font.PLAIN, 10));
         pwCheckErrorLabel.setForeground(Color.RED);
-        pwCheckErrorLabel.setBounds(30, 340, 300, 15);
+        pwCheckErrorLabel.setBounds(30, 350, 300, 15);
         add(pwCheckErrorLabel);
 
         // 이메일
-        JLabel emailLabel = new JLabel("이메일 인증");
-        emailLabel.setBounds(30, 350, 100, 25);
+        JLabel emailLabel = new JLabel("이메일");
+        emailLabel.setBounds(30, 360, 100, 25);
         add(emailLabel);
 
-        JLabel emailRequiredLabel = new JLabel("*필수입력항목입니다");
-        emailRequiredLabel.setFont(new Font("SansSerif", Font.PLAIN, 10));
-        emailRequiredLabel.setForeground(Color.RED);
-        emailRequiredLabel.setBounds(110, 350, 150, 25);
-        add(emailRequiredLabel);
-
         JTextField emailField = new JTextField();
-        emailField.setBounds(30, 380, 220, 30);
+        emailField.setBounds(30, 390, 320, 30);
         add(emailField);
-
-        JButton sendCodeButton = new JButton("인증번호 전송");
-        sendCodeButton.setBounds(260, 380, 90, 30);
-        add(sendCodeButton);
 
         JLabel emailErrorLabel = new JLabel("");
         emailErrorLabel.setFont(new Font("SansSerif", Font.PLAIN, 10));
         emailErrorLabel.setForeground(Color.RED);
-        emailErrorLabel.setBounds(30, 410, 300, 15);
+        emailErrorLabel.setBounds(30, 420, 300, 15);
         add(emailErrorLabel);
 
-        // 인증번호
-        JLabel codeLabel = new JLabel("인증번호 입력");
-        codeLabel.setBounds(30, 420, 100, 25);
-        add(codeLabel);
-
-        JTextField codeField = new JTextField();
-        codeField.setBounds(30, 450, 320, 30);
-        add(codeField);
-
-        JLabel codeErrorLabel = new JLabel("");
-        codeErrorLabel.setFont(new Font("SansSerif", Font.PLAIN, 10));
-        codeErrorLabel.setForeground(Color.RED);
-        codeErrorLabel.setBounds(30, 480, 300, 15);
-        add(codeErrorLabel);
-
-        // 약관 동의 체크박스
-        JLabel termsLabel = new JLabel("약관 동의");
-        termsLabel.setBounds(30, 490, 100, 25);
-        add(termsLabel);
-
-        JCheckBox term1 = new JCheckBox("[필수] 이용약관 동의");
-        term1.setBounds(30, 520, 250, 25);
+        // 약관 동의
+        JCheckBox term1 = new JCheckBox("이용약관 동의");
+        term1.setBounds(30, 450, 200, 20);
         add(term1);
 
-        JCheckBox term2 = new JCheckBox("[필수] 개인정보 수집 동의");
-        term2.setBounds(30, 550, 250, 25);
+        JCheckBox term2 = new JCheckBox("개인정보 처리방침 동의");
+        term2.setBounds(30, 480, 250, 20);
         add(term2);
 
-        JCheckBox term3 = new JCheckBox("[필수] 위치정보 이용 동의");
-        term3.setBounds(30, 580, 250, 25);
+        JCheckBox term3 = new JCheckBox("광고성 정보 수신 동의");
+        term3.setBounds(30, 510, 250, 20);
         add(term3);
-
-        JCheckBox term4 = new JCheckBox("[선택] 마케팅 정보 수신 동의");
-        term4.setBounds(30, 610, 250, 25);
-        add(term4);
-
-        JCheckBox term5 = new JCheckBox("[선택] 이벤트 알림 동의");
-        term5.setBounds(30, 640, 250, 25);
-        add(term5);
-
-        JLabel termsErrorLabel = new JLabel("");
-        termsErrorLabel.setFont(new Font("SansSerif", Font.PLAIN, 10));
-        termsErrorLabel.setForeground(Color.RED);
-        termsErrorLabel.setBounds(30, 670, 300, 15);
-        add(termsErrorLabel);
 
         // 다음 버튼
         JButton nextButton = new JButton("다음");
         nextButton.setBounds(30, 700, 320, 40);
         add(nextButton);
 
+<<<<<<< HEAD
 
+        String username = nameField.getText().trim();
+        String userID = idField.getText().trim();
+        String password = new String(pwField.getPassword()).trim();
+        String email = emailField.getText().trim();
+
+        User newUser = new User(username, userID, password, email);
+        Management manager = new Management(new HashMap<>());
+
+
+        new ProfilePage(newUser, manager);
+=======
         nextButton.addActionListener(e -> {
-            new ProfilePage(); // 프로필 입력 화면 띄우기
-        });
+            String username = nameField.getText().trim();
+            String userID = idField.getText().trim();
+            String password = new String(pwField.getPassword()).trim();
+            String passwordCheck = new String(pwCheckField.getPassword()).trim();
+            String email = emailField.getText().trim();
+            String inputAuthCode = "1234"; // 예시
+            String actualAuthCode = "1234";
+            boolean isVerified = true;
+            boolean isAgreed = term1.isSelected() && term2.isSelected() && term3.isSelected();
+>>>>>>> User
 
-        //dispose(); // JoinFrame 닫기
+            List<User> userList = new ArrayList<>();
+            User newUser = new User("", "", "", "");
+            boolean success = newUser.signup(username, userID, password, passwordCheck, email,
+                    inputAuthCode, actualAuthCode, isVerified, isAgreed, userList);
+
+            if (!success) {
+                // 라벨에 에러 메시지 설정 예시
+                nameErrorLabel.setText("이름을 확인해주세요.");
+                idErrorLabel.setText("아이디를 확인해주세요.");
+                pwErrorLabel.setText("비밀번호를 확인해주세요.");
+                pwCheckErrorLabel.setText("비밀번호가 일치하지 않습니다.");
+                emailErrorLabel.setText("이메일을 확인해주세요.");
+            } else {
+                Management manager = new Management(new HashMap<>());
+                new ProfilePage(newUser, manager);
+                dispose();
+            }
+        });
 
         setVisible(true);
     }

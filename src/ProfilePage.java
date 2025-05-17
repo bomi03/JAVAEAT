@@ -1,6 +1,5 @@
 // ProfilePage.java - 프로필 작성 및 프로필 편집 페이지
 
-
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.text.JTextComponent;
@@ -69,16 +68,19 @@ public class ProfilePage extends JFrame {
     // 높이 상수
     private static final int H20 = 20, H30 = 30, H40 = 40, H60 = 60, H110 = 110, H150 = 150;
 
+    // 생성 모드
     public ProfilePage(User user, Management manager) {
         this(user, manager, false, null);
     }
 
+    // 편집 모드
     public ProfilePage(User user, Management manager, boolean isEditMode, MyPage parentPage) {
         this.user = user;
         this.manager = manager;
         this.isEditMode = isEditMode;
         this.parentPage = parentPage;
 
+        // 프로필 초기화 또는 생성
         Profile p = user.getProfile();
         if (p == null) {
             p = new Profile(nextProfileId++, user.getUserID());
@@ -336,11 +338,7 @@ public class ProfilePage extends JFrame {
 
         // 이미 테스트 결과가 있으면
         if (profile.getResultType()!=null) {
-            resultPanel.setVisible(true);
-            resultImageLabel.setIcon(new ImageIcon(
-                new ImageIcon(profile.getResultImagePath()).getImage()
-                    .getScaledInstance(350,200,Image.SCALE_SMOOTH)
-            ));
+            showResultPanel();
         }
     }
 
@@ -352,6 +350,7 @@ public class ProfilePage extends JFrame {
             else new TeamListPage(user, manager);
         });
 
+        // 이미지 업로드
         uploadImgBtn.addActionListener(e -> {
             JFileChooser ch = new JFileChooser();
             if (ch.showOpenDialog(this)==JFileChooser.APPROVE_OPTION) {
@@ -367,69 +366,88 @@ public class ProfilePage extends JFrame {
         addCareerBtn.addActionListener(e -> addCareerRow());
         addCertBtn.addActionListener(e -> addCertRow());
 
+        // 협업유형 테스트 버튼 → Test 모델과 실제 테스트 페이지 연결
         testBtn.addActionListener(e -> {
-            // TODO: 추후 협업 테스트 구현되면 아래 주석 로직으로 대체
-            profile.updateType(
-                SongiType.평화송이,
-                SongiType.평화송이.getImagePath()
-            );
-            showResultPanel();
-            JOptionPane.showMessageDialog(this,"테스트 결과 미리 보기");
+            // TODO: 실제 테스트 화면(TestPage 등)을 띄워서 사용자가 테스트를 완료하게 한 뒤 돌아오도록 구현
+            // 예시: new TestPage(this, test).setVisible(true);
+
+            // 테스트 모델에서 결과 유형과 이미지 경로를 꺼내 옵니다.
+            SongiType result = test.getUserResultType();
+            String    imgPath = test.getResultImagePath();
+
+            if (result != null && imgPath != null) {
+                // 프로필에 유형명과 이미지 경로를 함께 저장
+                profile.updateType(result, imgPath);
+                showResultPanel();
+            } else {
+                JOptionPane.showMessageDialog(this, "테스트를 완료해 주세요.");
+            }
         });
 
+
+        // 완료/저장 버튼 → onSubmit() 결과에 따라만 창 닫기 및 이동
         completeBtn.addActionListener(e -> {
-            onSubmit();
+            if (!onSubmit()) {
+                // 검증 실패 시 경고만 띄우고 리턴
+                return;
+            }
             dispose();
             if (isEditMode) {
                 parentPage.setVisible(true);
-                parentPage.refreshProfileDisplay();  // MyPage에 갱신 메소드 구현 필요
+                parentPage.refreshProfileDisplay();
             } else {
                 new TeamListPage(user, manager);
             }
         });
     }
 
-    private void onSubmit() {
+    /** 유효성 검사 및 Profile 업데이트, 성공 시 true 반환 */
+    private boolean onSubmit() {
         warningLabel.setText("");
 
-        // **필수 유효성 검사** (닉네임/입학년도/학년/전공/소개/테스트)
+        // 닉네임 검증
         String nick = nicknameField.getText().trim();
         if (nick.isEmpty() || nick.equals("2~16자 이내로 입력해 주세요.")) {
-            warningLabel.setText("닉네임을 입력해 주세요."); return;
+            warningLabel.setText("닉네임을 입력해 주세요."); return false;
         }
-        if (nick.length()<2||nick.length()>16) {
-            warningLabel.setText("닉네임은 2~16자 이내여야 합니다.");return;
+        if (nick.length() < 2 || nick.length() > 16) {
+            warningLabel.setText("닉네임은 2~16자 이내여야 합니다."); return false;
         }
-        if (yearBox.getSelectedIndex()==0) {
-            warningLabel.setText("입학년도를 선택해 주세요."); return;
+        // 연도/학년
+        if (yearBox.getSelectedIndex() == 0) {
+            warningLabel.setText("입학년도를 선택해 주세요."); return false;
         }
-        if (gradeBox.getSelectedIndex()==0) {
-            warningLabel.setText("학년을 선택해 주세요."); return;
+        if (gradeBox.getSelectedIndex() == 0) {
+            warningLabel.setText("학년을 선택해 주세요."); return false;
         }
+        // 재학 여부
         if (!enrolledBtn.isSelected() && !leaveBtn.isSelected()) {
-            warningLabel.setText("재학 여부를 선택해 주세요."); return;
+            warningLabel.setText("재학 여부를 선택해 주세요."); return false;
         }
-        boolean hasMajor = majorNameFields.stream().anyMatch(f->{
-            String t=f.getText().trim();
-            return !t.isEmpty()&&!t.equals("전공명을 작성해 주세요.");
+        // 전공
+        boolean hasMajor = majorNameFields.stream().anyMatch(f -> {
+            String t = f.getText().trim();
+            return !t.isEmpty() && !t.equals("전공명을 작성해 주세요.");
         });
         if (!hasMajor) {
-            warningLabel.setText("전공을 한 개 이상 작성해 주세요."); return;
+            warningLabel.setText("전공을 한 개 이상 작성해 주세요."); return false;
         }
+        // 자기소개
         String intro = introArea.getText().trim();
         if (intro.isEmpty() || intro.equals("자기소개를 70자 이내로 작성해 주세요.")) {
-            warningLabel.setText("자기소개를 작성해 주세요."); return;
+            warningLabel.setText("자기소개를 작성해 주세요."); return false;
         }
-        if (intro.length()>70) {
-            warningLabel.setText("자기소개는 70자 이내여야 합니다."); return;
+        if (intro.length() > 70) {
+            warningLabel.setText("자기소개는 70자 이내여야 합니다."); return false;
         }
-        if (profile.getResultType()==null) {
-            warningLabel.setText("협업 유형 테스트를 완료해 주세요."); return;
+        // 테스트 완료 여부
+        if (profile.getResultType() == null) {
+            warningLabel.setText("협업 유형 테스트를 완료해 주세요."); return false;
         }
 
-        // **Profile 모델 업데이트**
+        // Profile 업데이트
         profile.setProfileImagePath(
-            selectedImageFile!=null ? selectedImageFile.getAbsolutePath() : ""
+            selectedImageFile != null ? selectedImageFile.getAbsolutePath() : ""
         );
         profile.setNickname(nick);
         profile.setAdmissionYear((String)yearBox.getSelectedItem());
@@ -437,26 +455,25 @@ public class ProfilePage extends JFrame {
         profile.setEnrolled(enrolledBtn.isSelected());
         profile.setIntroduction(intro);
 
-        // reset lists
+        // 리스트 초기화 후 추가
         profile.getMajors().clear();
-        profile.getCareers().clear();
-        profile.getCertificates().clear();
-
-        for (int i=0; i<majorNameFields.size(); i++) {
+        for (int i = 0; i < majorNameFields.size(); i++) {
             String m = majorNameFields.get(i).getText().trim();
             String t = (String)majorTypeBoxes.get(i).getSelectedItem();
             if (!m.isEmpty() && !m.equals("전공명을 작성해 주세요.")) {
-                profile.addMajor(m,t);
+                profile.addMajor(m, t);
             }
         }
-        for (int i=0; i<careerNameFields.size(); i++) {
+        profile.getCareers().clear();
+        for (int i = 0; i < careerNameFields.size(); i++) {
             String c = careerNameFields.get(i).getText().trim();
             String t = (String)careerTypeBoxes.get(i).getSelectedItem();
             if (!c.isEmpty() && !c.equals("활동명을 작성해 주세요.")) {
-                profile.addCareer(c,t);
+                profile.addCareer(c, t);
             }
         }
-        for (JTextField f: certFields) {
+        profile.getCertificates().clear();
+        for (JTextField f : certFields) {
             String c = f.getText().trim();
             if (!c.isEmpty() && !c.equals("취득한 자격증명을 작성해 주세요.")) {
                 profile.addCertification(c);
@@ -466,22 +483,22 @@ public class ProfilePage extends JFrame {
         user.setProfile(profile);
         JOptionPane.showMessageDialog(this,
             isEditMode ? "프로필이 저장되었습니다." : "회원가입이 완료되었습니다!");
+        return true;
     }
 
     public void showResultPanel() {
         SongiType type = profile.getResultType();
-        if (type==null) return;
-        String imgPath = profile.getResultImagePath();
+        if (type == null) return;
         resultImageLabel.setIcon(new ImageIcon(
-            new ImageIcon(imgPath).getImage()
-                .getScaledInstance(350,200,Image.SCALE_SMOOTH)
+            new ImageIcon(profile.getResultImagePath()).getImage()
+                .getScaledInstance(350, 200, Image.SCALE_SMOOTH)
         ));
         resultPanel.setVisible(true);
         mainPanel.revalidate();
         mainPanel.repaint();
     }
 
-    // ——— UI 헬퍼 메서드 ———
+    // — UI 헬퍼 메서드들 (생략 없이 완전 구현) —
 
     private JLabel labeled(String text, String hint, int x, int y) {
         JLabel l = new JLabel(String.format(
@@ -596,7 +613,7 @@ public class ProfilePage extends JFrame {
         certFields.add(cert);
     }
 
-    // 테스트용 main
+    // 메인 (테스트용)
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Management mgr = new Management(new HashMap<>());
