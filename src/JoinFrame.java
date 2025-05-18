@@ -352,7 +352,9 @@ public class JoinFrame extends JFrame {
             } else {
                 User newUser = new User(username, userID, password, email);
                 manager.addUser(newUser);  // ✅ 등록
-                new ProfilePage(newUser, manager); // ✅ 전달
+                //new ProfilePage(newUser, manager); // ✅ 전달
+                ProfilePage pp = new ProfilePage(newUser, manager);
+                pp.setLocationRelativeTo(this);   // JoinFrame(this) 기준으로 위치 맞춤
                 dispose();
             }
         });

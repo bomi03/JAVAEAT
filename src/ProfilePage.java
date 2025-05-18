@@ -347,7 +347,7 @@ public class ProfilePage extends JFrame {
         ((JButton)mainPanel.getComponent(0)).addActionListener(e -> {
             dispose();
             if (isEditMode) parentPage.setVisible(true);
-            else new TeamListPage(user, manager);
+            else new JoinFrame(manager);
         });
 
         // 이미지 업로드
