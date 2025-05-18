@@ -3,6 +3,7 @@ import java.awt.*;
 import model.User;
 import model.Management;
 import model.Post;
+import model.Profile;
 
 public class PostDetailPage extends JFrame {
     private User user;
@@ -10,7 +11,12 @@ public class PostDetailPage extends JFrame {
     private Post post;
 
     public PostDetailPage(User user, Management manager, Post post) {
-        super("모집글 상세 (팀장)");
+        boolean isWriter = post != null
+        && user.getProfile() != null
+        && post.getProfileID() == user.getProfile().getProfileID();
+
+        super.setTitle(isWriter ? "모집글 상세 (팀장)" : "모집글 상세");
+        // super("모집글 상세 (팀장)");
         this.user = user;
         this.manager = manager;
         this.post = post;
@@ -210,37 +216,37 @@ public class PostDetailPage extends JFrame {
             new PostDetailPage(u, mgr, null);
         });
     }
+
+
+    // // 수정 버튼 테스트 main (보미 추가)
+    // public static void main(String[] args) {
+    //     SwingUtilities.invokeLater(() -> {
+    //         // 1) Management 인스턴스 생성
+    //         Management mgr = new Management(new java.util.HashMap<>());
+
+    //         // 2) User 생성 (두 번째 인자가 userID)
+    //         User u = new User("홍길동", "hg123", "pw", "hg@sookmyung.ac.kr");
+
+    //         // 3) Profile 생성 (profileID=1, userID는 위의 u.getUserID())
+    //         Profile prof = new Profile(1, u.getUserID());
+    //         u.setProfile(prof);
+
+    //     // 4) Post 생성 (profileID도 1로 맞춰서 isWriter 조건 만족)
+    //     Post testPost = new Post(
+    //         1,                     // postID
+    //         prof.getProfileID(),   // profileID (1)
+    //         "",                    // imgPath
+    //         "공모전",               // category
+    //         "0000공모전 팀원 모집",  // title
+    //         "모집중",               // status
+    //         null,                  // deadline
+    //         5,                     // maxApplicants
+    //         0,                     // currentApplicants
+    //         "테스트용 설명"          // description
+    //     );
+
+    //     // 5) 상세 페이지 열기 → 상단에 “수정” 버튼이 표시됩니다.
+    //     new PostDetailPage(u, mgr, testPost);
+    //     });
+    // }
 }
-
-// 수정 버튼 테스트 main (보미 추가가)
-// public static void main(String[] args) {
-//     SwingUtilities.invokeLater(() -> {
-//         // 1) Management 인스턴스 생성
-//         Management mgr = new Management(new java.util.HashMap<>());
-
-//         // 2) User 생성 (두 번째 인자가 userID)
-//         User u = new User("홍길동", "hg123", "pw", "hg@sookmyung.ac.kr");
-
-//         // 3) Profile 생성 (profileID=1, userID는 위의 u.getUserID())
-//         Profile prof = new Profile(1, u.getUserID());
-//         u.setProfile(prof);
-
-//         // 4) Post 생성 (profileID도 1로 맞춰서 isWriter 조건 만족)
-//         Post testPost = new Post(
-//             1,                     // postID
-//             prof.getProfileID(),   // profileID (1)
-//             "",                    // imgPath
-//             "공모전",               // category
-//             "0000공모전 팀원 모집",  // title
-//             "모집중",               // status
-//             null,                  // deadline
-//             5,                     // maxApplicants
-//             0,                     // currentApplicants
-//             "테스트용 설명"          // description
-//         );
-
-//         // 5) 상세 페이지 열기 → 상단에 “수정” 버튼이 표시됩니다.
-//         new PostDetailPage(u, mgr, testPost);
-//     });
-// }
-

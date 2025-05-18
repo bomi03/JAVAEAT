@@ -219,8 +219,10 @@ public class TeamListPage extends JFrame {
 
         row.addMouseListener(new MouseAdapter() {
             @Override public void mouseClicked(MouseEvent e) {
-                // 나중에 PostDetailPage 연결 시점에 여기를 바꿔 주세요.
-                // 예: new PostDetailPage(user, manager, p);
+                // 목록 페이지 닫기
+                dispose();
+                // 상세 페이지 열기 (PostDetailPage 내부에서 isWriter 판별)
+                new PostDetailPage(user, manager, p);
             }
         });
 
