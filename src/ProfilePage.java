@@ -368,20 +368,7 @@ public class ProfilePage extends JFrame {
 
         // 협업유형 테스트 버튼 → Test 모델과 실제 테스트 페이지 연결
         testBtn.addActionListener(e -> {
-            // TODO: 실제 테스트 화면(TestPage 등)을 띄워서 사용자가 테스트를 완료하게 한 뒤 돌아오도록 구현
-            // 예시: new TestPage(this, test).setVisible(true);
-
-            // 테스트 모델에서 결과 유형과 이미지 경로를 꺼내 옵니다.
-            SongiType result = test.getUserResultType();
-            String    imgPath = test.getResultImagePath();
-
-            if (result != null && imgPath != null) {
-                // 프로필에 유형명과 이미지 경로를 함께 저장
-                profile.updateType(result, imgPath);
-                showResultPanel();
-            } else {
-                JOptionPane.showMessageDialog(this, "테스트를 완료해 주세요.");
-            }
+             new CollaborationTypeTest(this, test, manager).setVisible(true);
         });
 
 
@@ -491,6 +478,20 @@ public class ProfilePage extends JFrame {
         if (type == null) return;
         resultImageLabel.setIcon(new ImageIcon(
             new ImageIcon(profile.getResultImagePath()).getImage()
+                .getScaledInstance(350, 200, Image.SCALE_SMOOTH)
+        ));
+        resultPanel.setVisible(true);
+        mainPanel.revalidate();
+        mainPanel.repaint();
+    }
+
+    public void onTestCompleted(SongiType resulType, String imgPath) {
+        // 프로필에 저장
+        profile.updateType(resulType, imgPath);
+
+        // 결과 패널 보이기
+        resultImageLabel.setIcon(new ImageIcon(
+            new ImageIcon(imgPath).getImage()
                 .getScaledInstance(350, 200, Image.SCALE_SMOOTH)
         ));
         resultPanel.setVisible(true);
