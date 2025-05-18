@@ -367,19 +367,21 @@ public class TeamBuildPage extends JFrame {
                     deadline, max, curr, desc
                 );
                 JOptionPane.showMessageDialog(this,"모집글이 수정되었습니다.");
+                dispose();
+                new PostDetailPage(user,manager, editingPost);
             } else {
+                int myProfileId=user.getProfile().getProfileID(); // 원래 0으로 저장했었는데, 프로필 아이디 설정해서 지금 완료 눌러도 안넘어감 (원래는 이코드 없고 아래가 0이었음)
                 Post p=new Post(
-                    nextPostId++,0,
+                    nextPostId++,myProfileId,  // 원래 0으로 저장했었는데, 프로필 아이디 설정해서 지금 완료 눌러도 안넘어감
                     imgPath,category,title,status,
                     deadline,max,curr,desc
                 );
                 Post.addPost(p);
                 Team.addTeam(new Team(p.getPostID()));
                 JOptionPane.showMessageDialog(this,"팀 모집글이 생성되었습니다.");
+                dispose();
+                new TeamListPage(user,manager);
             }
-
-            dispose();
-            new TeamListPage(user,manager);
         });
     }
 
