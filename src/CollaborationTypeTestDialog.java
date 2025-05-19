@@ -74,7 +74,6 @@ public class CollaborationTypeTestDialog extends JDialog {
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
         rebuildQuestions();
-
         getContentPane().add(cardPanel);
     }
 
@@ -92,7 +91,7 @@ public class CollaborationTypeTestDialog extends JDialog {
         title.setFont(new Font("맑은 고딕", Font.BOLD, 18));
         panel.add(title);
 
-        int progress = (int)(((index + 1)/(double)TOTAL_PAGES)*100);
+        int progress = (int)(((index + 1) / (double) TOTAL_PAGES) * 100);
         JProgressBar progressBar = new JProgressBar(0, 100);
         progressBar.setValue(progress);
         progressBar.setBounds(30, 60, 330, 8);
@@ -110,10 +109,9 @@ public class CollaborationTypeTestDialog extends JDialog {
         Color defaultBg = UIManager.getColor("Button.background");
         int y = 180;
         for (int i = 0; i < 4; i++) {
-            char optionLetter = (char)('A' + i);
             JButton btn = new JButton(
-                "<html><div style='text-align:left; width:200px; padding:8px; white-space:normal;'>"
-                + optionLetter + ". " + questions[index][i+1] + "</div></html>"
+                "<html><div style='text-align:left; width:200px; padding:8px; white-space:normal;'>" +
+                (char)('A'+i) + ". " + questions[index][i+1] + "</div></html>"
             );
             btn.setBounds(50, y, 290, 60);
             btn.setFont(new Font("맑은 고딕", Font.PLAIN, 13));
@@ -122,7 +120,6 @@ public class CollaborationTypeTestDialog extends JDialog {
             btn.setFocusPainted(false);
             btn.setContentAreaFilled(true);
             btn.setOpaque(true);
-
             final int choice = i;
             buttons[i] = btn;
             btn.addActionListener(e -> {
@@ -134,12 +131,11 @@ public class CollaborationTypeTestDialog extends JDialog {
                 btn.setForeground(Color.WHITE);
                 selectedOptionIndex = choice;
             });
-
             panel.add(btn);
             y += 70;
         }
 
-        JButton nextBtn = new JButton(index == TOTAL_PAGES-1 ? "결과 보기" : "다음");
+        JButton nextBtn = new JButton(index == TOTAL_PAGES - 1 ? "결과 보기" : "다음");
         nextBtn.setBounds(50, 650, 290, 50);
         nextBtn.setBackground(new Color(0, 45, 114));
         nextBtn.setForeground(Color.WHITE);
@@ -149,3 +145,81 @@ public class CollaborationTypeTestDialog extends JDialog {
                 test.addAnswer(index+1, "Q" + (index+1) + (char)('A'+selectedOptionIndex));
                 selectedOptionIndex = -1;
                 goToNextPage();
+            } else {
+                JOptionPane.showMessageDialog(this, "답변을 선택해주세요!");
+            }
+        });
+        panel.add(nextBtn);
+        return panel;
+    }
+
+    private JPanel createResultPage() {
+        test.takeTest(null, manager);
+        SongiType result = test.getUserResultType();
+        final SongiType finalResult = result;
+        if (result == null) {
+            JOptionPane.showMessageDialog(this, "결과를 계산할 수 없습니다. 기본값을 보여줍니다.");
+            result = SongiType.샘송이;
+        }
+        JPanel panel = new JPanel(null);
+        JLabel title = new JLabel("결과", SwingConstants.CENTER);
+        title.setBounds(0, 20, 393, 30);
+        title.setFont(new Font("맑은 고딕", Font.BOLD, 18));
+        panel.add(title);
+        JLabel subtitle = new JLabel("당신의 협업 유형은...", SwingConstants.CENTER);
+        subtitle.setBounds(0, 60, 393, 20);
+        subtitle.setFont(new Font("맑은 고딕", Font.PLAIN, 13));
+        subtitle.setForeground(Color.GRAY);
+        panel.add(subtitle);
+        ImageIcon icon = new ImageIcon(getClass().getResource(result.getImagePath()));
+        JLabel imgLabel = new JLabel(icon);
+        imgLabel.setBounds((393 - icon.getIconWidth())/2, 100, icon.getIconWidth(), icon.getIconHeight());
+        panel.add(imgLabel);
+        JButton retryBtn = new JButton("다시하기");
+        retryBtn.setBounds(60, 700, 120, 40);
+        retryBtn.setBackground(new Color(200, 200, 200));
+        retryBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 13));
+        retryBtn.addActionListener(e -> {
+            test = new Test();
+            currentPage = 0;
+            rebuildQuestions();
+            cardPanel.revalidate();
+            cardPanel.repaint();
+            cardLayout.show(cardPanel, "question0");
+        });
+        panel.add(retryBtn);
+        JButton okBtn = new JButton("확인");
+        okBtn.setBounds(210, 700, 120, 40);
+        okBtn.setBackground(new Color(0, 120, 215));
+        okBtn.setForeground(Color.WHITE);
+        okBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 13));
+        okBtn.addActionListener(e -> {
+            Frame owner = (Frame) SwingUtilities.getWindowAncestor(this);
+            if (owner instanceof ProfilePage) {
+                ((ProfilePage) owner).onTestCompleted(finalResult.name(), finalResult.getImagePath());
+                JOptionPane.showMessageDialog(this, "협업유형 결과가 저장되었습니다!");
+            }
+            dispose();
+        });
+
+        panel.add(okBtn);
+        return panel;
+    }
+
+    private void goToNextPage() {
+        currentPage++;
+        if (currentPage >= TOTAL_PAGES) {
+            cardPanel.add(createResultPage(), "result");
+            cardLayout.show(cardPanel, "result");
+        } else {
+            cardLayout.show(cardPanel, "question" + currentPage);
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            CollaborationTypeTestDialog dialog = new CollaborationTypeTestDialog(null);
+            dialog.setVisible(true);
+        });
+    }
+}
