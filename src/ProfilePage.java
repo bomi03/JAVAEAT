@@ -368,7 +368,7 @@ public class ProfilePage extends JFrame {
 
         // 협업유형 테스트 버튼 → Test 모델과 실제 테스트 페이지 연결
         testBtn.addActionListener(e -> {
-             new CollaborationTypeTest(this, test, manager).setVisible(true);
+            new CollaborationTypeTest(this, test, manager).setVisible(true);
         });
 
 
