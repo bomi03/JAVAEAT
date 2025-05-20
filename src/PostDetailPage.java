@@ -186,7 +186,10 @@ public class PostDetailPage extends JFrame {
             applyButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             applyButton.addActionListener(e -> {
                 // TODO: 지원 처리
-            
+                 // 현재 창 닫기
+                dispose();
+                // 새로운 지원 폼 창 열기
+                new TeamApplicationForm();
             });
 
             JPanel applyPanel = new JPanel();
