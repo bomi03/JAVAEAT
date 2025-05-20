@@ -416,11 +416,16 @@ public class ProfilePage extends JFrame {
                 parentPage.setVisible(true);
                 parentPage.refreshProfileDisplay();
             } else {
-                new TeamListPage(user, manager);
-            }
-        });
+                 SwingUtilities.invokeLater(() -> {
+            TeamListPage teamPage = new TeamListPage(user, manager);
+            // ProfilePage(=this)와 같은 위치에 띄우기
+            Point loc = this.getLocation();          // ProfilePage의 현재 화면 좌표
+            teamPage.setLocation(loc);               // TeamListPage도 같은 좌표로
+            teamPage.setVisible(true);
+                    });
+                }
+            });
     }
-
     /** 유효성 검사 및 Profile 업데이트, 성공 시 true 반환 */
     private boolean onSubmit() {
         warningLabel.setText("");

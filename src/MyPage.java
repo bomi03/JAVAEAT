@@ -1,4 +1,5 @@
 // MyPage.java
+import javax.sound.sampled.Line;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -20,7 +21,7 @@ public class MyPage extends JFrame {
 
     private JLabel nicknameLabel, yearLabel;
     private JButton editProfileBtn;
-    private JLabel typeImgLabel, typeNameLabel;
+    private JLabel profilePicLabel;
 
     private JButton supportStatusBtn;
     private JButton myPostsBtn;
@@ -99,14 +100,10 @@ public class MyPage extends JFrame {
         editProfileBtn.setBounds(20, 55, 120, H30);
         profSec.add(editProfileBtn);
 
-        typeImgLabel = new JLabel();
-        typeImgLabel.setBorder(new LineBorder(Color.GRAY, 1, true));
-        typeImgLabel.setBounds(260, 10, 70, 70);
-        profSec.add(typeImgLabel);
-
-        typeNameLabel = new JLabel("", SwingConstants.CENTER);
-        typeNameLabel.setBounds(260, 90, 70, 20);
-        profSec.add(typeNameLabel);
+        profilePicLabel = new JLabel();
+        profilePicLabel.setBounds(260, 10, 70, 70);
+        profilePicLabel.setBorder(new LineBorder(Color.GRAY, 1, true));
+        profSec.add(profilePicLabel);
 
         // 서비스 섹션
         y += 140;
@@ -201,6 +198,7 @@ public class MyPage extends JFrame {
         );
         wrapper.add(nav, BorderLayout.SOUTH);
         setContentPane(wrapper);
+        refreshProfileDisplay();
     }
 
     private void registerListeners() {
@@ -237,9 +235,11 @@ public class MyPage extends JFrame {
         deleteAccountBtn.addActionListener(e ->
             JOptionPane.showMessageDialog(this, "회원 탈퇴")
         );
-        logoutBtn.addActionListener(e ->
-            JOptionPane.showMessageDialog(this, "로그아웃")
-        );
+        logoutBtn.addActionListener(e -> {
+            user.logout();
+            dispose();
+            SwingUtilities.invokeLater(() -> MainFrame.main(new String[0]));
+        });
     }
 
     public void refreshProfileDisplay() {
@@ -247,21 +247,15 @@ public class MyPage extends JFrame {
         nicknameLabel.setText(profile.getNickname());
         yearLabel.setText(profile.getAdmissionYear());
 
-        String imgPath = profile.getResultImagePath();
-        if (imgPath != null && !imgPath.isEmpty()) {
-            typeImgLabel.setIcon(new ImageIcon(
-                new ImageIcon(imgPath).getImage()
+        String pImg = profile.getProfileImagePath();
+        if (pImg != null && !pImg.isEmpty()) {
+            profilePicLabel.setIcon(new ImageIcon(
+                new ImageIcon(pImg).getImage()
                     .getScaledInstance(70, 70, Image.SCALE_SMOOTH)
             ));
         } else {
-            typeImgLabel.setIcon(null);
+            profilePicLabel.setIcon(null);
         }
-
-        typeNameLabel.setText(
-            profile.getResultType() != null
-                ? profile.getResultType().name()
-                : ""
-        );
     }
 
     private JButton makeMenuButton(String text, int y) {
