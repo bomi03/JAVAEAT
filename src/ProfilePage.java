@@ -105,7 +105,7 @@ public class ProfilePage extends JFrame {
     private void buildUI() {
         mainPanel = new JPanel(null);
         mainPanel.setBackground(Color.WHITE);
-        mainPanel.setPreferredSize(new Dimension(393, 2300));
+        mainPanel.setPreferredSize(new Dimension(393, 2300+50));
         int y = 0;
 
         // 뒤로가기 + 헤더
@@ -264,20 +264,30 @@ public class ProfilePage extends JFrame {
         y += 60;
 
         // 결과 패널
+        // 결과 패널 (이미지 + 유형명 자리)
         resultPanel = new JPanel(null);
-        resultPanel.setBackground(Color.WHITE);
-        resultPanel.setBounds(20, y, 350, 200);
+        resultPanel.setBackground(Color.decode("#F3F3F3"));
+        // 높이를 260으로 늘려서 이미지(200) + 텍스트(30) + 여유(30) 확보
+        resultPanel.setBounds(20, y, 350, 260);
         resultPanel.setVisible(false);
         mainPanel.add(resultPanel);
 
+        // ① 결과 이미지
         resultImageLabel = new JLabel();
         resultImageLabel.setBounds(0, 0, 350, 200);
         resultPanel.add(resultImageLabel);
 
+        // ② 유형명을 표시할 빈 라벨 (나중에 채워넣음)
+        JLabel typeNameLabel = new JLabel("", SwingConstants.CENTER);
+        typeNameLabel.setName("typeNameLabel");
+        typeNameLabel.setFont(new Font("맑은 고딕", Font.BOLD, 18));
+        typeNameLabel.setBounds(0, 210, 350, 30);
+        resultPanel.add(typeNameLabel);
+
         // 완료/저장 버튼
         completeBtn = new JButton("완료");
         styleBlue(completeBtn);
-        completeBtn.setBounds(20, y+220, 350, H40);
+        completeBtn.setBounds(20, y+260+10, 350, H40);
         mainPanel.add(completeBtn);
 
         // 스크롤
@@ -497,10 +507,23 @@ public class ProfilePage extends JFrame {
     public void showResultPanel() {
         SongiType type = profile.getResultType();
         if (type == null) return;
-        resultImageLabel.setIcon(new ImageIcon(
-            new ImageIcon(profile.getResultImagePath()).getImage()
+        // 1) 이미지 로드
+        ImageIcon icon = new ImageIcon(
+            new ImageIcon(profile.getResultImagePath())
+                .getImage()
                 .getScaledInstance(350, 200, Image.SCALE_SMOOTH)
-        ));
+        );
+        resultImageLabel.setIcon(icon);
+
+        // 2) 미리 만든 빈 라벨 찾아서 유형명 설정
+        for (Component c : resultPanel.getComponents()) {
+            if ("typeNameLabel".equals(c.getName()) && c instanceof JLabel) {
+                ((JLabel)c).setText(type.toString());
+                break;
+            }
+        }
+
+        // 3) 결과 패널 보이기
         resultPanel.setVisible(true);
         mainPanel.revalidate();
         mainPanel.repaint();

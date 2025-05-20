@@ -1,5 +1,11 @@
+// CollaborationTypeTestDialog.java
+
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.net.URL;
+import java.net.URISyntaxException;
+
 import model.*;
 
 public class CollaborationTypeTestDialog extends JDialog {
@@ -194,13 +200,24 @@ public class CollaborationTypeTestDialog extends JDialog {
         okBtn.setForeground(Color.WHITE);
         okBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 13));
         okBtn.addActionListener(e -> {
-            Frame owner = (Frame) SwingUtilities.getWindowAncestor(this);
-            if (owner instanceof ProfilePage) {
-                ((ProfilePage) owner).onTestCompleted(finalResult.name(), finalResult.getImagePath());
-                JOptionPane.showMessageDialog(this, "협업유형 결과가 저장되었습니다!");
+            Window w = SwingUtilities.getWindowAncestor(this);
+            if (w instanceof ProfilePage) {
+            ProfilePage pp = (ProfilePage) w;
+            try {
+                String resPath = finalResult.getImagePath();
+                URL url = getClass().getResource(resPath);
+                // toURI() 에 예외가 있으니 반드시 try–catch
+                String absPath = new File(url.toURI()).getAbsolutePath();
+                pp.onTestCompleted(finalResult.name(), absPath);
+            } catch (URISyntaxException ex) {
+                ex.printStackTrace();
+                // 예외 발생 시 리소스 경로 그대로 넘기는 백업 로직
+                pp.onTestCompleted(finalResult.name(), finalResult.getImagePath());
             }
-            dispose();
-        });
+        }
+        dispose();
+    });
+
 
         panel.add(okBtn);
         return panel;
