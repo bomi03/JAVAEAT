@@ -9,6 +9,7 @@ import model.User;
 import model.Profile;
 import model.Management;
 import model.Test;
+import dialog.ProfilePopup;
 
 public class MyPage extends JFrame {
     private User user;
@@ -104,6 +105,15 @@ public class MyPage extends JFrame {
         profilePicLabel.setBounds(260, 10, 70, 70);
         profilePicLabel.setBorder(new LineBorder(Color.GRAY, 1, true));
         profSec.add(profilePicLabel);
+        // 프로필 사진 클릭 시 팝업 띄우기
+        profilePicLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        profilePicLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new ProfilePopup(MyPage.this, profile);
+            }
+        });
+
 
         // 서비스 섹션
         y += 140;
