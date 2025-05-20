@@ -202,21 +202,16 @@ public class CollaborationTypeTestDialog extends JDialog {
         okBtn.addActionListener(e -> {
             Window w = SwingUtilities.getWindowAncestor(this);
             if (w instanceof ProfilePage) {
-            ProfilePage pp = (ProfilePage) w;
-            try {
-                String resPath = finalResult.getImagePath();
-                URL url = getClass().getResource(resPath);
-                // toURI() 에 예외가 있으니 반드시 try–catch
-                String absPath = new File(url.toURI()).getAbsolutePath();
-                pp.onTestCompleted(finalResult.name(), absPath);
-            } catch (URISyntaxException ex) {
-                ex.printStackTrace();
-                // 예외 발생 시 리소스 경로 그대로 넘기는 백업 로직
+                ProfilePage pp = (ProfilePage) w;
+                // 예: finalResult.getImagePath() 가 "꾸꾸송이_카드.png" 라고 가정
+                // String rel = finalResult.getImagePath();
+                // → model/assets/management/ 경로를 붙여서 클래스패스 리소스로 통일
+                //String classpath = "model/assets/management/" + rel;
                 pp.onTestCompleted(finalResult.name(), finalResult.getImagePath());
             }
-        }
-        dispose();
-    });
+            dispose();
+        });
+
 
 
         panel.add(okBtn);

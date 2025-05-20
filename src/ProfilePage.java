@@ -7,6 +7,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.util.*;
+import java.net.URL;
+import java.net.URISyntaxException;
 import model.Profile;
 import model.Test;
 import model.SongiType;
@@ -507,23 +509,51 @@ public class ProfilePage extends JFrame {
     public void showResultPanel() {
         SongiType type = profile.getResultType();
         if (type == null) return;
-        // 1) 이미지 로드
-        ImageIcon icon = new ImageIcon(
-            new ImageIcon(profile.getResultImagePath())
-                .getImage()
-                .getScaledInstance(350, 200, Image.SCALE_SMOOTH)
-        );
-        resultImageLabel.setIcon(icon);
 
-        // 2) 미리 만든 빈 라벨 찾아서 유형명 설정
+        // 1) 클래스패스에서 URL 얻기
+        String cpPath = profile.getResultImagePath().replaceAll("^/+", "");
+        URL url = getClass().getClassLoader().getResource(cpPath);
+        if (url == null) {
+            System.err.println("리소스 못 찾음: "+cpPath);
+            return;
+        }
+
+        // 2) 원본 이미지 크기 알아내기
+        ImageIcon rawIcon = new ImageIcon(url);
+        Image raw = rawIcon.getImage();
+        int origW = rawIcon.getIconWidth();
+        int origH = rawIcon.getIconHeight();
+
+        // 3) 목표 너비는 350, 높이는 비율 맞춰 계산
+        int targetW = 350;
+        int targetH = origH * targetW / origW;
+
+        // 4) 스케일
+        Image scaled = raw.getScaledInstance(targetW, targetH, Image.SCALE_SMOOTH);
+        resultImageLabel.setIcon(new ImageIcon(scaled));
+
+        // 5) 레이블 크기 재조정
+        resultImageLabel.setBounds(0, 0, targetW, targetH);
+
+        // 6) 유형명 라벨도 이미지 바로 아래로 이동
         for (Component c : resultPanel.getComponents()) {
-            if ("typeNameLabel".equals(c.getName()) && c instanceof JLabel) {
+            if (c instanceof JLabel && "typeNameLabel".equals(c.getName())) {
+                c.setBounds(0, targetH + 10, targetW, 30);
                 ((JLabel)c).setText(type.toString());
                 break;
             }
         }
 
-        // 3) 결과 패널 보이기
+        // 7) 패널 높이도 비율에 맞춰 늘리기 (+라벨 공간 +여유)
+        int panelX = resultPanel.getX(), panelY = resultPanel.getY();
+        resultPanel.setBounds(panelX, panelY,
+                            targetW,
+                            targetH + 10 + 30 /*라벨*/ + 10 /*여유*/);
+
+        // 8) 완료 버튼 위치도 패널 하단으로 밀기
+        completeBtn.setLocation(20, panelY + targetH + 10 + 30 + 10);
+
+        // 9) 갱신
         resultPanel.setVisible(true);
         mainPanel.revalidate();
         mainPanel.repaint();
