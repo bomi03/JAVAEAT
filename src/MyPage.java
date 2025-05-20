@@ -238,7 +238,7 @@ public class MyPage extends JFrame {
         logoutBtn.addActionListener(e -> {
             user.logout();
             dispose();
-            SwingUtilities.invokeLater(() -> MainFrame.main(new String[0]));
+            SwingUtilities.invokeLater(() -> new LoginFrame(manager));
         });
     }
 
