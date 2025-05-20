@@ -9,6 +9,9 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import model.Profile;
 import model.SongiType;
+import java.net.URL;
+import java.net.URISyntaxException;
+import java.io.File;
 
 public class ProfilePopup extends JDialog {
     private static final String CARD_SUMMARY = "SUMMARY";
@@ -72,14 +75,24 @@ public class ProfilePopup extends JDialog {
             typeName.setAlignmentX(Component.CENTER_ALIGNMENT);
             center.add(typeName);
 
+            // (수정 후)
             String tImg = p.getResultImagePath();
             if (tImg != null && !tImg.isEmpty()) {
                 center.add(Box.createVerticalStrut(10));
-                ImageIcon tIcon = new ImageIcon(new ImageIcon(tImg).getImage()
-                        .getScaledInstance(150, 150, Image.SCALE_SMOOTH));
-                JLabel tLabel = new JLabel(tIcon);
-                tLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-                center.add(tLabel);
+                // 1) 클래스패스에서 URL 얻기
+                URL url = getClass().getClassLoader().getResource(tImg.replaceAll("^/+", ""));
+                if (url != null) {
+                    // 2) ImageIcon 생성 & 스케일링
+                    ImageIcon rawIcon = new ImageIcon(url);
+                    Image scaled = rawIcon.getImage()
+                            .getScaledInstance(200, 300, Image.SCALE_SMOOTH);
+                    ImageIcon tIcon = new ImageIcon(scaled);
+                    JLabel tLabel = new JLabel(tIcon);
+                    tLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    center.add(tLabel);
+                } else {
+                    System.err.println("리소스를 찾을 수 없습니다: " + tImg);
+                }
             }
         }
 
