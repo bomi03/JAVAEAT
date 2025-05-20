@@ -1,5 +1,11 @@
+// CollaborationTypeTestDialog.java
+
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.net.URL;
+import java.net.URISyntaxException;
+
 import model.*;
 
 public class CollaborationTypeTestDialog extends JDialog {
@@ -194,13 +200,19 @@ public class CollaborationTypeTestDialog extends JDialog {
         okBtn.setForeground(Color.WHITE);
         okBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 13));
         okBtn.addActionListener(e -> {
-            Frame owner = (Frame) SwingUtilities.getWindowAncestor(this);
-            if (owner instanceof ProfilePage) {
-                ((ProfilePage) owner).onTestCompleted(finalResult.name(), finalResult.getImagePath());
-                JOptionPane.showMessageDialog(this, "협업유형 결과가 저장되었습니다!");
+            Window w = SwingUtilities.getWindowAncestor(this);
+            if (w instanceof ProfilePage) {
+                ProfilePage pp = (ProfilePage) w;
+                // 예: finalResult.getImagePath() 가 "꾸꾸송이_카드.png" 라고 가정
+                // String rel = finalResult.getImagePath();
+                // → model/assets/management/ 경로를 붙여서 클래스패스 리소스로 통일
+                //String classpath = "model/assets/management/" + rel;
+                pp.onTestCompleted(finalResult.name(), finalResult.getImagePath());
             }
             dispose();
         });
+
+
 
         panel.add(okBtn);
         return panel;

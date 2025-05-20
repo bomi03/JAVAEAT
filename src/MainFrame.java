@@ -16,20 +16,21 @@ public class MainFrame {
 
         User testUser = new User("서연", "test", "1234", "123@sookmyung.ac.kr");
         manager.addUser(testUser);  // ✅ 관리자에 유저 등록
+        SwingUtilities.invokeLater(() -> new LoginFrame(manager));
 
-        JFrame frame = new JFrame("로그인");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(393, 852);
+        // JFrame frame = new JFrame("로그인");
+        // frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // frame.setSize(393, 852);
 
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.decode("#FfFfFf"));
-        frame.add(panel);
+        // JPanel panel = new JPanel();
+        // panel.setBackground(Color.decode("#FfFfFf"));
+        // frame.add(panel);
 
-        placeComponents(panel, manager); // ✅ manager 전달
-        frame.setVisible(true);
+        // placeComponents(panel, manager); // ✅ manager 전달
+        // frame.setVisible(true);
     }
 
-    private static void placeComponents(JPanel panel, Management manager) {
+    public static void placeComponents(JPanel panel, Management manager) {
         panel.setLayout(null);
 
         final JLabel messageLabel = new JLabel("");

@@ -354,11 +354,12 @@ public class JoinFrame extends JFrame {
                 manager.addUser(newUser);  // ✅ 등록
                 //new ProfilePage(newUser, manager); // ✅ 전달
                 ProfilePage pp = new ProfilePage(newUser, manager);
-                pp.setLocationRelativeTo(this);   // JoinFrame(this) 기준으로 위치 맞춤
-                dispose();
+                pp.setLocationRelativeTo(null);   // JoinFrame(this) 기준으로 위치 맞춤
+                //dispose();
             }
         });
 
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 

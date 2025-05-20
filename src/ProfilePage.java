@@ -7,6 +7,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.util.*;
+import java.net.URL;
+import java.net.URISyntaxException;
 import model.Profile;
 import model.Test;
 import model.SongiType;
@@ -105,7 +107,7 @@ public class ProfilePage extends JFrame {
     private void buildUI() {
         mainPanel = new JPanel(null);
         mainPanel.setBackground(Color.WHITE);
-        mainPanel.setPreferredSize(new Dimension(393, 2300));
+        mainPanel.setPreferredSize(new Dimension(393, 2300+50));
         int y = 0;
 
         // 뒤로가기 + 헤더
@@ -264,20 +266,30 @@ public class ProfilePage extends JFrame {
         y += 60;
 
         // 결과 패널
+        // 결과 패널 (이미지 + 유형명 자리)
         resultPanel = new JPanel(null);
-        resultPanel.setBackground(Color.WHITE);
-        resultPanel.setBounds(20, y, 350, 200);
+        resultPanel.setBackground(Color.decode("#F3F3F3"));
+        // 높이를 260으로 늘려서 이미지(200) + 텍스트(30) + 여유(30) 확보
+        resultPanel.setBounds(20, y, 350, 260);
         resultPanel.setVisible(false);
         mainPanel.add(resultPanel);
 
+        // ① 결과 이미지
         resultImageLabel = new JLabel();
         resultImageLabel.setBounds(0, 0, 350, 200);
         resultPanel.add(resultImageLabel);
 
+        // ② 유형명을 표시할 빈 라벨 (나중에 채워넣음)
+        JLabel typeNameLabel = new JLabel("", SwingConstants.CENTER);
+        typeNameLabel.setName("typeNameLabel");
+        typeNameLabel.setFont(new Font("맑은 고딕", Font.BOLD, 18));
+        typeNameLabel.setBounds(0, 210, 350, 30);
+        resultPanel.add(typeNameLabel);
+
         // 완료/저장 버튼
         completeBtn = new JButton("완료");
         styleBlue(completeBtn);
-        completeBtn.setBounds(20, y+220, 350, H40);
+        completeBtn.setBounds(20, y+260+10, 350, H40);
         mainPanel.add(completeBtn);
 
         // 스크롤
@@ -404,11 +416,16 @@ public class ProfilePage extends JFrame {
                 parentPage.setVisible(true);
                 parentPage.refreshProfileDisplay();
             } else {
-                new TeamListPage(user, manager);
-            }
-        });
+                 SwingUtilities.invokeLater(() -> {
+            TeamListPage teamPage = new TeamListPage(user, manager);
+            // ProfilePage(=this)와 같은 위치에 띄우기
+            Point loc = this.getLocation();          // ProfilePage의 현재 화면 좌표
+            teamPage.setLocation(loc);               // TeamListPage도 같은 좌표로
+            teamPage.setVisible(true);
+                    });
+                }
+            });
     }
-
     /** 유효성 검사 및 Profile 업데이트, 성공 시 true 반환 */
     private boolean onSubmit() {
         warningLabel.setText("");
@@ -497,10 +514,51 @@ public class ProfilePage extends JFrame {
     public void showResultPanel() {
         SongiType type = profile.getResultType();
         if (type == null) return;
-        resultImageLabel.setIcon(new ImageIcon(
-            new ImageIcon(profile.getResultImagePath()).getImage()
-                .getScaledInstance(350, 200, Image.SCALE_SMOOTH)
-        ));
+
+        // 1) 클래스패스에서 URL 얻기
+        String cpPath = profile.getResultImagePath().replaceAll("^/+", "");
+        URL url = getClass().getClassLoader().getResource(cpPath);
+        if (url == null) {
+            System.err.println("리소스 못 찾음: "+cpPath);
+            return;
+        }
+
+        // 2) 원본 이미지 크기 알아내기
+        ImageIcon rawIcon = new ImageIcon(url);
+        Image raw = rawIcon.getImage();
+        int origW = rawIcon.getIconWidth();
+        int origH = rawIcon.getIconHeight();
+
+        // 3) 목표 너비는 350, 높이는 비율 맞춰 계산
+        int targetW = 350;
+        int targetH = origH * targetW / origW;
+
+        // 4) 스케일
+        Image scaled = raw.getScaledInstance(targetW, targetH, Image.SCALE_SMOOTH);
+        resultImageLabel.setIcon(new ImageIcon(scaled));
+
+        // 5) 레이블 크기 재조정
+        resultImageLabel.setBounds(0, 0, targetW, targetH);
+
+        // 6) 유형명 라벨도 이미지 바로 아래로 이동
+        for (Component c : resultPanel.getComponents()) {
+            if (c instanceof JLabel && "typeNameLabel".equals(c.getName())) {
+                c.setBounds(0, targetH + 10, targetW, 30);
+                ((JLabel)c).setText(type.toString());
+                break;
+            }
+        }
+
+        // 7) 패널 높이도 비율에 맞춰 늘리기 (+라벨 공간 +여유)
+        int panelX = resultPanel.getX(), panelY = resultPanel.getY();
+        resultPanel.setBounds(panelX, panelY,
+                            targetW,
+                            targetH + 10 + 30 /*라벨*/ + 10 /*여유*/);
+
+        // 8) 완료 버튼 위치도 패널 하단으로 밀기
+        completeBtn.setLocation(20, panelY + targetH + 10 + 30 + 10);
+
+        // 9) 갱신
         resultPanel.setVisible(true);
         mainPanel.revalidate();
         mainPanel.repaint();
