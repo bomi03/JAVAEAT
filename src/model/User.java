@@ -16,6 +16,7 @@ public class User {
     private List<Post> myPosts;
     private List<Application> myApplications;
     private boolean isLoggedIn = false;
+    private List<Notification> notifications = new ArrayList<>();
 
     // [2] 생성자 
     public User(String username, String userID, String password, String email) {
@@ -181,11 +182,6 @@ public class User {
     
         System.out.println(message);
 
-        //메서드만 이용하는 지금 상태에서는 울리고 사라지는 알림만 가능하고
-        //알림 화면에서 확인하고, 클릭해서 이동하려면 Notification 클래스 + 리스트 저장이 꼭 필요
-        //원래 팀장한테 오는 알림은 누르면 상세페이지로 이동해야하는데 
-        //그러려면 알림 클래스를 새로 만들어서 저장하고 여기서 리스트로 불러와야함 
-        //어떻게하는게 좋을까요? 
     }
 
     /*
@@ -220,6 +216,11 @@ public class User {
     public String getEmail() {
         return email;
     }   
+
+    public String getPassword() {
+    return password;
+}
+
 
     //사용자가 스크랩한 글 불러오기
     public List<Post> getBookmarkedPosts() { 
@@ -305,6 +306,13 @@ public boolean signup(String username, String userID, String password, String pa
         System.out.println("비밀번호가 성공적으로 변경되었습니다.");
         return true;
     }
+
+    public List<Notification> getNotifications() {
+    return notifications;
+}
+    public void addNotification(Notification noti) {
+    notifications.add(noti);
+}
 
 
     

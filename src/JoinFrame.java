@@ -40,7 +40,7 @@ public class JoinFrame extends JFrame {
 
         JLabel nameRequiredLabel = new JLabel("*필수입력항목입니다");
         nameRequiredLabel.setFont(new Font("SansSerif", Font.PLAIN, 10));
-        nameRequiredLabel.setForeground(Color.RED);
+        nameRequiredLabel.setForeground(new Color(204, 85, 0));
         nameRequiredLabel.setBounds(70, 70, 150, 25);
         add(nameRequiredLabel);
 
@@ -61,8 +61,8 @@ public class JoinFrame extends JFrame {
 
         JLabel idRequiredLabel = new JLabel("*필수입력항목입니다");
         idRequiredLabel.setFont(new Font("SansSerif", Font.PLAIN, 10));
-        idRequiredLabel.setForeground(Color.RED);
-        idRequiredLabel.setBounds(70, 140, 150, 25);
+        idRequiredLabel.setForeground(new Color(204, 85, 0));
+        idRequiredLabel.setBounds(75, 140, 150, 25);
         add(idRequiredLabel);
 
         JTextField idField = new JTextField();
@@ -82,7 +82,7 @@ public class JoinFrame extends JFrame {
 
         JLabel pwRequiredLabel = new JLabel("*필수입력항목입니다");
         pwRequiredLabel.setFont(new Font("SansSerif", Font.PLAIN, 10));
-        pwRequiredLabel.setForeground(Color.ORANGE);
+        pwRequiredLabel.setForeground(new Color(204, 85, 0));
         pwRequiredLabel.setBounds(90, 210, 150, 25);
         add(pwRequiredLabel);
 

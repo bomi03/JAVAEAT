@@ -1,3 +1,5 @@
+package model;
+
 // 알림 정보 클래스
 public class Notification {
     private final int notificationId;

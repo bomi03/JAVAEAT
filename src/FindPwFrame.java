@@ -204,7 +204,9 @@ public class FindPwFrame extends JFrame {
             dispose();
         });
 
+        setLocationRelativeTo(null);
         setVisible(true);
+        
     }
 
     private void styleBlue(AbstractButton b) {

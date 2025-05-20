@@ -5,8 +5,6 @@ import java.util.HashMap;
 import javax.swing.*;
 import model.Management;
 import model.User;
-import java.awt.Color;
-import java.awt.event.*;
 
 
 
@@ -34,7 +32,7 @@ public class MainFrame {
         panel.setLayout(null);
 
         final JLabel messageLabel = new JLabel("");
-        messageLabel.setBounds(50, 220, 300, 25);
+        messageLabel.setBounds(50, 250, 300, 25);
         messageLabel.setForeground(Color.RED);
         panel.add(messageLabel);
 

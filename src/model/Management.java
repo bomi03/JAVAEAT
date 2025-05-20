@@ -82,5 +82,23 @@ public class Management {
         }
         return null;
     }
+
+
+    //05.20 서연 추가
+
+    // 필드 추가
+    private final List<Notification> notifications = new ArrayList<>();
+
+    // 메서드 추가
+    public void addNotification(Notification n) { notifications.add(n); }
+        
+    public List<Notification> getNotificationsFor(String userId) {
+        return notifications.stream()
+        .filter(n -> n.getReceiverId().equals(userId))
+        .sorted(Comparator.comparingInt(Notification::getNotificationId).reversed())
+        .toList();
 }
+
+}
+
 

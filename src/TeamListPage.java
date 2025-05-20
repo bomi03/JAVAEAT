@@ -1,15 +1,15 @@
 // TeamListPage.java - 팀 목록 페이지
 
-import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import model.Management;
 import model.Post;
 import model.User;
-import model.Management;
 
 public class TeamListPage extends JFrame {
     private User user;
@@ -52,7 +52,7 @@ public class TeamListPage extends JFrame {
         BottomNavBar nav = new BottomNavBar(
             e -> { new TeamListPage(user, manager); dispose(); },
             e -> { /* 채팅 연결 예정 */ },
-            e -> { /* 알림 연결 예정 */ },
+            e -> { new NotificationPage(user, manager); },
             e -> { new MyPage(user, manager); dispose(); }
         );
         add(nav, BorderLayout.SOUTH);

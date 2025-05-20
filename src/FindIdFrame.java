@@ -1,7 +1,7 @@
 import java.awt.*;
 import javax.swing.*;
-import model.User;
 import model.Management;
+import model.User;
 
 public class FindIdFrame extends JFrame {
 
@@ -149,6 +149,7 @@ public class FindIdFrame extends JFrame {
             }
         });
 
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 
