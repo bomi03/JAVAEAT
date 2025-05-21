@@ -93,7 +93,10 @@ public class NotificationPage extends JFrame {
         BottomNavBar nav = new BottomNavBar(
             e -> { new TeamListPage(user, manager); dispose(); },
             e -> { /* 채팅 페이지 연결 예정 */ },
-            e -> { new NotificationPage(user, manager); dispose(); },
+            e -> { NotificationPage page = new NotificationPage(user, manager);
+                    page.setVisible(true);
+                    dispose();
+                },
             e -> { new MyPage(user, manager); dispose(); }
         );
 
