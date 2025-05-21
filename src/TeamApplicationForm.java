@@ -124,15 +124,24 @@ public class TeamApplicationForm extends JFrame {
 
     private void showSuccessDialog() {
         JDialog dialog = new JDialog(this, "지원 완료", true);
-        dialog.setLayout(new FlowLayout());
-        dialog.setSize(300, 100);
-        JLabel msg = new JLabel("지원이 완료되었습니다.");
-        msg.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
-        dialog.add(msg);
+        dialog.setSize(300, 150);
+        dialog.setLayout(new BorderLayout());
 
-        Timer timer = new Timer(1500, e -> dialog.dispose());
-        timer.setRepeats(false);
-        timer.start();
+        // 상단 메시지
+        JLabel msg = new JLabel("지원이 완료되었습니다.", SwingConstants.CENTER);
+        msg.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
+        dialog.add(msg, BorderLayout.CENTER);
+
+        // 하단 버튼
+        JButton okBtn = new JButton("확인");
+        okBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 13));
+        okBtn.addActionListener(e -> dialog.dispose());
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(okBtn);
+
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
 
         dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
