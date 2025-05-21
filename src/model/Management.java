@@ -83,6 +83,17 @@ public class Management {
         return null;
     }
 
+    // ✅ ProfileID로 프로필 찾기 05.21 채빈 추가
+    public Profile getProfileByID(int profileID) {
+    for (User user : allUsers) {
+        Profile profile = user.getProfile();
+        if (profile != null && profile.getProfileID() == profileID) {
+            return profile;
+            }
+        }
+        return null;
+    }
+
 
     //05.20 서연 추가
 

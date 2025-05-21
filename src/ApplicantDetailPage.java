@@ -73,9 +73,10 @@ public class ApplicantDetailPage extends JFrame {
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
         textPanel.setBackground(Color.WHITE);
 
-        JLabel nameLabel = new JLabel("새송이버섯");
+        JLabel nameLabel = new JLabel(profile.getNickname() != null ? profile.getNickname() : "이름 없음");
         nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD, 16f));
-        JLabel idLabel = new JLabel("22학번");
+
+        JLabel idLabel = new JLabel(profile.getAdmissionYear() != null ? profile.getAdmissionYear() : "학번 없음");
         idLabel.setFont(idLabel.getFont().deriveFont(Font.PLAIN, 12f));
 
         textPanel.add(nameLabel);
@@ -97,7 +98,6 @@ public class ApplicantDetailPage extends JFrame {
 
         profilePanel.add(textPanel, BorderLayout.WEST);
         profilePanel.add(imageLabel, BorderLayout.EAST);
-
         contentPanel.add(profilePanel);
 
         // 자기소개 영역
@@ -107,7 +107,7 @@ public class ApplicantDetailPage extends JFrame {
         introLabel.setHorizontalAlignment(SwingConstants.LEFT);
         introLabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, introLabel.getPreferredSize().height));
 
-        JTextArea introArea = new JTextArea(application.getMessage());
+        JTextArea introArea = new JTextArea(application.getMessage() != null ? application.getMessage() : "자기소개 없음");
         introArea.setLineWrap(true);
         introArea.setWrapStyleWord(true);
         introArea.setEditable(false);
@@ -129,8 +129,8 @@ public class ApplicantDetailPage extends JFrame {
         buttonPanel.setBackground(Color.WHITE);
 
         JButton rejectButton = new JButton("거절");
-        rejectButton.setBackground(Color.white);
-        rejectButton.setForeground(Color.gray);
+        rejectButton.setBackground(Color.WHITE);
+        rejectButton.setForeground(Color.GRAY);
         rejectButton.setFocusPainted(false);
         rejectButton.addActionListener(e -> {
             application.reject();
@@ -139,8 +139,8 @@ public class ApplicantDetailPage extends JFrame {
         });
 
         JButton acceptButton = new JButton("수락");
-        acceptButton.setBackground(Color.white);
-        acceptButton.setForeground(Color.gray);
+        acceptButton.setBackground(Color.WHITE);
+        acceptButton.setForeground(Color.GRAY);
         acceptButton.setFocusPainted(false);
         
         // 팀원 수락 -> 채팅룸 생성 이로 이동동
@@ -171,8 +171,7 @@ public class ApplicantDetailPage extends JFrame {
     public static void main(String[] args) {
     SwingUtilities.invokeLater(() -> {
         
-        // 더미 Application
-        //Application dummyApp = new Application(1, 1, 1001, "안녕하세요. 팀원으로 함께 하고 싶어요!");
+        
 
 
         // 더미 Profile
