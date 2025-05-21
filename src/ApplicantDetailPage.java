@@ -2,16 +2,35 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import model.Application;
+import model.ChatRoom;
 import model.Profile;
+//클래스 추가
+import model.Team;
+import model.User;
+import model.Management;
+import model.Post;
+//Post 객체 생성을 위한 Date추가
+import java.util.Date;
+//더미 매니저를 위해서 추가
+import java.util.HashMap;
+
 
 public class ApplicantDetailPage extends JFrame {
     private Application application;
     private Profile profile;
+    //User,Manager 필드 추가
+    private User user;
+    private Management manager;
+    private Post post;
 
-    public ApplicantDetailPage(Application application, Profile profile) {
+    public ApplicantDetailPage(Application application, Profile profile, User user,Management manager) {
         super("지원자 상세 정보");
         this.application = application;
         this.profile = profile;
+        //채팅룸 이동을 위해 추가
+        this.user = user;
+        this.manager = manager;
+        this.post = application.getPost();
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setSize(393, 853);
@@ -123,10 +142,22 @@ public class ApplicantDetailPage extends JFrame {
         acceptButton.setBackground(Color.white);
         acceptButton.setForeground(Color.gray);
         acceptButton.setFocusPainted(false);
+        
+        // 팀원 수락 -> 채팅룸 생성 이로 이동동
         acceptButton.addActionListener(e -> {
-            application.accept();
-            JOptionPane.showMessageDialog(this, "지원자가 수락되었습니다.");
-            dispose();
+            try {
+                Team team = application.accept(); // 도메인 로직 처리
+                ChatRoom chatRoom = team.getChatRoom();
+        
+                JOptionPane.showMessageDialog(this, "지원자가 수락되었습니다.\n채팅방으로 이동합니다.");
+        
+                new chatMainFrame(user, manager).showPanel("detail1");
+                dispose();
+        
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "수락 중 오류 발생: " + ex.getMessage());
+                ex.printStackTrace();
+            }
         });
 
         buttonPanel.add(rejectButton);
@@ -139,8 +170,10 @@ public class ApplicantDetailPage extends JFrame {
 
     public static void main(String[] args) {
     SwingUtilities.invokeLater(() -> {
+        
         // 더미 Application
-        Application dummyApp = new Application(1, 1, 1001, "안녕하세요. 팀원으로 함께 하고 싶어요!");
+        //Application dummyApp = new Application(1, 1, 1001, "안녕하세요. 팀원으로 함께 하고 싶어요!");
+
 
         // 더미 Profile
         Profile dummyProfile = new Profile(1001, "tester");
@@ -149,8 +182,29 @@ public class ApplicantDetailPage extends JFrame {
         dummyProfile.setIntroduction("자바 스윙으로 프로젝트 해보고 싶어요!");
         dummyProfile.setProfileImagePath("");  // 이미지 경로 없으면 기본 처리됨
 
+        // 더미 Post객체 생성
+        Post dummyPost = new Post(
+            1,                          // postID
+            dummyProfile.getProfileID(), // profileID
+            "",                         // postImagePath
+            "스터디",                    // category
+            "자바 스터디 모집",            // title
+            "모집중",                    // status
+            new Date(),                // recruitDeadline (현재 날짜)
+            4,                         // maxApplicants
+            1,                         // currentApplicants
+            "같이 스터디 하실 분 구합니다." // description
+        );
+
+        // 더미 application 생성성
+        Application dummyApp = new Application(1, dummyPost, dummyProfile, "안녕하세요. 팀원으로 함께 하고 싶어요!");
+
+        //더미 User생성
+        User dummyUser = new User("홍길동", "testID", "pw", "test@sookmyung.ac.kr");
+        Management dummyManager = new Management(new HashMap<>());
+
         // 팝업 테스트
-        new ApplicantDetailPage(dummyApp, dummyProfile);
+        new ApplicantDetailPage(dummyApp, dummyProfile, dummyUser, dummyManager);
     });
 }
 
