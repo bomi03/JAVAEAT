@@ -170,9 +170,14 @@ public class PostDetailPage extends JFrame {
             applyButton.setPreferredSize(new Dimension(100, 40));
             applyButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             applyButton.addActionListener(e -> {
-                dispose();
-                new TeamApplicationForm(user, manager, post); // TODO: 전달값 추가
-            });
+                if ("모집완료".equals(post.getStatus())) {
+                    JOptionPane.showMessageDialog(this, "이 모집글은 더 이상 지원할 수 없습니다.");
+                    return;
+            }
+            dispose();
+            new TeamApplicationForm(user, manager, post);
+        });
+
 
             JPanel applyPanel = new JPanel();
             applyPanel.setBackground(Color.WHITE);
