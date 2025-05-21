@@ -52,7 +52,10 @@ public class TeamListPage extends JFrame {
         BottomNavBar nav = new BottomNavBar(
             e -> { new TeamListPage(user, manager); dispose(); },
             e -> { /* 채팅 연결 예정 */ },
-            e -> { new NotificationPage(user, manager); },
+            e -> { NotificationPage page = new NotificationPage(user, manager);
+                    page.setVisible(true);
+                    dispose();
+                 },
             e -> { new MyPage(user, manager); dispose(); }
         );
         add(nav, BorderLayout.SOUTH);
