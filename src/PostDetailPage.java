@@ -171,7 +171,7 @@ public class PostDetailPage extends JFrame {
             applyButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             applyButton.addActionListener(e -> {
                 dispose();
-                new TeamApplicationForm(); // TODO: 전달값 추가
+                new TeamApplicationForm(user, manager, post); // TODO: 전달값 추가
             });
 
             JPanel applyPanel = new JPanel();
