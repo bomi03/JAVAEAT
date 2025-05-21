@@ -3,11 +3,8 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class ChatListPanel extends JPanel {
-    
     public ChatListPanel(chatMainFrame frame) {
-        
         setLayout(new BorderLayout());
-   
 
        
         JPanel listPanel = new JPanel();
