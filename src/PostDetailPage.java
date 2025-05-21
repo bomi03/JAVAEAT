@@ -52,7 +52,6 @@ public class PostDetailPage extends JFrame {
         });
 
         JLabel titleLabel = new JLabel("팀원 모집", SwingConstants.CENTER);
-        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 18f));
         topBar.add(backButton, BorderLayout.WEST);
         topBar.add(titleLabel, BorderLayout.CENTER);
 
