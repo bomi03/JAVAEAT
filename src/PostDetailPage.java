@@ -210,6 +210,7 @@ public class PostDetailPage extends JFrame {
         User u1 = new User("김지원", "user1", "pw", "jiwon@sookmyung.ac.kr");
         Profile p1 = new Profile(2, u1.getUserID());
         p1.setNickname("새송이버섯");
+        p1.setAdmissionYear("22학번");
         u1.setProfile(p1);
         mgr.addUser(u1);
 
@@ -220,6 +221,7 @@ public class PostDetailPage extends JFrame {
         User u2 = new User("박슬기", "user2", "pw", "seulgi@sookmyung.ac.kr");
         Profile p2 = new Profile(3, u2.getUserID());
         p2.setNickname("눈송이");
+        p2.setAdmissionYear("21학번");
         u2.setProfile(p2);
         mgr.addUser(u2);
 
