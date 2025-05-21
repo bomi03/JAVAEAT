@@ -355,7 +355,7 @@ public class JoinFrame extends JFrame {
                 //new ProfilePage(newUser, manager); // ✅ 전달
                 ProfilePage pp = new ProfilePage(newUser, manager);
                 pp.setLocationRelativeTo(null);   // JoinFrame(this) 기준으로 위치 맞춤
-                //dispose();
+                dispose();
             }
         });
 

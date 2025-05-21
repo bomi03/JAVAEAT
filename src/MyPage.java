@@ -286,7 +286,7 @@ public class MyPage extends JFrame {
             termsFrame.setLocationRelativeTo(null);
 
             JTextArea textArea = new JTextArea(
-                   "※ 서비스 이용 약관\n\n" +
+                "※ 서비스 이용 약관\n\n" +
 
                 "제 1조 (목적)\n" +
                 "본 약관은 눈뭉치에서 제공하는 서비스를 제공함에 있어 눈뭉치와 이용자의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.\n\n" +
