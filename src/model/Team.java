@@ -56,6 +56,7 @@ public class Team {
         }
 
     }
+
     //팀 반환 및 새로 만들어 리스트(allTeams)에 추가(하원)
     public static Team findOrCreateTeam(int postID){
         for(Team t: allTeams){
@@ -115,7 +116,6 @@ public class Team {
     public ChatRoom getChatRoom(){
         return chatRoom;
     }
-    // 객체 반환 함수 추가 (하원)
 
     
 }

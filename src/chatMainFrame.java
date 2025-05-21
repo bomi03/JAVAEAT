@@ -1,6 +1,7 @@
 import javax.swing.*;
 
 import model.Management;
+import model.Profile;
 import model.User;
 
 import java.awt.*;
@@ -74,7 +75,13 @@ public class chatMainFrame extends JFrame {
             e -> showPanel("list"),
             e -> showPanel("notify"),
             e -> {
-                new TeamListPage(user, manager);
+                //[테스트용] MyPage가 실행되도록 임시 프로필 설정
+                Profile profile = new Profile(1,user.getUserID());
+                profile.setNickname("새송이버섯");
+                profile.setAdmissionYear("22학번");
+                user.setProfile(profile);
+                System.out.println("MyPage로 이동 시도도");
+                new MyPage(user, manager);
                 dispose();
             }
         );
