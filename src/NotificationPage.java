@@ -33,7 +33,6 @@ public class NotificationPage extends JFrame {
         headerPanel.add(backButton);
 
         JLabel titleLabel = new JLabel("알림", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
         titleLabel.setBounds(0, 10, 393, 30);
         headerPanel.add(titleLabel);
 
