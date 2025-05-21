@@ -25,7 +25,6 @@ public class JoinFrame extends JFrame {
         add(backButton);
 
         JLabel titleLabel = new JLabel("회원가입", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
         titleLabel.setBounds(120, 10, 150, 30);
         add(titleLabel);
 

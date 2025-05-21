@@ -64,3 +64,8 @@ public class Notification {
         return redirectUrl;
     }
 }
+
+//         알림 예시 
+//         Notification n1 = new Notification(1, u.getUserID(), "📝 [피티송이] 님이 팀에 지원했습니다.", NotificationType.APPLY, false, "지원서 #001");
+//         Notification n2 = new Notification(2, u.getUserID(), "💬 새 채팅 메시지가 도착했습니다.", NotificationType.MESSAGE, false, "채팅방 #123");
+//         Notification n3 = new Notification(3, u.getUserID(), "📢 모집 마감 1일 전입니다!", NotificationType.MESSAGE, true, "공모전 #ABC");
