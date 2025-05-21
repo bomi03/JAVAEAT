@@ -4,33 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatRoom {
-
-    private static int nextID = 1;
-    private static List<ChatRoom> allChatRooms = new ArrayList<>();
-
     private int chatRoomID;
     private int postID;
     private List<Profile> participants;
     private List<Message> messages;
 
-    public ChatRoom(Team team){
-        this.chatRoomID = nextID++;
-        this.postID = team.getPostID();
-        this.participants = new ArrayList<>(team.getMemberProfiles());
-        this.messages = new ArrayList<>();
-    }
-    //전체 채팅방에 등록
-    public static void addChatRoom(ChatRoom chatRoom){
+    public void createRoom(int chatRoomID,int postID,List<Profile> participants) {
+        this.chatRoomID =chatRoomID;
+        this.postID = postID;
+        this.participants = new ArrayList<>(participants);
+        this.messages= new ArrayList<>();
 
-        allChatRooms.add(chatRoom);
     }
-    // 참가자 추가
-    public void addMember(Profile profile){
-        if(!participants.contains(profile)){
-            participants.add(profile);
-        }
-    }
-    
     public List<Message> getMessages() {
         return messages;
        
@@ -40,18 +25,4 @@ public class ChatRoom {
         return messages.subList(Math.max(0,size - count), size);
         //가장 최근 메시지 count만큼 불러오는 메서드
     }
-    public int getChatRoomID(){
-        return chatRoomID;
-    }
-
-    public void addMessage(Message message){
-        messages.add(message);
-    }
-
-    
-
-    public List<Profile> getParticipants(){
-        return participants;
-    }
-
 }  

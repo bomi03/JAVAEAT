@@ -6,7 +6,7 @@ public class ChatDetailPanel extends JPanel {
     private JTextArea chatArea;
     private JTextField inputField;
 
-    public ChatDetailPanel(chatMainFrame frame, int chatType) {
+    public ChatDetailPanel(ChatFrame frame, int chatType) {
         setLayout(new BorderLayout());
 
         // 👉 상단 전체 묶는 패널
