@@ -1,10 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import model.User;
 import model.Management;
 import model.Post;
 import model.Profile;
+import model.Application;
+// import page.ApplicantDetailPage;
 
 public class PostDetailPage extends JFrame {
     private User user;
@@ -77,7 +80,6 @@ public class PostDetailPage extends JFrame {
         postInfo.setBackground(Color.WHITE);
         postInfo.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
-        // 카테고리 + 제목 한 줄 표현
         JPanel titleRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         titleRow.setBackground(Color.WHITE);
         titleRow.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -107,9 +109,8 @@ public class PostDetailPage extends JFrame {
         statusPanel.setBackground(Color.WHITE);
 
         JLabel statusLabel = new JLabel(post.getStatus());
-        statusLabel.setForeground(new Color(0xFF, 0xA5, 0x00)); // 주황색
+        statusLabel.setForeground(new Color(0xFF, 0xA5, 0x00));
         statusPanel.add(statusLabel);
-
         statusPanel.add(new JLabel(post.getCurrentApplicants() + "/" + post.getMaxApplicants() + "명"));
         postInfo.add(statusPanel);
 
@@ -136,21 +137,24 @@ public class PostDetailPage extends JFrame {
             applPanel.setBackground(Color.WHITE);
             applPanel.setBorder(BorderFactory.createTitledBorder("지원자 목록"));
 
-            String[] names = {"새송이버섯", "눈송이", "김숙명"};
-            for (String nm : names) {
+            List<Application> applications = post.getApplications();
+            for (Application app : applications) {
+                Profile profile = manager.getProfileByID(app.getProfileID());
+                if (profile == null) continue;
+
                 JPanel card = new JPanel(new BorderLayout());
                 card.setBackground(Color.WHITE);
                 card.setBorder(BorderFactory.createLineBorder(Color.GRAY));
                 card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
 
-                JLabel lbl = new JLabel(nm);
+                JLabel lbl = new JLabel(profile.getNickname());
                 lbl.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
                 card.add(lbl, BorderLayout.WEST);
 
                 JButton detail = new JButton(">");
                 detail.setFocusPainted(false);
                 detail.addActionListener(e -> {
-                    // TODO: ApplicantDetailPage로 이동
+                    new ApplicantDetailPage(app, profile);
                 });
 
                 JPanel btnP = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -167,7 +171,7 @@ public class PostDetailPage extends JFrame {
             applyButton.setAlignmentX(Component.CENTER_ALIGNMENT);
             applyButton.addActionListener(e -> {
                 dispose();
-                new TeamApplicationForm(); // TODO: user, manager, post 전달 필요
+                new TeamApplicationForm(); // TODO: 전달값 추가
             });
 
             JPanel applyPanel = new JPanel();
@@ -186,20 +190,48 @@ public class PostDetailPage extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            Management mgr = new Management(new java.util.HashMap<>());
-            User u = new User("홍길동", "hg123", "pw", "hg@sookmyung.ac.kr");
-            Profile p = new Profile(1, u.getUserID());
-            u.setProfile(p);
+    SwingUtilities.invokeLater(() -> {
+        Management mgr = new Management();
 
-            Post testPost = new Post(
-                1, p.getProfileID(), "", "공모전", "AI 해커톤 팀원 모집", "모집중",
-                new java.util.Date(), 5, 2, "프로젝트 설명 예시입니다."
-            );
+        // ✅ 팀장 유저 (u)
+        User u = new User("홍길동", "hg123", "pw", "hg@sookmyung.ac.kr");
+        Profile p = new Profile(1, u.getUserID());
+        p.setNickname("팀장송이");
+        u.setProfile(p);
+        mgr.addUser(u);
 
-            new PostDetailPage(u, mgr, testPost);
-        });
-    }
+        // ✅ 모집글
+        Post testPost = new Post(
+            1, p.getProfileID(), "", "공모전", "AI 해커톤 팀원 모집", "모집중",
+            new java.util.Date(), 5, 2, "예시 설명입니다."
+        );
+
+        // ✅ 지원자 1: 김지원
+        User u1 = new User("김지원", "user1", "pw", "jiwon@sookmyung.ac.kr");
+        Profile p1 = new Profile(2, u1.getUserID());
+        p1.setNickname("새송이버섯");
+        u1.setProfile(p1);
+        mgr.addUser(u1);
+
+        Application app1 = new Application(101, testPost.getPostID(), p1.getProfileID(), "열심히 하겠습니다!");
+        testPost.addApplication(app1);
+
+        // ✅ 지원자 2: 박슬기
+        User u2 = new User("박슬기", "user2", "pw", "seulgi@sookmyung.ac.kr");
+        Profile p2 = new Profile(3, u2.getUserID());
+        p2.setNickname("눈송이");
+        u2.setProfile(p2);
+        mgr.addUser(u2);
+
+        Application app2 = new Application(102, testPost.getPostID(), p2.getProfileID(), "기여하고 싶어요!");
+        testPost.addApplication(app2);
+
+        // ✅ 모집글 상세 페이지 실행
+        new PostDetailPage(u, mgr, testPost);
+    });
+}
+
+
 
 
 
