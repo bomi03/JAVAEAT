@@ -1,14 +1,30 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+// 보미 수정
+import model.User;
+import model.Application;
+import model.Management;
+import model.Post;
+// 보미 수정
 
 public class TeamApplicationForm extends JFrame {
+    //보미 수정
+    private final User user;
+    private final Management manager;
+    private final Post post;
+    // 보미 수정
+
     private JTextArea introArea;
     private JLabel warningLabel;
     private final String placeholderText = "자기소개를 입력해 주세요.";
     private boolean showingPlaceholder = true;
 
-    public TeamApplicationForm() {
+    public TeamApplicationForm(User user, Management manager, Post post) {    
+        this.user = user;
+        this.manager = manager;
+        this.post = post;
+
         setTitle("지원하기");
         setSize(393, 852);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -90,7 +106,19 @@ public class TeamApplicationForm extends JFrame {
             warningLabel.setVisible(true);
         } else {
             warningLabel.setVisible(false);
+
+            // 보미 수정
+            int newAppId = generateNewApplicationID();
+            Application app = new Application(newAppId, post.getPostID(), user.getProfile().getProfileID(), input);
+            post.addApplication(app);
+            // 보미 수정
+
             showSuccessDialog();
+
+            // 보미 수정
+            dispose();
+            new PostDetailPage(user, manager, post);
+            // 보미 수정
         }
     }
 
@@ -110,7 +138,14 @@ public class TeamApplicationForm extends JFrame {
         dialog.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(TeamApplicationForm::new);
+    // 보미 수정
+    private int generateNewApplicationID() {
+        return (int) (Math.random() * 100000); // 간단한 ID 생성
     }
+    // 보미 수정
+
+
+    // public static void main(String[] args) {
+    //     SwingUtilities.invokeLater(TeamApplicationForm::new);
+    // }
 }
