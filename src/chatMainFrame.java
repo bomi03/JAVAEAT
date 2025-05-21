@@ -1,35 +1,50 @@
 import javax.swing.*;
+
+import model.Management;
+import model.Profile;
+import model.User;
+
 import java.awt.*;
+import java.util.HashMap;
 
 public class chatMainFrame extends JFrame {
-    CardLayout cardLayout;
-    JPanel mainPanel;
 
-    public chatMainFrame() {
+    private User user;
+    private Management manager;
+    private JPanel mainPanel;
+
+    CardLayout cardLayout;
+
+    public chatMainFrame(User user, Management manager) {
+
+        this.user =user;
+        this.manager = manager;
 
         setTitle("팀매칭 채팅 UI");
-        setSize(400, 700);
+        setSize(393, 852);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
+        mainPanel.setBackground(Color.decode("#FfFfFf"));
 
-        //각 패널 
-    
-
-
+        
         // 화면 등록
         ChatListPanel chatListPanel = new ChatListPanel(this);
         ChatDetailPanel detail1 = new ChatDetailPanel(this, 1);
         ChatDetailPanel detail2 = new ChatDetailPanel(this, 2);
         ChatDetailPanel detail3 = new ChatDetailPanel(this, 3);
 
+        
+
         JPanel notifyPanel = new JPanel();
         notifyPanel.add(new JLabel("알림 화면"));
 
         JPanel myPagPanel = new JPanel();
         myPagPanel.add(new JLabel("마이페이지"));
-        
+
+
+        // 패널 등록
         mainPanel.add(chatListPanel, "list");
         mainPanel.add(detail1, "detail1");
         mainPanel.add(detail2, "detail2");
@@ -54,10 +69,22 @@ public class chatMainFrame extends JFrame {
 
         // 하단  네비게이션 바
         BottomNavBar bottomNavBar = new BottomNavBar(
-            e -> MainFrame.main(null),
+            e -> {
+                new TeamListPage(user, manager);
+                dispose();
+            },
             e -> showPanel("list"),
-            e -> JOptionPane.showMessageDialog(this, "알림은 준비 중"),
-            e -> MyPage.main(null)
+            e -> showPanel("notify"),
+            e -> {
+                //[테스트용] MyPage가 실행되도록 임시 프로필 설정
+                Profile profile = new Profile(1,user.getUserID());
+                profile.setNickname("새송이버섯");
+                profile.setAdmissionYear("22학번");
+                user.setProfile(profile);
+                System.out.println("MyPage로 이동 시도");
+                new MyPage(user, manager);
+                dispose();
+            }
         );
         add(bottomNavBar, BorderLayout.PAGE_END);
 
@@ -71,6 +98,12 @@ public class chatMainFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-        new chatMainFrame();
+        Management manager = new Management(new HashMap<>());
+        User user = new User("서연","test","pw","s@sm.ac.kr");
+        manager.addUser(user);
+
+        SwingUtilities.invokeLater((()-> new chatMainFrame(user, manager)));
+        
+        
     }
 }
