@@ -79,6 +79,7 @@ public class CollaborationTypeTestDialog extends JDialog {
 
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
+        cardPanel.setBackground(Color.WHITE); // 배경 하얀색
         rebuildQuestions();
         getContentPane().add(cardPanel);
     }
@@ -92,6 +93,7 @@ public class CollaborationTypeTestDialog extends JDialog {
 
     private JPanel createQuestionPage(int index) {
         JPanel panel = new JPanel(null);
+        panel.setBackground(Color.WHITE); // 각 질문 화면 하얗게
         JLabel title = new JLabel("협업 유형 테스트", SwingConstants.CENTER);
         title.setBounds(0, 20, 393, 30);
         title.setFont(new Font("맑은 고딕", Font.BOLD, 18));
@@ -168,6 +170,7 @@ public class CollaborationTypeTestDialog extends JDialog {
             result = SongiType.샘송이;
         }
         JPanel panel = new JPanel(null);
+        panel.setBackground(Color.WHITE); // 결과 화면 배경도 하얗게
         JLabel title = new JLabel("결과", SwingConstants.CENTER);
         title.setBounds(0, 20, 393, 30);
         title.setFont(new Font("맑은 고딕", Font.BOLD, 18));
