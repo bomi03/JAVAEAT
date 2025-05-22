@@ -93,6 +93,16 @@ public class Management {
         }
         return null;
     }
+    //하원 추가 ApplicantDetailPage 에서 호출출
+    public User getUserByProfile(Profile profile) {
+        for (User u : allUsers) {
+            if (u.getProfile() != null && u.getProfile().getProfileID() == profile.getProfileID()) {
+                return u;
+            }
+        }
+        return null;
+    }
+    
 
 
     //05.20 서연 추가

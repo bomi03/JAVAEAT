@@ -2,17 +2,24 @@ import javax.swing.*;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.List;
+
+
 import model.User;
 import model.Management;
 import model.Post;
 import model.Profile;
 import model.Application;
+//add
+import model.Team;
+import model.ChatRoomManager;
+import model.ChatRoom;
 // import page.ApplicantDetailPage;
 
 public class PostDetailPage extends JFrame {
     private User user;
     private Management manager;
     private Post post;
+    private ChatRoomManager chatRoomManager;
 
     public PostDetailPage(User user, Management manager, Post post) {
         boolean isWriter = post != null
@@ -23,6 +30,8 @@ public class PostDetailPage extends JFrame {
         this.user = user;
         this.manager = manager;
         this.post = post;
+
+        this.chatRoomManager = new ChatRoomManager();
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setSize(393, 800);
@@ -153,7 +162,37 @@ public class PostDetailPage extends JFrame {
                 JButton detail = new JButton(">");
                 detail.setFocusPainted(false);
                 detail.addActionListener(e -> {
-                    new ApplicantDetailPage(app, profile);
+                    ApplicantDetailPage page = new ApplicantDetailPage(app, profile); // 기존
+
+                    // ✅ Team 찾거나 생성
+                    Team matchedTeam = null;
+                    for (Team t : Team.getAllTeams()) {
+                        if (t.getPostID() == post.getPostID()) {
+                            matchedTeam = t;
+                            break;
+                        }
+                    }
+                    if (matchedTeam == null) {
+                        matchedTeam = new Team(post.getPostID());
+                        Team.addTeam(matchedTeam);
+                    }
+
+                    // ✅ 의존성 주입
+                    page.setDependencies(post, matchedTeam, chatRoomManager, manager);
+
+                    // ✅ 수락 후 채팅화면으로 이동
+                    page.setOnAccept(chatRoom -> {
+                        dispose();//기존 페이지 닫기
+
+                        //chatMainFrame 열기
+                        chatMainFrame frame = new chatMainFrame(user, manager);
+                        frame.setLocationRelativeTo(null);
+                        frame.openChatRoom(chatRoom);
+
+                    
+                        
+
+                    });
                 });
 
                 JPanel btnP = new JPanel(new FlowLayout(FlowLayout.RIGHT));

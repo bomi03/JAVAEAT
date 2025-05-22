@@ -2,12 +2,28 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import model.Application;
+import model.ChatRoom;
+import model.ChatRoomManager;
+import model.Management;
 import model.Profile;
 // import popup.ProfilePopup;
-
+//추가 import
+import model.Post;
+import model.Team;
 public class ApplicantDetailPage extends JFrame {
     private Application application;
     private Profile profile;
+
+    //의존성 주입용 필드(생성자에서 안 받음음)
+    private Post post;
+    private Team team;
+    private ChatRoomManager chatRoomManager;
+    private Management manager;
+
+    //콜백 인터페이스 추가
+    private java.util.function.Consumer<ChatRoom> onAccept; // ✅ 추가
+
+
 
     public ApplicantDetailPage(Application application, Profile profile) {
         super("지원자 상세 정보");
@@ -21,6 +37,14 @@ public class ApplicantDetailPage extends JFrame {
         buildUI();
         setVisible(true);
     }
+    //필요한 객체 주입용 메서드
+    public void setDependencies(Post post, Team team, ChatRoomManager chatRoomManager, Management manager) {
+        this.post = post;
+        this.team = team;
+        this.chatRoomManager = chatRoomManager;
+        this.manager = manager;
+    }
+    //설정 메서드 추가
 
     private void buildUI() {
         JPanel contentPanel = new JPanel();
@@ -124,10 +148,27 @@ public class ApplicantDetailPage extends JFrame {
         acceptButton.setBackground(Color.WHITE);
         acceptButton.setForeground(Color.GRAY);
         acceptButton.setFocusPainted(false);
+        //하원 수정해야할 부분
         acceptButton.addActionListener(e -> {
-            application.accept();
-            JOptionPane.showMessageDialog(this, "지원자가 수락되었습니다.");
-            dispose();
+            try {
+                application.accept();//1단계 지원 상태 변경경
+                team.acceptAndCreateChat(profile, post, chatRoomManager, manager);
+
+                ChatRoom chatRoom = team.getChatRooms().get(team.getChatRooms().size()-1);
+                dispose();
+
+                JOptionPane.showMessageDialog(this, "지원자가 수락되었고 채팅방이 생성되었습니다.");
+                SwingUtilities.invokeLater(()->{
+                    chatMainFrame frame = new chatMainFrame(manager.getUserByProfile(profile),manager);
+                    frame.setLocationRelativeTo(null);
+                    frame.openChatRoom(chatRoom);
+                });
+
+           
+
+            } catch (IllegalAccessException ex) {
+                JOptionPane.showMessageDialog(this, "팀 수락 중 오류: " + ex.getMessage());
+            }
         });
 
         buttonPanel.add(rejectButton);
@@ -136,6 +177,11 @@ public class ApplicantDetailPage extends JFrame {
 
         add(contentPanel);
     }
+    //설정 메서드 추가
+    public void setOnAccept(java.util.function.Consumer<ChatRoom> onAccept) { // ✅ 추가
+        this.onAccept = onAccept;
+    }
+    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

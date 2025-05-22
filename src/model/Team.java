@@ -16,6 +16,9 @@ public class Team {
     private int postID;
     Map<Profile, String> memberRoles;
 
+    //추가: 채팅방 리스트 필드
+    private List<ChatRoom> chatRooms = new ArrayList<>();
+
     public Team (int postID){
         this.teamID = nextTeamId++;  // 보미 수정 - 팀 생성 시 인자를 하나만 받기 위해서 인자 하나 없애고 ++로 수정
         this.postID = postID;
@@ -32,7 +35,10 @@ public class Team {
     }
 
     public void accept(Profile profile,Post post) throws IllegalAccessException {
-        post.autoClosePost(); // 모집 마감 체크 - 보미 수정
+        System.out.println("DEBUG - 현재 인원: " + post.getCurrentApplicants());
+        System.out.println("DEBUG - 최대 인원: " + post.getMaxApplicants());
+        System.out.println("DEBUG - 마감 여부: " + post.isClosed());
+
         if(post.isClosed()){
 
             throw new IllegalAccessException("모집이 마감 되어 팀원을 추가할 수 없습니다.");
@@ -40,7 +46,12 @@ public class Team {
         if (!memberProfiles.contains(profile)){
             memberProfiles.add(profile);
             
+            post.increaseCurrentApplicants();; // 현재 인원 수 반영 기능 추가 할꺼면 Post.java에 메서드 생성하기기
+
+             
+            
         }
+        post.autoClosePost();
 
     }
 
@@ -68,6 +79,32 @@ public class Team {
         }
 
     
+    }
+
+    // 추가 : 채팅방 리스트 반환
+    public List<ChatRoom> getChatRooms(){
+        return Collections.unmodifiableList(chatRooms);
+    }
+
+    //추가: 채팅방 추가 메서드
+    public void addChatRoom(ChatRoom chatRoom){
+        chatRooms.add(chatRoom);
+    }
+
+    //추가: 수락 + 채팅방 생성 통합 메서드
+    public void acceptAndCreateChat(Profile profile, Post post, ChatRoomManager chatRoomManager, Management manager) throws IllegalAccessException {
+        accept(profile, post); // 기존 수락 로직 활용
+        Profile leader = manager.getProfileByID(post.getProfileID());
+
+        if(leader == null){
+            System.out.println("리더프로필을 찾을 수 없습니다.");
+            return;
+        }
+
+        ChatRoom chatRoom = chatRoomManager.createChatRoom(leader, profile, post.getPostID());
+
+        addChatRoom(chatRoom);
+        System.out.println("채팅방이 생성되었습니다. ID: " + chatRoom.getChatRoomID());
     }
 
     // Get 함수 - 보미 수정
