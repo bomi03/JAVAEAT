@@ -1,14 +1,24 @@
 import javax.swing.*;
+
+import model.ChatRoom;
+import model.Profile;
+
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
 
 public class ChatListPanel extends JPanel {
+    private chatMainFrame parentFrame;
+    private JPanel listContainer;
+
     public ChatListPanel(chatMainFrame frame) {
+        this.parentFrame = frame;
         setLayout(new BorderLayout());
 
        
         JPanel listPanel = new JPanel();
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
+        
 
         listPanel.add(createChatItem(frame, "송송이", "송송이님과 팀이 되었어요!", "detail1"));
         listPanel.add(createChatItem(frame, "논송", "010-XXXX-XXXX입니다", "detail2"));
@@ -16,7 +26,62 @@ public class ChatListPanel extends JPanel {
 
         JScrollPane scroll = new JScrollPane(listPanel);
         add(scroll, BorderLayout.CENTER);
+
+        refresh();
     }
+    public void refresh() {
+        removeAll(); // 기존 UI 모두 제거
+
+        // 최신 채팅방 정보 다시 가져오기
+        List<ChatRoom> rooms = parentFrame.getChatRooms();
+
+        JPanel listPanel = new JPanel();
+        listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
+        listPanel.setBackground(Color.WHITE);
+
+        for (ChatRoom room : rooms) {
+            // 참여자 이름 추출 (자기 제외)
+            String name = room.getParticipants().stream()
+                            .filter(p -> p.getProfileID() != parentFrame.getUser().getProfile().getProfileID())
+                            .map(Profile::getNickname)
+                            .findFirst()
+                            .orElse("알 수 없음");
+
+            // 최근 메시지 추출
+            String preview = room.getMessages().isEmpty() ?
+                            "대화를 시작해보세요!" :
+                            room.getMessages().get(room.getMessages().size() - 1).getContent();
+
+            // 카드형 패널로 추가
+            JPanel item = createChatItem(parentFrame, name, preview, "chatRoom_" + room.getChatRoomID());
+            listPanel.add(item);
+            listPanel.add(Box.createVerticalStrut(5));
+        }
+
+        JScrollPane scroll = new JScrollPane(listPanel);
+        scroll.setBorder(null);
+        add(scroll, BorderLayout.CENTER);
+
+        revalidate();
+        repaint();
+    }
+
+    /* 
+    public void refresh() {
+        removeAll();
+        // 예시: 모든 채팅방 목록을 다시 그리는 코드
+        List<ChatRoom> rooms = parentFrame.getChatRooms();
+        for (ChatRoom room : rooms) {
+            JButton btn = new JButton("채팅방 #" + room.getChatRoomID());
+            btn.addActionListener(e -> parentFrame.openChatRoom(room));
+            add(btn);
+        }
+        revalidate();
+        repaint();
+    }
+    */
+    
+    
 
     private JPanel createChatItem(chatMainFrame frame, String name, String message, String panelName) {
         JPanel item = new JPanel(new BorderLayout());

@@ -156,5 +156,9 @@ public class Post {
         
         return postID;
     }
+    public void increaseCurrentApplicants() {
+        this.currentApplicants++;
+    }
+    
 
 }

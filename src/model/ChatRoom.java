@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ChatRoom {
@@ -13,10 +14,10 @@ public class ChatRoom {
     private List<Profile> participants;
     private List<Message> messages;
 
-    public ChatRoom(Team team){
+    public ChatRoom(Profile p1,Profile p2,int postID){
         this.chatRoomID = nextID++;
-        this.postID = team.getPostID();
-        this.participants = new ArrayList<>(team.getMemberProfiles());
+        this.postID = postID;
+        this.participants = new ArrayList<>(Arrays.asList(p1,p2));
         this.messages = new ArrayList<>();
     }
     //전체 채팅방에 등록

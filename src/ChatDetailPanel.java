@@ -1,12 +1,16 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import model.ChatRoom;
+import model.Message;
 
 public class ChatDetailPanel extends JPanel {
     private JTextArea chatArea;
     private JTextField inputField;
+    private ChatRoom chatRoom;
 
-    public ChatDetailPanel(chatMainFrame frame, int chatType) {
+    public ChatDetailPanel(chatMainFrame frame, ChatRoom chatRoom) {
+        this.chatRoom = chatRoom; // ✅ 저장
         setLayout(new BorderLayout());
 
         // 👉 상단 전체 묶는 패널
@@ -44,11 +48,8 @@ public class ChatDetailPanel extends JPanel {
         summaryPanel.add(infoPanel, BorderLayout.CENTER);
         summaryPanel.add(thumbnail, BorderLayout.EAST);
 
-        // ✅ 상단 전체에 두 패널 추가
         topSection.add(topBar);
         topSection.add(summaryPanel);
-
-        // ✅ 전체 상단 영역을 NORTH에 한 번에 추가
         add(topSection, BorderLayout.NORTH);
 
         // 📄 채팅 내용 표시 영역
@@ -59,22 +60,11 @@ public class ChatDetailPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(chatArea);
         add(scrollPane, BorderLayout.CENTER);
 
-        // 🧾 채팅 내용 초기 세팅
-        switch (chatType) {
-            case 1 -> chatArea.setText("송송이님과 팀이 되었어요!\n");
-            case 2 -> chatArea.setText("""
-                논송님과 팀이 되었어요!
-                [상대] 안녕하세요!
-                [나] 안녕하세요! 팀원 한 분 모집될까요?
-                [상대] 네! 전화번호 주시면 단톡 만들고 연락 드릴게요!
-                [나] 010-XXXX-XXXX입니다 잘 부탁드립니다~\n""");
-            case 3 -> chatArea.setText("""
-                눈꽃송님과 팀이 되었어요!
-                [나] 안녕하세요!! 수락해주셔서 감사합니다!
-                https://XXX.XXX.XXX 초대링크입니다!
-                [상대] 여기로 들어가면 될까요?
-                [나] 네! 여기서 업무 협업을 조정하면 됩니다!
-                [상대] 알겠습니다!\n""");
+        // ✅ ChatRoom 메시지 불러오기
+        chatArea.setText("🧩 채팅방 ID: " + chatRoom.getChatRoomID() + "\n");
+        chatArea.append("👥 참여자 수: " + chatRoom.getParticipants().size() + "명\n");
+        for (Message msg : chatRoom.getMessages()) {
+            chatArea.append("[" + msg.getSenderID() + "] " + msg.getContent() + "\n");
         }
 
         // 💬 채팅 입력 바
@@ -82,9 +72,8 @@ public class ChatDetailPanel extends JPanel {
         inputField = new JTextField();
         JButton sendButton = new JButton("전송");
 
-        // 전송 버튼 누를 때 입력값을 아래 채팅창에 추가
         sendButton.addActionListener(e -> sendMessage());
-        inputField.addActionListener(e -> sendMessage()); // Enter 키도 가능
+        inputField.addActionListener(e -> sendMessage());
 
         inputPanel.add(inputField, BorderLayout.CENTER);
         inputPanel.add(sendButton, BorderLayout.EAST);
@@ -94,6 +83,14 @@ public class ChatDetailPanel extends JPanel {
     private void sendMessage() {
         String text = inputField.getText().trim();
         if (!text.isEmpty()) {
+            Message msg = new Message(
+                chatRoom.getMessages().size() + 1,  // 메시지 ID (단순 증가)
+                chatRoom.getChatRoomID(),
+                "나",  // 실제 senderID 필요 시 바꾸기
+                text
+            );
+            chatRoom.addMessage(msg);
+
             chatArea.append("[나] " + text + "\n");
             inputField.setText("");
         }
