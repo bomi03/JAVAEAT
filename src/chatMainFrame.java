@@ -100,22 +100,25 @@ public class chatMainFrame extends JFrame {
         return result;
     }
 
-    public void openChatRoom(ChatRoom chatRoom){
+    public void openChatRoom(ChatRoom chatRoom) {
         String key = "chatRoom_" + chatRoom.getChatRoomID();
-
-        for (Component comp : mainPanel.getComponents()){
+    
+        // 이미 등록된 패널인지 확인
+        for (Component comp : mainPanel.getComponents()) {
             if (key.equals(comp.getName())) {
                 showPanel(key);
                 return;
             }
         }
-
+    
+        // 패널이 없으면 새로 추가
         ChatDetailPanel detailPanel = new ChatDetailPanel(this, chatRoom);
-        detailPanel.setName(key);
+        detailPanel.setName(key); // 이름 설정 중요!!
         mainPanel.add(detailPanel, key);
         showPanel(key);
-        if (headerLabel != null) headerLabel.setText("채팅방");
+        headerLabel.setText("채팅방");
     }
+    
 
     public void refreshChatList(){
         for (Component comp : mainPanel.getComponents()) {

@@ -30,41 +30,18 @@ public class ChatListPanel extends JPanel {
         refresh();
     }
     public void refresh() {
-        removeAll(); // 기존 UI 모두 제거
-
-        // 최신 채팅방 정보 다시 가져오기
-        List<ChatRoom> rooms = parentFrame.getChatRooms();
-
-        JPanel listPanel = new JPanel();
-        listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
-        listPanel.setBackground(Color.WHITE);
-
-        for (ChatRoom room : rooms) {
-            // 참여자 이름 추출 (자기 제외)
-            String name = room.getParticipants().stream()
-                            .filter(p -> p.getProfileID() != parentFrame.getUser().getProfile().getProfileID())
-                            .map(Profile::getNickname)
-                            .findFirst()
-                            .orElse("알 수 없음");
-
-            // 최근 메시지 추출
-            String preview = room.getMessages().isEmpty() ?
-                            "대화를 시작해보세요!" :
-                            room.getMessages().get(room.getMessages().size() - 1).getContent();
-
-            // 카드형 패널로 추가
-            JPanel item = createChatItem(parentFrame, name, preview, "chatRoom_" + room.getChatRoomID());
-            listPanel.add(item);
-            listPanel.add(Box.createVerticalStrut(5));
-        }
-
-        JScrollPane scroll = new JScrollPane(listPanel);
-        scroll.setBorder(null);
-        add(scroll, BorderLayout.CENTER);
-
+        removeAll();
         revalidate();
         repaint();
+    
+        List<ChatRoom> rooms = parentFrame.getChatRooms();
+        for (ChatRoom room : rooms) {
+            JButton btn = new JButton("채팅방 #" + room.getChatRoomID());
+            btn.addActionListener(e -> parentFrame.openChatRoom(room));
+            add(btn);
+        }
     }
+    
 
     /* 
     public void refresh() {
