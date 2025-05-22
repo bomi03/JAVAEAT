@@ -3,14 +3,17 @@ import java.awt.*;
 import java.awt.event.*;
 import model.ChatRoom;
 import model.Message;
+import model.Profile;
 
 public class ChatDetailPanel extends JPanel {
     private JTextArea chatArea;
     private JTextField inputField;
     private ChatRoom chatRoom;
+    private Profile myProfile;//로그인한 사용자 프로필 저장 
 
     public ChatDetailPanel(chatMainFrame frame, ChatRoom chatRoom) {
         this.chatRoom = chatRoom; // ✅ 저장
+        this.myProfile = frame.getUser().getProfile();//현재 로그인한 유저의 프로필필
         setLayout(new BorderLayout());
 
         // 👉 상단 전체 묶는 패널
@@ -83,6 +86,7 @@ public class ChatDetailPanel extends JPanel {
     private void sendMessage() {
         String text = inputField.getText().trim();
         if (!text.isEmpty()) {
+            String senderName = myProfile.getUserID();
             Message msg = new Message(
                 chatRoom.getMessages().size() + 1,  // 메시지 ID (단순 증가)
                 chatRoom.getChatRoomID(),
@@ -91,7 +95,7 @@ public class ChatDetailPanel extends JPanel {
             );
             chatRoom.addMessage(msg);
 
-            chatArea.append("[나] " + text + "\n");
+            chatArea.append("[" + senderName +"]" + text + "\n");
             inputField.setText("");
         }
     }

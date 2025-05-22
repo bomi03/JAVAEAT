@@ -66,7 +66,7 @@ public class chatMainFrame extends JFrame {
         add(mainPanel, BorderLayout.CENTER);
 
         // 하단 네비게이션 바
-        BottomNavBar bottomNavBar = new BottomNavBar(
+        /*BottomNavBar bottomNavBar = new BottomNavBar(
             e -> {
                 new TeamListPage(user, manager);
                 dispose();
@@ -81,6 +81,16 @@ public class chatMainFrame extends JFrame {
                 new MyPage(user, manager);
                 dispose();
             }
+        ); */
+        
+        BottomNavBar bottomNavBar = new BottomNavBar(
+            e -> { new TeamListPage(user, manager); dispose(); },
+            e -> { showPanel("list"); },
+            e -> { NotificationPage page = new NotificationPage(user, manager);
+                    page.setVisible(true);
+                    dispose();
+                },
+            e -> { new MyPage(user, manager); dispose(); }
         );
         add(bottomNavBar, BorderLayout.PAGE_END);
 
