@@ -109,7 +109,6 @@ public class ApplicantDetailPage extends JFrame {
             imageLabel.setText("");
         } else {
             imageLabel.setBackground(Color.LIGHT_GRAY);
-            imageLabel.setText("IMG");
         }
 
         imageLabel.addMouseListener(new MouseAdapter() {
