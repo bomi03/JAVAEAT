@@ -26,7 +26,7 @@ public class PostDetailPage extends JFrame {
             && user.getProfile() != null
             && post.getProfileID() == user.getProfile().getProfileID();
 
-        setTitle(isWriter ? "모집글 상세 (팀장)" : "모집글 상세");
+        setTitle("모집글 상세");
         this.user = user;
         this.manager = manager;
         this.post = post;

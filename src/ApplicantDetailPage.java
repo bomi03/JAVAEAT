@@ -5,6 +5,7 @@ import model.Application;
 import model.ChatRoom;
 import model.ChatRoomManager;
 import model.Management;
+import model.NotificationType;
 import model.Profile;
 // import popup.ProfilePopup;
 //추가 import
@@ -61,9 +62,6 @@ public class ApplicantDetailPage extends JFrame {
         backButton.setPreferredSize(new Dimension(50, 30));
         backButton.setFocusPainted(false);
         backButton.addActionListener(e -> dispose());
-
-        // JLabel titleLabel = new JLabel("지원자 확인하기", SwingConstants.CENTER);
-        // titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 18f));
 
         JLabel titleLabel = new JLabel("지원자 확인하기", SwingConstants.CENTER);
         topBar.add(backButton, BorderLayout.WEST);
@@ -138,16 +136,6 @@ public class ApplicantDetailPage extends JFrame {
         buttonPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
         buttonPanel.setBackground(Color.WHITE);
 
-        // JButton rejectButton = new JButton("거절");
-        // rejectButton.setBackground(Color.WHITE);
-        // rejectButton.setForeground(Color.GRAY);
-        // rejectButton.setFocusPainted(false);
-        // rejectButton.addActionListener(e -> {
-        //     application.reject();
-        //     JOptionPane.showMessageDialog(this, "지원자가 거절되었습니다.");
-        //     dispose();
-        // });
-
         JButton rejectButton = new JButton("거절");
         rejectButton.setBackground(Color.WHITE);
         rejectButton.setForeground(Color.GRAY);
@@ -155,6 +143,15 @@ public class ApplicantDetailPage extends JFrame {
         rejectButton.addActionListener(e -> {
             application.reject();
             if (post != null) post.removeApplicationByProfileId(profile.getProfileID()); // ✅ 지원자 제거 추가
+            //0523 채빈 알림기능 추가
+            if (manager != null) {
+                manager.addNotification(
+                    profile.getUserID(),
+                    "팀 '" + post.getTitle() + "'에서 지원이 거절되었습니다.",
+                    NotificationType.REJECT,
+                    "/post/" + post.getPostID()
+                );
+            }
             JOptionPane.showMessageDialog(this, "지원자가 거절되었습니다.");
             dispose();
         });
@@ -171,6 +168,17 @@ public class ApplicantDetailPage extends JFrame {
                 team.acceptAndCreateChat(profile, post, chatRoomManager, manager);
 
                 ChatRoom chatRoom = team.getChatRooms().get(team.getChatRooms().size()-1);
+
+                //0523 채빈 알림 기능 추가
+                if (manager != null) {
+                    manager.addNotification(
+                        profile.getUserID(),
+                        "팀 '" + post.getTitle() + "'에서 당신을 팀원으로 수락했습니다.",
+                        NotificationType.ACCEPT,
+                        "/post/" + post.getPostID()
+                    );
+                }
+
                 dispose();
 
                 JOptionPane.showMessageDialog(this, "지원자가 수락되었고 채팅방이 생성되었습니다.");
