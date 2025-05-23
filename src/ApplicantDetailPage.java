@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+
 import java.awt.*;
 import java.awt.event.*;
 import model.Application;
@@ -94,8 +96,8 @@ public class ApplicantDetailPage extends JFrame {
         imageLabel.setPreferredSize(new Dimension(60, 60));
         imageLabel.setOpaque(true);
         imageLabel.setBackground(Color.LIGHT_GRAY);
+        imageLabel.setBorder(new LineBorder(Color.GRAY, 1, true));
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        imageLabel.setText("IMG");
 
         imageLabel.addMouseListener(new MouseAdapter() {
             @Override
