@@ -128,6 +128,17 @@ public class PostDetailPage extends JFrame {
         descPanel.setBackground(Color.WHITE);
         descPanel.setBorder(BorderFactory.createTitledBorder("모집 내용"));
 
+        // 📷 모집 이미지 표시
+        if (post.getPostImagePath() != null && !post.getPostImagePath().isEmpty()) {
+            ImageIcon originalIcon = new ImageIcon(post.getPostImagePath());
+            Image scaledImage = originalIcon.getImage().getScaledInstance(350, 200, Image.SCALE_SMOOTH);
+            JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
+            imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            imageLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+            contentPanel.add(imageLabel);
+        }   
+
+
         JTextArea descArea = new JTextArea(post.getDescription());
         descArea.setLineWrap(true);
         descArea.setWrapStyleWord(true);
