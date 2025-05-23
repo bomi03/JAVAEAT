@@ -134,15 +134,27 @@ public class ApplicantDetailPage extends JFrame {
         buttonPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
         buttonPanel.setBackground(Color.WHITE);
 
+        // JButton rejectButton = new JButton("거절");
+        // rejectButton.setBackground(Color.WHITE);
+        // rejectButton.setForeground(Color.GRAY);
+        // rejectButton.setFocusPainted(false);
+        // rejectButton.addActionListener(e -> {
+        //     application.reject();
+        //     JOptionPane.showMessageDialog(this, "지원자가 거절되었습니다.");
+        //     dispose();
+        // });
+
         JButton rejectButton = new JButton("거절");
         rejectButton.setBackground(Color.WHITE);
         rejectButton.setForeground(Color.GRAY);
         rejectButton.setFocusPainted(false);
         rejectButton.addActionListener(e -> {
             application.reject();
+            if (post != null) post.removeApplicationByProfileId(profile.getProfileID()); // ✅ 지원자 제거 추가
             JOptionPane.showMessageDialog(this, "지원자가 거절되었습니다.");
             dispose();
         });
+
 
         JButton acceptButton = new JButton("수락");
         acceptButton.setBackground(Color.WHITE);
