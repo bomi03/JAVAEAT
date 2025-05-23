@@ -118,8 +118,14 @@ public class Management {
         .filter(n -> n.getReceiverId().equals(userId))
         .sorted(Comparator.comparingInt(Notification::getNotificationId).reversed())
         .toList();
-}
+    }
 
+    // ✅ 오버로드된 알림 생성 메서드 추가
+    public void addNotification(String receiverId, String message, NotificationType type, String redirectUrl) {
+        int newId = notifications.size() + 1;
+        Notification noti = new Notification(newId, receiverId, message, type, false, redirectUrl);
+        notifications.add(noti);
+    }
 }
 
 

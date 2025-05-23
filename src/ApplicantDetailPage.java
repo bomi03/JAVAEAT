@@ -62,8 +62,12 @@ public class ApplicantDetailPage extends JFrame {
         backButton.setFocusPainted(false);
         backButton.addActionListener(e -> dispose());
 
+        // JLabel titleLabel = new JLabel("지원자 확인하기", SwingConstants.CENTER);
+        // titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 18f));
+
         JLabel titleLabel = new JLabel("지원자 확인하기", SwingConstants.CENTER);
-        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 18f));
+        topBar.add(backButton, BorderLayout.WEST);
+        topBar.add(titleLabel, BorderLayout.CENTER);
 
         topBar.add(backButton, BorderLayout.WEST);
         topBar.add(titleLabel, BorderLayout.CENTER);
