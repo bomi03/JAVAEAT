@@ -99,6 +99,19 @@ public class ApplicantDetailPage extends JFrame {
         imageLabel.setBorder(new LineBorder(Color.GRAY, 1, true));
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
+        //채빈 0523 프로필 이미지 연결 추가
+        String imgPath = profile.getProfileImagePath();
+        if (imgPath != null && !imgPath.isEmpty()) {
+            ImageIcon icon = new ImageIcon(new ImageIcon(imgPath)
+                .getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH));
+            imageLabel.setIcon(icon);
+            imageLabel.setBackground(Color.WHITE);
+            imageLabel.setText("");
+        } else {
+            imageLabel.setBackground(Color.LIGHT_GRAY);
+            imageLabel.setText("IMG");
+        }
+
         imageLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -149,7 +162,7 @@ public class ApplicantDetailPage extends JFrame {
             if (manager != null) {
                 manager.addNotification(
                     profile.getUserID(),
-                    "팀 '" + post.getTitle() + "'에서 지원이 거절되었습니다.",
+                    post.getTitle() + ": 팀 매칭이 거절되었어요.",
                     NotificationType.REJECT,
                     "/post/" + post.getPostID()
                 );
@@ -175,7 +188,7 @@ public class ApplicantDetailPage extends JFrame {
                 if (manager != null) {
                     manager.addNotification(
                         profile.getUserID(),
-                        "팀 '" + post.getTitle() + "'에서 당신을 팀원으로 수락했습니다.",
+                        post.getTitle() + ": 팀원이 되었어요!",
                         NotificationType.ACCEPT,
                         "/post/" + post.getPostID()
                     );
@@ -226,9 +239,3 @@ public class ApplicantDetailPage extends JFrame {
         });
     }
 }
-
-
-
-    
-
-
