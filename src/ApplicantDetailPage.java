@@ -1,10 +1,13 @@
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+
 import java.awt.*;
 import java.awt.event.*;
 import model.Application;
 import model.ChatRoom;
 import model.ChatRoomManager;
 import model.Management;
+import model.NotificationType;
 import model.Profile;
 // import popup.ProfilePopup;
 //추가 import
@@ -63,7 +66,8 @@ public class ApplicantDetailPage extends JFrame {
         backButton.addActionListener(e -> dispose());
 
         JLabel titleLabel = new JLabel("지원자 확인하기", SwingConstants.CENTER);
-        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 18f));
+        topBar.add(backButton, BorderLayout.WEST);
+        topBar.add(titleLabel, BorderLayout.CENTER);
 
         topBar.add(backButton, BorderLayout.WEST);
         topBar.add(titleLabel, BorderLayout.CENTER);
@@ -92,8 +96,21 @@ public class ApplicantDetailPage extends JFrame {
         imageLabel.setPreferredSize(new Dimension(60, 60));
         imageLabel.setOpaque(true);
         imageLabel.setBackground(Color.LIGHT_GRAY);
+        imageLabel.setBorder(new LineBorder(Color.GRAY, 1, true));
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        imageLabel.setText("IMG");
+
+        //채빈 0523 프로필 이미지 연결 추가
+        String imgPath = profile.getProfileImagePath();
+        if (imgPath != null && !imgPath.isEmpty()) {
+            ImageIcon icon = new ImageIcon(new ImageIcon(imgPath)
+                .getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH));
+            imageLabel.setIcon(icon);
+            imageLabel.setBackground(Color.WHITE);
+            imageLabel.setText("");
+        } else {
+            imageLabel.setBackground(Color.LIGHT_GRAY);
+            imageLabel.setText("IMG");
+        }
 
         imageLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -140,9 +157,20 @@ public class ApplicantDetailPage extends JFrame {
         rejectButton.setFocusPainted(false);
         rejectButton.addActionListener(e -> {
             application.reject();
+            if (post != null) post.removeApplicationByProfileId(profile.getProfileID()); // ✅ 지원자 제거 추가
+            //0523 채빈 알림기능 추가
+            if (manager != null) {
+                manager.addNotification(
+                    profile.getUserID(),
+                    post.getTitle() + ": 팀 매칭이 거절되었어요.",
+                    NotificationType.REJECT,
+                    "/post/" + post.getPostID()
+                );
+            }
             JOptionPane.showMessageDialog(this, "지원자가 거절되었습니다.");
             dispose();
         });
+
 
         JButton acceptButton = new JButton("수락");
         acceptButton.setBackground(Color.WHITE);
@@ -155,6 +183,17 @@ public class ApplicantDetailPage extends JFrame {
                 team.acceptAndCreateChat(profile, post, chatRoomManager, manager);
 
                 ChatRoom chatRoom = team.getChatRooms().get(team.getChatRooms().size()-1);
+
+                //0523 채빈 알림 기능 추가
+                if (manager != null) {
+                    manager.addNotification(
+                        profile.getUserID(),
+                        post.getTitle() + ": 팀원이 되었어요!",
+                        NotificationType.ACCEPT,
+                        "/post/" + post.getPostID()
+                    );
+                }
+
                 dispose();
 
                 JOptionPane.showMessageDialog(this, "지원자가 수락되었고 채팅방이 생성되었습니다.");
@@ -200,9 +239,3 @@ public class ApplicantDetailPage extends JFrame {
         });
     }
 }
-
-
-
-    
-
-
