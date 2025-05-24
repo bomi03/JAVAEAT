@@ -13,6 +13,7 @@ public class ChatRoom {
     private int postID;
     private List<Profile> participants;
     private List<Message> messages;
+    
 
     public ChatRoom(Profile p1,Profile p2,int postID){
         this.chatRoomID = nextID++;
@@ -53,6 +54,15 @@ public class ChatRoom {
 
     public List<Profile> getParticipants(){
         return participants;
+    }
+
+    public String getTargetName(Profile me){
+        for(Profile p : participants){
+            if(!p.equals(me)){
+                return p.getNickname();
+            }
+        }
+        return "알 수 없음";
     }
 
 }  
