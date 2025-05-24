@@ -5,8 +5,10 @@ import java.awt.event.*;
 import model.User;
 import model.Application;
 import model.Management;
+import model.NotificationType;
 import model.Post;
 // 보미 수정
+import model.Profile;
 
 public class TeamApplicationForm extends JFrame {
     //보미 수정
@@ -111,6 +113,17 @@ public class TeamApplicationForm extends JFrame {
             int newAppId = generateNewApplicationID();
             Application app = new Application(newAppId, post.getPostID(), user.getProfile().getProfileID(), input);
             post.addApplication(app);
+
+            // ✅ 팀장에게 알림 보내기 (채빈 수정)
+            if (manager != null) {
+                Profile writerProfile = manager.getProfileByID(post.getProfileID()); // 팀장 프로필
+                if (writerProfile != null) {
+                    String writerUserId = writerProfile.getUserID(); // 팀장 userID
+                    String msg = user.getProfile().getNickname() + " 님이 [" + post.getTitle() + "]에 지원했어요!";
+                    manager.addNotification(writerUserId, msg, NotificationType.APPLY, "/post/" + post.getPostID());
+                }
+            }
+
             // 보미 수정
 
             showSuccessDialog();
