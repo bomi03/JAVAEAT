@@ -11,6 +11,7 @@ import model.Management;
 import model.Test;
 import dialog.ProfilePopup;
 
+
 public class MyPage extends JFrame {
     private User user;
     private Management manager;
@@ -219,9 +220,11 @@ public class MyPage extends JFrame {
             dispose();
             new ProfilePage(user, manager, true, this);
         });
-        supportStatusBtn.addActionListener(e ->
-            JOptionPane.showMessageDialog(this, "지원 현황")
-        );
+        supportStatusBtn.addActionListener(e -> {
+            new MyApplicationsPage(user, manager);
+            dispose();
+        });
+
         myPostsBtn.addActionListener(e ->
             {                                  // ← 중괄호로 묶고
                new MyPostsPage(user, manager, profile.getProfileID());
