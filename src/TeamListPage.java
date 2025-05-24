@@ -136,6 +136,8 @@ public class TeamListPage extends JFrame {
     }
 
     private void refreshList() {
+
+        Post.getAllPosts().forEach(Post::autoClosePost);
         listPanel.removeAll();
 
         List<Post> all = Post.getAllPosts();
