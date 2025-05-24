@@ -7,7 +7,6 @@ import java.util.List;
 
 public class Post {
     // Post 클래스의 속성
-    private static List<Post> allPosts = new ArrayList<>();  // 모집글 리스트 (마이페이지-작성한 글에 사용하기 위해서)
     private int postID;  // 모집글 고유 ID
     private int profileID;  // 작성자의 프로필 ID
     private String postImagePath;  // 모집글 이미지 경로 
@@ -18,20 +17,8 @@ public class Post {
     private int maxApplicants;  // 최대 모집 인원
     private int currentApplicants;  // 모집된 인원
     private String description;  // 팀 설명
-    
-    //새로 만든 필드
+    private static List<Post> allPosts = new ArrayList<>();  // 모집글 리스트 (마이페이지-작성한 글에 사용하기 위해서)
     private List <Application> applications = new ArrayList<>();
-
-    public List<Application> getApplications(){
-        return applications;
-    }
-
-    public void addApplication(Application application){
-        applications.add(application);
-    }
-    public void removeApplicationByProfileId(int profileID){
-        applications.removeIf(app -> app.getProfileID() == profileID);
-    }
 
     // Post 클래스의 생성자
     public Post(int postID, int profileID, String postImagePath, String category, String title, String status, 
@@ -63,10 +50,10 @@ public class Post {
         }
     }
 
-    // Post 클래스의 메소드 - 모집글 삭제 메소드
-    public void deletePost() {
-        this.status = "삭제됨";
-    }
+    // // Post 클래스의 메소드 - 모집글 삭제 메소드
+    // public void deletePost() {
+    //     this.status = "삭제됨";
+    // }
 
     // Post 클래스의 메소드 - 모집 마감 메소드
     public void closePost() {
@@ -85,7 +72,7 @@ public class Post {
         return today.after(recruitDeadline);
     }
 
-    //post 클래스의 메소드 - 모집이 마감됬는지 확인하는 메소드(임의로 추가(하원))
+    //post 클래스의 메소드 - 모집이 마감되었는지 확인하는 메소드(임의로 추가(하원))
     public boolean isClosed(){
 
         return "모집완료".equals(this.status);
@@ -101,6 +88,14 @@ public class Post {
     // Post 클래스의 메소드 - 모집글 리스트에 모집글 추가
     public static void addPost(Post p) {
         allPosts.add(p);
+    }
+
+    public void addApplication(Application application){
+        applications.add(application);
+    }
+
+    public void removeApplicationByProfileId(int profileID){
+        applications.removeIf(app -> app.getProfileID() == profileID);
     }
 
     // Getter 메소드 - 모집글 리스트
@@ -147,6 +142,7 @@ public class Post {
     public String getDescription() {
         return description;
     }
+
     public int getProfileID() {
         
         return profileID;
@@ -156,6 +152,11 @@ public class Post {
         
         return postID;
     }
+
+    public List<Application> getApplications(){
+        return applications;
+    }
+
     public void increaseCurrentApplicants() {
         this.currentApplicants++;
     }
