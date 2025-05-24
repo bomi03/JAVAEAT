@@ -54,44 +54,56 @@ public class ChatListPanel extends JPanel {
         return topBar;
     } */
 
-    
-  
-  
-     public void refresh() {
+    public void refresh() {
         removeAll();
-    
+
+        // ✅ 상단 바 하나로 통일
+        JPanel topBar = new JPanel(new BorderLayout());
+        topBar.setBackground(Color.WHITE);
+        topBar.setPreferredSize(new Dimension(393, 50));
+        topBar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
+
+        JLabel titleLabel = new JLabel("채팅", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+        titleLabel.setForeground(Color.BLACK);
+        topBar.add(titleLabel, BorderLayout.CENTER);
+
+        add(topBar, BorderLayout.NORTH);
+
+        // ✅ 채팅 목록 영역
         JPanel listPanel = new JPanel();
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
+        listPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         listPanel.setBackground(Color.WHITE);
-    
+
         List<ChatRoom> rooms = parentFrame.getChatRooms();
-        if(rooms.isEmpty()){
-            JLabel emptyLabel = new JLabel("참여 중인 채팅방이 없습니다.",SwingConstants.CENTER);
-            emptyLabel.setFont(new Font("맑은 고딕",Font.PLAIN,14));
+        if (rooms.isEmpty()) {
+            JLabel emptyLabel = new JLabel("참여 중인 채팅방이 없습니다.", SwingConstants.CENTER);
+            emptyLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
             emptyLabel.setForeground(Color.GRAY);
-            emptyLabel.setBorder(BorderFactory.createEmptyBorder(20,0,0,0));
+            emptyLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
             listPanel.add(emptyLabel);
-        }else{
+        } else {
             Profile myProfile = parentFrame.getUser().getProfile();
             for (ChatRoom room : rooms) {
-                JPanel item = createChatItemForRoom(room,myProfile);
+                JPanel item = createChatItemForRoom(room, myProfile);
                 listPanel.add(item);
                 listPanel.add(createSeparator());
-            
+            }
+        }
 
-        }
-        }
-    
         JScrollPane scroll = new JScrollPane(listPanel);
         scroll.setBorder(null);
         scroll.getVerticalScrollBar().setUnitIncrement(16);
         scroll.setPreferredSize(new Dimension(393, 700));
 
         add(scroll, BorderLayout.CENTER);
-    
+
         revalidate();
         repaint();
     }
+  
+  
     
     private JPanel createChatItemForRoom(ChatRoom room,Profile myProfile) {
 

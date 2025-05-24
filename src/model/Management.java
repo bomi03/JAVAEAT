@@ -6,6 +6,8 @@ public class Management {
     // 답변 ID(String)와 송이 타입(SongiType) 간의 매핑
     private final Map<String, SongiType> answerToQuestion;
 
+    //하원 추가(0525)
+    private User currentUser;
 
     //사용자 리스트 필드 선언
     private final List<User> allUsers; 
@@ -111,6 +113,14 @@ public class Management {
             }
         }
         return null;
+    }
+    //하원 추가
+    public User getCurrentUser() {
+        return currentUser;
+    }
+    
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
     }
     
 

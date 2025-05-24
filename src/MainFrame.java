@@ -117,6 +117,7 @@ public class MainFrame {
 
             if (foundUser.isLoggedIn()) {
                 messageLabel.setForeground(new Color(0, 128, 0));
+                manager.setCurrentUser(foundUser);//로그인 유저 저장
                 SwingUtilities.getWindowAncestor(panel).dispose();
                 new TeamListPage(foundUser, manager); // ✅ 성공 시 메인 페이지로
             } else {

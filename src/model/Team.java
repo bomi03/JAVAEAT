@@ -105,6 +105,18 @@ public class Team {
 
         addChatRoom(chatRoom);
         System.out.println("채팅방이 생성되었습니다. ID: " + chatRoom.getChatRoomID());
+        
+        // ✅ 리더가 보낸 첫 환영 메시지 추가
+        Message welcome = new Message(
+            1, // 고정된 ID가 아닌 경우 ChatRoom에 generateMessageID() 메서드 추가 권장
+            chatRoom.getChatRoomID(),
+            leader.getUserID(),  // 반드시 리더 ID
+            "지원 감사합니다! 함께 하게 되어 반가워요."
+        );
+        chatRoom.addMessage(welcome);
+
+
+
     }
 
     // Get 함수 - 보미 수정
