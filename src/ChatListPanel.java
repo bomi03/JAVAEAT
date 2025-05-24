@@ -25,11 +25,10 @@ public class ChatListPanel extends JPanel {
         setBackground(Color.WHITE);
         setPreferredSize(new Dimension(393,852));
 
-        add(buildTopBar(),BorderLayout.NORTH);
 
         refresh();
     }
-    private JPanel buildTopBar() {
+    /*    private JPanel buildTopBar() {
         JPanel topBar = new JPanel(new BorderLayout());
         topBar.setPreferredSize(new Dimension(393, 50));
         topBar.setBackground(new Color(245, 245, 245));
@@ -53,22 +52,10 @@ public class ChatListPanel extends JPanel {
         topBar.add(title, BorderLayout.CENTER);
 
         return topBar;
-    }
-    /*
-     * public void refresh() {
-        removeAll();
-        revalidate();
-        repaint();
+    } */
+
     
-        List<ChatRoom> rooms = parentFrame.getChatRooms();
-        for (ChatRoom room : rooms) {
-            JButton btn = new JButton("채팅방 #" + room.getChatRoomID());
-            btn.addActionListener(e -> parentFrame.openChatRoom(room));
-            add(btn);
-        }
-    }
-    
-     */
+  
   
      public void refresh() {
         removeAll();
@@ -98,6 +85,8 @@ public class ChatListPanel extends JPanel {
         JScrollPane scroll = new JScrollPane(listPanel);
         scroll.setBorder(null);
         scroll.getVerticalScrollBar().setUnitIncrement(16);
+        scroll.setPreferredSize(new Dimension(393, 700));
+
         add(scroll, BorderLayout.CENTER);
     
         revalidate();
@@ -119,9 +108,16 @@ public class ChatListPanel extends JPanel {
         profileImg.setPreferredSize(new Dimension(50,50));
         profileImg.setMaximumSize(new Dimension(50,50));
 
-        ImageIcon icon = new ImageIcon("꾸꾸송이.png");
-        Image scaled = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-        profileImg.setIcon(new ImageIcon(scaled));
+        try{
+            ImageIcon icon = new ImageIcon("꾸꾸송이.png");
+            Image scaled = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            profileImg.setIcon(new ImageIcon(scaled));
+        } catch(Exception e){
+            System.out.println("이미지 로드 실패: " + e.getMessage());
+            profileImg.setText("?");
+
+        }
+
         item.add(profileImg,BorderLayout.WEST);
 
         // 텍스트 정보

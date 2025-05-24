@@ -202,7 +202,7 @@ public class MyPage extends JFrame {
 
         BottomNavBar nav = new BottomNavBar(
             e -> { new TeamListPage(user, manager); dispose(); },
-            e -> { /* 나중에 채팅 페이지 */ },
+            e -> { new chatMainFrame(user, manager); dispose(); },
             e -> { NotificationPage page = new NotificationPage(user, manager);
                     page.setVisible(true);
                     dispose();

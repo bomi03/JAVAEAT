@@ -32,10 +32,28 @@ public class chatMainFrame extends JFrame {
         setTitle("팀매칭 채팅 UI");
         setSize(393, 852);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(true);
+        setLayout(new BorderLayout());
 
+        // 상단바
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setPreferredSize(new Dimension(393, 50));
+        headerPanel.setBackground(Color.WHITE);
+        headerPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
+
+        headerLabel = new JLabel("채팅", SwingConstants.CENTER); // 👈 클래스 필드 사용
+        headerLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+        headerLabel.setForeground(Color.decode("#003087"));
+
+        headerPanel.add(headerLabel, BorderLayout.CENTER);
+        add(headerPanel, BorderLayout.NORTH);
+
+     
+
+        //CardLayout 중앙 영역
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
-        mainPanel.setBackground(Color.decode("#FfFfFf"));
+        mainPanel.setBackground(Color.WHITE);
 
         // 화면 등록
         ChatListPanel chatListPanel = new ChatListPanel(this);
@@ -51,37 +69,10 @@ public class chatMainFrame extends JFrame {
         mainPanel.add(notifyPanel, "notify");
         mainPanel.add(myPagPanel, "mypage");
 
-        // 상단 박스
-        JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(new Color(230, 230, 230));
-        headerPanel.setPreferredSize(new Dimension(0, 50));
-
-        headerLabel = new JLabel("채팅", SwingConstants.CENTER);
-        headerLabel.setFont(new Font("SanSerif", Font.BOLD, 18));
-
-        headerPanel.setLayout(new BorderLayout());
-        headerPanel.add(headerLabel, BorderLayout.CENTER);
-
-        add(headerPanel, BorderLayout.NORTH);
         add(mainPanel, BorderLayout.CENTER);
 
-        // 하단 네비게이션 바
-        /*BottomNavBar bottomNavBar = new BottomNavBar(
-            e -> {
-                new TeamListPage(user, manager);
-                dispose();
-            },
-            e -> showPanel("list"),
-            e -> showPanel("notify"),
-            e -> {
-                Profile profile = new Profile(1, user.getUserID());
-                profile.setNickname("새송이버섯");
-                profile.setAdmissionYear("22학번");
-                user.setProfile(profile);
-                new MyPage(user, manager);
-                dispose();
-            }
-        ); */
+ 
+
         
         BottomNavBar bottomNavBar = new BottomNavBar(
             e -> { new TeamListPage(user, manager); dispose(); },
@@ -144,19 +135,12 @@ public class chatMainFrame extends JFrame {
     public void showPreviousPage(){
         showPanel("list");
     }
+    public Management getManager() {
+        return manager;
+    }
+    
 
     public static void main(String[] args) {
-        /*
-        Management manager = new Management(new HashMap<>());
-        User user = new User("서연", "test", "pw", "s@sm.ac.kr");
-        manager.addUser(user);
-        SwingUtilities.invokeLater(() -> {
-            chatMainFrame frame = new chatMainFrame(user, manager);
-            // 채팅방이 있다면 열기
-            for (ChatRoom room : frame.getChatRooms()) {
-                frame.openChatRoom(room);
-            }
-        });
-        */
+       
     }
 }
