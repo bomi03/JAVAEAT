@@ -133,46 +133,8 @@ public class User {
     public Profile getProfile() { return profile; }
     //User 객체 안에 있는 profile 객체를 외부에서 접근할 수 있게 
 
-    /* 사용 예시 
-        User user = ...; // 로그인한 사용자 객체
-        Profile p = user.getProfile();
-
-        System.out.println("한 줄 소개: " + p.getBio());
-        System.out.println("전공: " + p.getMajor());
-     */
 
 
-     //모집글 스크랩 하기 
-    public void bookmark(Post post) {
-        if (post == null) {
-            System.out.println("유효하지 않은 게시글입니다.");
-            return;
-        }
-    
-        if (bookmark.contains(post)) {
-            System.out.println("이미 스크랩한 게시글입니다.");
-        } else {
-            bookmark.add(post);
-        }
-    }
-
-    /* 
-        사용 예시
-        Post post1 = new Post("글 제목", "내용", ...);
-        user.bookmark(post1);
-        user.unbookmark(post1);
-
-    */
-    // 모집글 스크랩 해제
-    public void unbookmark(Post post) {
-        if (bookmark.contains(post)) {
-            bookmark.remove(post);
-            System.out.println("스크랩이 해제되었습니다.");
-        } else {
-            System.out.println("스크랩한 게시글이 아닙니다.");
-        }
-    }
-    
     //알림 수신
     public void receiveNotification(String message) {
         if (message == null || message.trim().isEmpty()) {
@@ -184,12 +146,6 @@ public class User {
 
     }
 
-    /*
-    사용 예시
-    user.receiveNotification("새로운 댓글이 있습니다.")
-    user.receiveNotification("새로운 지원자가 있습니다.")
-     */
-    
 
     //회원 탈퇴
     public void withdraw() {
@@ -221,11 +177,6 @@ public class User {
     return password;
 }
 
-
-    //사용자가 스크랩한 글 불러오기
-    public List<Post> getBookmarkedPosts() { 
-        return bookmark; }
-
     //사용자가 작성한 모집글 불러오기 
     public List<Post> getMyPosts() { 
         return myPosts; }
@@ -235,22 +186,22 @@ public class User {
         return myApplications; }
 
 
-        public static String findUserIdByEmail(String email, List<User> allUsers) {
-            for (User u : allUsers) {
-                if (u.getEmail().equals(email)) {
-                    return "아이디: " + u.getUserID();
-                }
+    public static String findUserIdByEmail(String email, List<User> allUsers) {
+        for (User u : allUsers) {
+            if (u.getEmail().equals(email)) {
+                return "아이디: " + u.getUserID();
             }
-            return "해당 이메일로 등록된 아이디가 없습니다.";
         }
+        return "해당 이메일로 등록된 아이디가 없습니다.";
+    }
 
-        public static String findPasswordByIdAndEmail(String userID, String email, List<User> allUsers) {
-            for (User u : allUsers) {
-                if (u.getUserID().equals(userID) && u.getEmail().equals(email)) {
-                    return "비밀번호: " + u.password;
-                }
+    public static String findPasswordByIdAndEmail(String userID, String email, List<User> allUsers) {
+        for (User u : allUsers) {
+            if (u.getUserID().equals(userID) && u.getEmail().equals(email)) {
+                return "비밀번호: " + u.password;
             }
-            return "입력하신 정보와 일치하는 계정이 없습니다.";
+        }
+        return "입력하신 정보와 일치하는 계정이 없습니다.";
 }
 
 public boolean signup(String username, String userID, String password, String passwordCheck,
@@ -317,3 +268,37 @@ public boolean signup(String username, String userID, String password, String pa
 
     
 }
+
+/* 사용하지 않는 메서드 
+
+     //모집글 스크랩 하기 
+    public void bookmark(Post post) {
+        if (post == null) {
+            System.out.println("유효하지 않은 게시글입니다.");
+            return;
+        }
+    
+        if (bookmark.contains(post)) {
+            System.out.println("이미 스크랩한 게시글입니다.");
+        } else {
+            bookmark.add(post);
+        }
+    }
+
+
+    // 모집글 스크랩 해제
+    public void unbookmark(Post post) {
+        if (bookmark.contains(post)) {
+            bookmark.remove(post);
+            System.out.println("스크랩이 해제되었습니다.");
+        } else {
+            System.out.println("스크랩한 게시글이 아닙니다.");
+        }
+    }
+    
+
+    
+    //사용자가 스크랩한 글 불러오기
+    public List<Post> getBookmarkedPosts() { 
+        return bookmark; }
+ */
