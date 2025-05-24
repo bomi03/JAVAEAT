@@ -53,7 +53,6 @@ public class MyPostsPage extends JFrame {
         });
 
         JLabel title = new JLabel("작성한 글", SwingConstants.CENTER);
-        title.setFont(title.getFont().deriveFont(Font.BOLD, 16f));
         title.setForeground(Color.decode("#4A4A4A"));
         title.setBounds(0, 15, 393, 30);
         header.add(title);
@@ -149,7 +148,10 @@ public class MyPostsPage extends JFrame {
         row.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // TODO: 상세 페이지 연결
+                // 현재 MyPostsPage 닫고
+                dispose();
+                // PostDetailPage 열기 (PostDetailPage 내부에서 isWriter 판별)
+                new PostDetailPage(user, manager, p);
             }
         });
 
