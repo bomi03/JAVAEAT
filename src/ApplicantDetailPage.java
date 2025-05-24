@@ -197,7 +197,7 @@ public class ApplicantDetailPage extends JFrame {
 
                 JOptionPane.showMessageDialog(this, "지원자가 수락되었고 채팅방이 생성되었습니다.");
                 SwingUtilities.invokeLater(()->{
-                    chatMainFrame frame = new chatMainFrame(manager.getUserByProfile(profile),manager);
+                    chatMainFrame frame = new chatMainFrame(manager.getCurrentUser(),manager);
                     frame.setLocationRelativeTo(null);
                     frame.openChatRoom(chatRoom);
                 });

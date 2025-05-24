@@ -61,8 +61,13 @@ public class ChatDetailPanel extends JPanel {
 
         if(post != null){
             String title = post.getTitle();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-            String deadline = sdf.format(post.getRecruitDeadline());
+            String deadline;
+            if (post.getRecruitDeadline() != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+                deadline = sdf.format(post.getRecruitDeadline());
+            } else {
+                deadline = "정해진 기간이 없습니다.";
+            }
             String members = post.getCurrentApplicants() + "/" + post.getMaxApplicants() + "명";
 
             infoPanel.add(new JLabel(title));

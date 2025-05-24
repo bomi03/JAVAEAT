@@ -35,7 +35,7 @@ public class chatMainFrame extends JFrame {
         setResizable(true);
         setLayout(new BorderLayout());
 
-        // 상단바
+        /*상단바
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setPreferredSize(new Dimension(393, 50));
         headerPanel.setBackground(Color.WHITE);
@@ -43,10 +43,12 @@ public class chatMainFrame extends JFrame {
 
         headerLabel = new JLabel("채팅", SwingConstants.CENTER); // 👈 클래스 필드 사용
         headerLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
-        headerLabel.setForeground(Color.decode("#003087"));
+        headerLabel.setForeground(Color.BLACK);
 
         headerPanel.add(headerLabel, BorderLayout.CENTER);
         add(headerPanel, BorderLayout.NORTH);
+        */
+        
 
      
 
