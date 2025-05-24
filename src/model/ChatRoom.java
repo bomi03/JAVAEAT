@@ -49,6 +49,10 @@ public class ChatRoom {
     public void addMessage(Message message){
         messages.add(message);
     }
+    public int getPostID() {
+        return postID;
+    }
+    
 
     
 

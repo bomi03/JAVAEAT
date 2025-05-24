@@ -102,6 +102,16 @@ public class Management {
         }
         return null;
     }
+    //하원 추가 
+    public Post getPostByID(int id){
+        List<Post> allPosts = Post.getAllPosts();
+        for(Post post:allPosts){
+            if(post.getPostID() == id){
+                return post;
+            }
+        }
+        return null;
+    }
     
 
 
