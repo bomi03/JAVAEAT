@@ -113,6 +113,7 @@ public class TeamApplicationForm extends JFrame {
             int newAppId = generateNewApplicationID();
             Application app = new Application(newAppId, post.getPostID(), user.getProfile().getProfileID(), input);
             post.addApplication(app);
+            user.apply(app); // 지원현황 추가
 
             // ✅ 팀장에게 알림 보내기 (채빈 수정)
             if (manager != null) {
