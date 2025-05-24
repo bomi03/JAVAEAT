@@ -141,6 +141,9 @@ public class chatMainFrame extends JFrame {
     public User getUser() {
         return user;
     }
+    public void showPreviousPage(){
+        showPanel("list");
+    }
 
     public static void main(String[] args) {
         /*

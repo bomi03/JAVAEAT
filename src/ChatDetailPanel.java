@@ -90,7 +90,7 @@ public class ChatDetailPanel extends JPanel {
             Message msg = new Message(
                 chatRoom.getMessages().size() + 1,  // 메시지 ID (단순 증가)
                 chatRoom.getChatRoomID(),
-                "나",  // 실제 senderID 필요 시 바꾸기
+                senderName,  // 실제 senderID 필요 시 바꾸기
                 text
             );
             chatRoom.addMessage(msg);
