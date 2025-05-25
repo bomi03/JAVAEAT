@@ -7,10 +7,13 @@ import model.*;
 public class NotificationPage extends JFrame {
     private final User user;
     private final Management manager;
+    private final Runnable onBack;
+
 
     public NotificationPage(User user, Management manager) {
         this.user = user;
         this.manager = manager;
+        this.onBack = onBack;
 
         setTitle("알림");
         setSize(393, 852);
@@ -29,7 +32,10 @@ public class NotificationPage extends JFrame {
         backButton.setFocusPainted(false);
         backButton.setBorderPainted(false);
         backButton.setBackground(Color.WHITE);
-        backButton.addActionListener(e -> dispose());
+        backButton.addActionListener(e -> {
+        dispose();
+        onBack.run(); // 뒤로가기 동작 실행
+        });
         headerPanel.add(backButton);
 
         JLabel titleLabel = new JLabel("알림", SwingConstants.CENTER);
@@ -123,7 +129,8 @@ public static void main(String[] args) {
         mgr.addUser(u); // 안 해도 되지만 혹시 모를 참조 대비
 
         // 🔍 알림 페이지 띄우기
-        new NotificationPage(u, mgr);
+        new NotificationPage(u, mgr, () -> new TeamListPage(u, mgr));
+
     });
 }
 }
