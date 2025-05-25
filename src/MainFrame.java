@@ -76,6 +76,7 @@ public class MainFrame {
         signupLabel.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 new JoinFrame(manager);
+                SwingUtilities.getWindowAncestor(panel).dispose(); // ✅ 현재 로그인 창 닫기
             }
         });
 
@@ -86,6 +87,7 @@ public class MainFrame {
         findIdLabel.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 new FindIdFrame(manager);
+                SwingUtilities.getWindowAncestor(panel).dispose(); // ✅ 현재 로그인 창 닫기
             }
         });
 
@@ -96,6 +98,7 @@ public class MainFrame {
         findPwLabel.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 new FindPwFrame(manager);
+                SwingUtilities.getWindowAncestor(panel).dispose(); // ✅ 현재 로그인 창 닫기
             }
         });
 

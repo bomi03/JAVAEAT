@@ -30,6 +30,7 @@ public class JoinFrame extends JFrame {
 
         JSeparator separator = new JSeparator();
         separator.setBounds(20, 50, 350, 1);
+        separator.setForeground(Color.decode("#E0E0E0"));
         add(separator);
 
         // 이름
@@ -38,8 +39,8 @@ public class JoinFrame extends JFrame {
         add(nameLabel);
 
         JLabel nameRequiredLabel = new JLabel("*필수입력항목입니다");
-        nameRequiredLabel.setFont(new Font("SansSerif", Font.PLAIN, 10));
-        nameRequiredLabel.setForeground(new Color(204, 85, 0));
+        nameRequiredLabel.setFont(new Font("SansSerif", Font.BOLD,12));
+        nameRequiredLabel.setForeground(Color.decode("#D9D9D9"));
         nameRequiredLabel.setBounds(70, 70, 150, 25);
         add(nameRequiredLabel);
 
@@ -59,8 +60,8 @@ public class JoinFrame extends JFrame {
         add(idLabel);
 
         JLabel idRequiredLabel = new JLabel("*필수입력항목입니다");
-        idRequiredLabel.setFont(new Font("SansSerif", Font.PLAIN, 10));
-        idRequiredLabel.setForeground(new Color(204, 85, 0));
+        idRequiredLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
+        idRequiredLabel.setForeground(Color.decode("#D9D9D9"));
         idRequiredLabel.setBounds(75, 140, 150, 25);
         add(idRequiredLabel);
 
@@ -80,8 +81,8 @@ public class JoinFrame extends JFrame {
         add(pwLabel);
 
         JLabel pwRequiredLabel = new JLabel("*필수입력항목입니다");
-        pwRequiredLabel.setFont(new Font("SansSerif", Font.PLAIN, 10));
-        pwRequiredLabel.setForeground(new Color(204, 85, 0));
+        pwRequiredLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
+        pwRequiredLabel.setForeground(Color.decode("#D9D9D9"));
         pwRequiredLabel.setBounds(90, 210, 150, 25);
         add(pwRequiredLabel);
 
@@ -100,6 +101,12 @@ public class JoinFrame extends JFrame {
         pwCheckLabel.setBounds(30, 290, 100, 25);
         add(pwCheckLabel);
 
+        JLabel pwCheckRequiredLabel = new JLabel("*필수입력항목입니다");
+        pwCheckRequiredLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
+        pwCheckRequiredLabel.setForeground(Color.decode("#D9D9D9"));
+        pwCheckRequiredLabel.setBounds(120, 290, 150, 25);
+        add(pwCheckRequiredLabel);
+
         JPasswordField pwCheckField = new JPasswordField();
         pwCheckField.setBounds(30, 320, 320, 30);
         add(pwCheckField);
@@ -114,6 +121,13 @@ public class JoinFrame extends JFrame {
         JLabel emailLabel = new JLabel("이메일");
         emailLabel.setBounds(30, 360, 100, 25);
         add(emailLabel);
+
+        JLabel emailRequiredLabel = new JLabel("*필수입력항목입니다");
+        emailRequiredLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
+        emailRequiredLabel.setForeground(Color.decode("#D9D9D9"));
+        emailRequiredLabel.setBounds(90, 360, 150, 25);
+        add(emailRequiredLabel);
+
 
         JTextField emailField = new JTextField();
         emailField.setBounds(30, 390, 200, 30);
@@ -134,6 +148,11 @@ public class JoinFrame extends JFrame {
         JLabel authLabel = new JLabel("인증번호");
         authLabel.setBounds(30, 430, 100, 25);
         add(authLabel);
+        JLabel authRequiredLabel = new JLabel("*필수입력항목입니다");
+        authRequiredLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
+        authRequiredLabel.setForeground(Color.decode("#D9D9D9"));
+        authRequiredLabel.setBounds(90, 430, 150, 25);
+        add(authRequiredLabel);
 
         authCodeField = new JTextField();
         authCodeField.setBounds(30, 460, 320, 30);

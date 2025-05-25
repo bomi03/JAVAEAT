@@ -25,12 +25,12 @@ public class FindPwFrame extends JFrame {
         backButton.addActionListener(e -> dispose());
 
         JLabel titleLabel = new JLabel("비밀번호 찾기", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
         titleLabel.setBounds(120, 10, 150, 30);
         add(titleLabel);
 
         JSeparator separator = new JSeparator();
         separator.setBounds(20, 50, 350, 1);
+        separator.setForeground(Color.decode("#E0E0E0"));
         add(separator);
 
         JLabel guideLabel = new JLabel("회원가입시 등록한 아이디와 이메일을 입력해주세요");

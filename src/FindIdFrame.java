@@ -26,13 +26,13 @@ public class FindIdFrame extends JFrame {
 
         // 제목
         JLabel titleLabel = new JLabel("아이디 찾기", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
         titleLabel.setBounds(120, 10, 150, 30);
         add(titleLabel);
 
         // 구분선
         JSeparator separator = new JSeparator();
         separator.setBounds(20, 50, 350, 1);
+        separator.setForeground(Color.decode("#E0E0E0"));
         add(separator);
 
         // 안내 문구

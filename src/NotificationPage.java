@@ -7,13 +7,11 @@ import model.*;
 public class NotificationPage extends JFrame {
     private final User user;
     private final Management manager;
-    private final Runnable onBack;
 
 
     public NotificationPage(User user, Management manager) {
         this.user = user;
         this.manager = manager;
-        this.onBack = onBack;
 
         setTitle("알림");
         setSize(393, 852);
@@ -27,20 +25,26 @@ public class NotificationPage extends JFrame {
         headerPanel.setPreferredSize(new Dimension(393, 50));
         headerPanel.setBackground(Color.WHITE);
 
-        JButton backButton = new JButton("←");
-        backButton.setBounds(10, 10, 50, 30);
-        backButton.setFocusPainted(false);
-        backButton.setBorderPainted(false);
-        backButton.setBackground(Color.WHITE);
-        backButton.addActionListener(e -> {
-        dispose();
-        onBack.run(); // 뒤로가기 동작 실행
-        });
-        headerPanel.add(backButton);
+        // 뒤로가기 주석처리 
+        // JButton backButton = new JButton("←");
+        // backButton.setBounds(10, 10, 50, 30);
+        // backButton.setFocusPainted(false);
+        // backButton.setBorderPainted(false);
+        // backButton.setBackground(Color.WHITE);
+        // backButton.addActionListener(e -> {
+        // dispose();
+        // });
+        // headerPanel.add(backButton);
 
         JLabel titleLabel = new JLabel("알림", SwingConstants.CENTER);
         titleLabel.setBounds(0, 10, 393, 30);
         headerPanel.add(titleLabel);
+
+        // 구분선
+        JSeparator separator = new JSeparator();
+        separator.setBounds(20, 50, 350, 1);
+        separator.setForeground(Color.decode("#E0E0E0"));
+        add(separator);
 
         // 📄 알림 리스트 패널
         JPanel listPanel = new JPanel();
@@ -62,7 +66,7 @@ public class NotificationPage extends JFrame {
             msgLabel.setFont(new Font("SansSerif", Font.PLAIN, 13));
             card.add(msgLabel);
 
-            JLabel postTitle = new JLabel("공모전 OOOOOO " + noti.getRedirectUrl());
+            JLabel postTitle = new JLabel(noti.getRedirectUrl());
             postTitle.setBounds(10, 25, 300, 20);
             postTitle.setFont(new Font("SansSerif", Font.BOLD, 12));
             card.add(postTitle);
@@ -129,7 +133,7 @@ public static void main(String[] args) {
         mgr.addUser(u); // 안 해도 되지만 혹시 모를 참조 대비
 
         // 🔍 알림 페이지 띄우기
-        new NotificationPage(u, mgr, () -> new TeamListPage(u, mgr));
+        new NotificationPage(u, mgr);
 
     });
 }
