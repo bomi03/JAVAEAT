@@ -32,6 +32,23 @@ public class TeamApplicationForm extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
 
+        getContentPane().setBackground(Color.WHITE);
+        setLocationRelativeTo(null);
+
+       // 추가: 뒤로가기 버튼
+        JButton backButton = new JButton("<");
+        backButton.setBounds(10, 10, 50, 30);
+        backButton.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
+        backButton.setFocusPainted(false);
+        backButton.setBackground(new Color(230, 230, 230));  // Gray style 대체
+        backButton.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        backButton.addActionListener(e -> {
+            dispose(); // 변경: 창 닫기 후
+            new PostDetailPage(user, manager, post); // 모집글 상세 페이지로 이동
+        });
+        add(backButton);
+        // 추가 끝
+
         JLabel titleLabel = new JLabel("지원하기", SwingConstants.CENTER);
         titleLabel.setBounds(0, 10, 393, 40);
         titleLabel.setFont(new Font("맑은 고딕", Font.BOLD, 18));
@@ -54,7 +71,7 @@ public class TeamApplicationForm extends JFrame {
         scrollPane.setBounds(30, 95, 330, 200);
         add(scrollPane);
 
-        // Focus events to simulate placeholder
+        // simulate placeholder 포커스 이벤트
         introArea.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
