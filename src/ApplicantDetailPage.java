@@ -1,12 +1,32 @@
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+
 import java.awt.*;
 import java.awt.event.*;
 import model.Application;
+import model.ChatRoom;
+import model.ChatRoomManager;
+import model.Management;
+import model.NotificationType;
 import model.Profile;
-
+// import popup.ProfilePopup;
+//추가 import
+import model.Post;
+import model.Team;
 public class ApplicantDetailPage extends JFrame {
     private Application application;
     private Profile profile;
+
+    //의존성 주입용 필드(생성자에서 안 받음음)
+    private Post post;
+    private Team team;
+    private ChatRoomManager chatRoomManager;
+    private Management manager;
+
+    //콜백 인터페이스 추가
+    private java.util.function.Consumer<ChatRoom> onAccept; // ✅ 추가
+
+
 
     public ApplicantDetailPage(Application application, Profile profile) {
         super("지원자 상세 정보");
@@ -20,6 +40,14 @@ public class ApplicantDetailPage extends JFrame {
         buildUI();
         setVisible(true);
     }
+    //필요한 객체 주입용 메서드
+    public void setDependencies(Post post, Team team, ChatRoomManager chatRoomManager, Management manager) {
+        this.post = post;
+        this.team = team;
+        this.chatRoomManager = chatRoomManager;
+        this.manager = manager;
+    }
+    //설정 메서드 추가
 
     private void buildUI() {
         JPanel contentPanel = new JPanel();
@@ -38,7 +66,8 @@ public class ApplicantDetailPage extends JFrame {
         backButton.addActionListener(e -> dispose());
 
         JLabel titleLabel = new JLabel("지원자 확인하기", SwingConstants.CENTER);
-        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 18f));
+        topBar.add(backButton, BorderLayout.WEST);
+        topBar.add(titleLabel, BorderLayout.CENTER);
 
         topBar.add(backButton, BorderLayout.WEST);
         topBar.add(titleLabel, BorderLayout.CENTER);
@@ -54,9 +83,10 @@ public class ApplicantDetailPage extends JFrame {
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
         textPanel.setBackground(Color.WHITE);
 
-        JLabel nameLabel = new JLabel("새송이버섯");
+        JLabel nameLabel = new JLabel(profile.getNickname() != null ? profile.getNickname() : "이름 없음");
         nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD, 16f));
-        JLabel idLabel = new JLabel("22학번");
+
+        JLabel idLabel = new JLabel(profile.getAdmissionYear() != null ? profile.getAdmissionYear() : "학번 없음");
         idLabel.setFont(idLabel.getFont().deriveFont(Font.PLAIN, 12f));
 
         textPanel.add(nameLabel);
@@ -66,8 +96,20 @@ public class ApplicantDetailPage extends JFrame {
         imageLabel.setPreferredSize(new Dimension(60, 60));
         imageLabel.setOpaque(true);
         imageLabel.setBackground(Color.LIGHT_GRAY);
+        imageLabel.setBorder(new LineBorder(Color.GRAY, 1, true));
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        imageLabel.setText("IMG");
+
+        //채빈 0523 프로필 이미지 연결 추가
+        String imgPath = profile.getProfileImagePath();
+        if (imgPath != null && !imgPath.isEmpty()) {
+            ImageIcon icon = new ImageIcon(new ImageIcon(imgPath)
+                .getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH));
+            imageLabel.setIcon(icon);
+            imageLabel.setBackground(Color.WHITE);
+            imageLabel.setText("");
+        } else {
+            imageLabel.setBackground(Color.LIGHT_GRAY);
+        }
 
         imageLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -78,7 +120,6 @@ public class ApplicantDetailPage extends JFrame {
 
         profilePanel.add(textPanel, BorderLayout.WEST);
         profilePanel.add(imageLabel, BorderLayout.EAST);
-
         contentPanel.add(profilePanel);
 
         // 자기소개 영역
@@ -88,7 +129,7 @@ public class ApplicantDetailPage extends JFrame {
         introLabel.setHorizontalAlignment(SwingConstants.LEFT);
         introLabel.setMaximumSize(new Dimension(Integer.MAX_VALUE, introLabel.getPreferredSize().height));
 
-        JTextArea introArea = new JTextArea(application.getMessage());
+        JTextArea introArea = new JTextArea(application.getMessage() != null ? application.getMessage() : "자기소개 없음");
         introArea.setLineWrap(true);
         introArea.setWrapStyleWord(true);
         introArea.setEditable(false);
@@ -110,53 +151,90 @@ public class ApplicantDetailPage extends JFrame {
         buttonPanel.setBackground(Color.WHITE);
 
         JButton rejectButton = new JButton("거절");
-        rejectButton.setBackground(Color.white);
-        rejectButton.setForeground(Color.gray);
+        rejectButton.setBackground(Color.WHITE);
+        rejectButton.setForeground(Color.GRAY);
         rejectButton.setFocusPainted(false);
         rejectButton.addActionListener(e -> {
             application.reject();
+            if (post != null) post.removeApplicationByProfileId(profile.getProfileID()); // ✅ 지원자 제거 추가
+            //0523 채빈 알림기능 추가
+            if (manager != null) {
+                manager.addNotification(
+                    profile.getUserID(),
+                    post.getTitle() + ": 팀 매칭이 거절되었어요.",
+                    NotificationType.REJECT,
+                    "/post/" + post.getPostID()
+                );
+            }
             JOptionPane.showMessageDialog(this, "지원자가 거절되었습니다.");
             dispose();
         });
 
+
         JButton acceptButton = new JButton("수락");
-        acceptButton.setBackground(Color.white);
-        acceptButton.setForeground(Color.gray);
+        acceptButton.setBackground(Color.WHITE);
+        acceptButton.setForeground(Color.GRAY);
         acceptButton.setFocusPainted(false);
+        //하원 수정해야할 부분
         acceptButton.addActionListener(e -> {
-            application.accept();
-            JOptionPane.showMessageDialog(this, "지원자가 수락되었습니다.");
-            dispose();
+            try {
+                application.accept();//1단계 지원 상태 변경경
+                team.acceptAndCreateChat(profile, post, chatRoomManager, manager);
+
+                ChatRoom chatRoom = team.getChatRooms().get(team.getChatRooms().size()-1);
+
+                //0523 채빈 알림 기능 추가
+                if (manager != null) {
+                    manager.addNotification(
+                        profile.getUserID(),
+                        post.getTitle() + ": 팀원이 되었어요!",
+                        NotificationType.ACCEPT,
+                        "/post/" + post.getPostID()
+                    );
+                }
+
+                dispose();
+
+                JOptionPane.showMessageDialog(this, "지원자가 수락되었고 채팅방이 생성되었습니다.");
+                SwingUtilities.invokeLater(()->{
+                    chatMainFrame frame = new chatMainFrame(manager.getCurrentUser(),manager);
+                    frame.setLocationRelativeTo(null);
+                    frame.openChatRoom(chatRoom);
+                });
+
+           
+
+            } catch (IllegalAccessException ex) {
+                JOptionPane.showMessageDialog(this, "팀 수락 중 오류: " + ex.getMessage());
+            }
         });
 
         buttonPanel.add(rejectButton);
         buttonPanel.add(acceptButton);
-
         contentPanel.add(buttonPanel);
 
         add(contentPanel);
     }
-
-    public static void main(String[] args) {
-    SwingUtilities.invokeLater(() -> {
-        // 더미 Application
-        Application dummyApp = new Application(1, 1, 1001, "안녕하세요. 팀원으로 함께 하고 싶어요!");
-
-        // 더미 Profile
-        Profile dummyProfile = new Profile(1001, "tester");
-        dummyProfile.setNickname("새송이버섯");
-        dummyProfile.setAdmissionYear("22학번");
-        dummyProfile.setIntroduction("자바 스윙으로 프로젝트 해보고 싶어요!");
-        dummyProfile.setProfileImagePath("");  // 이미지 경로 없으면 기본 처리됨
-
-        // 팝업 테스트
-        new ApplicantDetailPage(dummyApp, dummyProfile);
-    });
-}
-
-}
-
-
+    //설정 메서드 추가
+    public void setOnAccept(java.util.function.Consumer<ChatRoom> onAccept) { // ✅ 추가
+        this.onAccept = onAccept;
+    }
     
 
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            // 더미 Application
+            Application dummyApp = new Application(1, 1, 1001, "안녕하세요. 팀원으로 함께 하고 싶어요!");
 
+            // 더미 Profile
+            Profile dummyProfile = new Profile(1001, "tester");
+            dummyProfile.setNickname("새송이버섯");
+            dummyProfile.setAdmissionYear("22학번");
+            dummyProfile.setIntroduction("자바 스윙으로 프로젝트 해보고 싶어요!");
+            dummyProfile.setProfileImagePath("");  // 이미지 경로 없으면 기본 처리됨
+
+            // 팝업 테스트
+            new ApplicantDetailPage(dummyApp, dummyProfile);
+        });
+    }
+}

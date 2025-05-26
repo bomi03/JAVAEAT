@@ -6,6 +6,8 @@ public class Management {
     // 답변 ID(String)와 송이 타입(SongiType) 간의 매핑
     private final Map<String, SongiType> answerToQuestion;
 
+    //하원 추가(0525)
+    private User currentUser;
 
     //사용자 리스트 필드 선언
     private final List<User> allUsers; 
@@ -83,6 +85,45 @@ public class Management {
         return null;
     }
 
+    // ✅ ProfileID로 프로필 찾기 05.21 채빈 추가
+    public Profile getProfileByID(int profileID) {
+    for (User user : allUsers) {
+        Profile profile = user.getProfile();
+        if (profile != null && profile.getProfileID() == profileID) {
+            return profile;
+            }
+        }
+        return null;
+    }
+    //하원 추가 ApplicantDetailPage 에서 호출출
+    public User getUserByProfile(Profile profile) {
+        for (User u : allUsers) {
+            if (u.getProfile() != null && u.getProfile().getProfileID() == profile.getProfileID()) {
+                return u;
+            }
+        }
+        return null;
+    }
+    //하원 추가 
+    public Post getPostByID(int id){
+        List<Post> allPosts = Post.getAllPosts();
+        for(Post post:allPosts){
+            if(post.getPostID() == id){
+                return post;
+            }
+        }
+        return null;
+    }
+    //하원 추가
+    public User getCurrentUser() {
+        return currentUser;
+    }
+    
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+    }
+    
+
 
     //05.20 서연 추가
 
@@ -97,8 +138,14 @@ public class Management {
         .filter(n -> n.getReceiverId().equals(userId))
         .sorted(Comparator.comparingInt(Notification::getNotificationId).reversed())
         .toList();
-}
+    }
 
+    // ✅ 오버로드된 알림 생성 메서드 추가
+    public void addNotification(String receiverId, String message, NotificationType type, String redirectUrl) {
+        int newId = notifications.size() + 1;
+        Notification noti = new Notification(newId, receiverId, message, type, false, redirectUrl);
+        notifications.add(noti);
+    }
 }
 
 

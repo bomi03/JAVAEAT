@@ -1,29 +1,21 @@
-// MyPostsPage.java - 마이페이지-작성한 글 페이지
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
 import java.util.stream.Collectors;
-import model.Post;
-import model.User;
-import model.Management;
-import model.Profile;
+import model.*;
 
-
-public class MyPostsPage extends JFrame {
+public class MyApplicationsPage extends JFrame {
     private User user;
     private Management manager;
-    private int profileID;
     private JPanel listPanel;
     private JScrollPane scrollPane;
 
-    public MyPostsPage(User user, Management manager, int profileID) {
+    public MyApplicationsPage(User user, Management manager) {
         this.user = user;
         this.manager = manager;
-        this.profileID = profileID;
 
-        setTitle("작성한 글");
+        setTitle("지원 현황");
         setSize(393, 852);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -35,7 +27,6 @@ public class MyPostsPage extends JFrame {
         setVisible(true);
     }
 
-    /** 상단 바(뒤로가기 + 제목) 구성 */
     private void buildHeader() {
         JPanel header = new JPanel(null);
         header.setPreferredSize(new Dimension(393, 60));
@@ -46,13 +37,12 @@ public class MyPostsPage extends JFrame {
         styleGrayButton(backBtn);
         header.add(backBtn);
 
-        // 뒤로가기 눌렀을 때 MyPage로 돌아가기
         backBtn.addActionListener(e -> {
             dispose();
             new MyPage(user, manager);
         });
 
-        JLabel title = new JLabel("작성한 글", SwingConstants.CENTER);
+        JLabel title = new JLabel("지원 현황", SwingConstants.CENTER);
         title.setForeground(Color.decode("#4A4A4A"));
         title.setBounds(0, 15, 393, 30);
         header.add(title);
@@ -65,29 +55,26 @@ public class MyPostsPage extends JFrame {
         add(header, BorderLayout.NORTH);
     }
 
-    /** 본문 리스트 구성 */
     private void buildList() {
-        // 모집 기간 지난 포스트 상태 자동 갱신
-        Post.getAllPosts().forEach(Post::autoClosePost);
-
         listPanel = new JPanel();
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
         listPanel.setBackground(Color.WHITE);
 
-        List<Post> myPosts = Post.getAllPosts().stream()
-            .filter(p -> p.getProfileID() == profileID)
-            .collect(Collectors.toList());
+        List<Application> myApps = user.getMyApplications();
 
-        if (myPosts.isEmpty()) {
-            JLabel empty = new JLabel("작성한 글이 없습니다.", SwingConstants.CENTER);
+        if (myApps.isEmpty()) {
+            JLabel empty = new JLabel("지원한 글이 없습니다.", SwingConstants.CENTER);
             empty.setFont(empty.getFont().deriveFont(Font.PLAIN, 14f));
             empty.setForeground(Color.GRAY);
             empty.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
             listPanel.add(empty);
         } else {
-            for (Post p : myPosts) {
-                listPanel.add(createRow(p));
-                listPanel.add(createSeparator());
+            for (Application app : myApps) {
+                Post p = manager.getPostByID(app.getPostID());
+                if (p != null) {
+                    listPanel.add(createRow(p, app.getStatus()));
+                    listPanel.add(createSeparator());
+                }
             }
         }
 
@@ -97,8 +84,7 @@ public class MyPostsPage extends JFrame {
         add(scrollPane, BorderLayout.CENTER);
     }
 
-    /** 한 줄 아이템 */
-    private JPanel createRow(Post p) {
+    private JPanel createRow(Post p, String appStatus) {
         JPanel row = new JPanel(null);
         Dimension rowSize = new Dimension(393, 70);
         row.setPreferredSize(rowSize);
@@ -123,17 +109,21 @@ public class MyPostsPage extends JFrame {
         dl.setForeground(Color.BLACK);
         dl.setBounds(10, 25, 250, 18);
 
-        boolean open = "모집중".equals(p.getStatus());
-        JLabel stat = new JLabel(
-            String.format("%s %d/%d명",
-                open ? "모집중" : "모집완료",
-                p.getCurrentApplicants(),
-                p.getMaxApplicants()
-            )
-        );
+        JLabel statusLabel = new JLabel(appStatus);
+        statusLabel.setFont(statusLabel.getFont().deriveFont(Font.PLAIN, 12f));
+        statusLabel.setForeground(switch (appStatus) {
+            case "수락" -> new Color(0x007BFF);  // 파란색
+            case "거절" -> Color.GRAY;
+            default -> new Color(0xFF6200);     // 주황색 (대기중)
+        });
+        statusLabel.setBounds(10, 45, 100, 18);
+
+        JLabel stat = new JLabel(String.format("%s %d/%d명", 
+            "모집중".equals(p.getStatus()) ? "모집중" : "모집완료",
+            p.getCurrentApplicants(), p.getMaxApplicants()));
         stat.setFont(stat.getFont().deriveFont(Font.PLAIN, 12f));
-        stat.setForeground(open ? Color.decode("#FF6200") : Color.GRAY);
-        stat.setBounds(275 - 90 - 10, 26, 90, 18);
+        stat.setForeground("모집중".equals(p.getStatus()) ? Color.decode("#FF6200") : Color.GRAY);
+        stat.setBounds(200, 45, 90, 18);
 
         JLabel img = new JLabel();
         img.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
@@ -148,9 +138,7 @@ public class MyPostsPage extends JFrame {
         row.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // 현재 MyPostsPage 닫고
                 dispose();
-                // PostDetailPage 열기 (PostDetailPage 내부에서 isWriter 판별)
                 new PostDetailPage(user, manager, p);
             }
         });
@@ -158,12 +146,12 @@ public class MyPostsPage extends JFrame {
         row.add(cat);
         row.add(title);
         row.add(dl);
-        row.add(stat);
+        row.add(statusLabel); // 지원 상태
+        row.add(stat);        // 모집 상태
         row.add(img);
         return row;
     }
 
-    /** 항목 사이의 구분선 생성 */
     private JSeparator createSeparator() {
         JSeparator sep = new JSeparator();
         sep.setPreferredSize(new Dimension(393, 1));
@@ -181,11 +169,19 @@ public class MyPostsPage extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            // 테스트용 더미 객체
-            Management mgr = new Management(new java.util.HashMap<>());
+            Management mgr = new Management();
             User u = new User("테스트유저", "test", "pw", "test@example.com");
-            u.setProfile(new Profile(1, "test"));
-            new MyPostsPage(u, mgr, /*profileID=*/1);
+            Profile p = new Profile(1, "test");
+            u.setProfile(p);
+            mgr.addUser(u);
+
+            Post post = new Post(1, p.getProfileID(), "", "스터디", "스터디 모집", "모집중", new java.util.Date(), 4, 2, "설명");
+            Post.addPost(post);
+
+            Application app = new Application(1, post.getPostID(), p.getProfileID(), "열심히 하겠습니다!");
+            u.apply(app);
+
+            new MyApplicationsPage(u, mgr);
         });
     }
 }

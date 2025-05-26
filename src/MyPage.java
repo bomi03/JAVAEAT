@@ -11,6 +11,7 @@ import model.Management;
 import model.Test;
 import dialog.ProfilePopup;
 
+
 public class MyPage extends JFrame {
     private User user;
     private Management manager;
@@ -26,7 +27,7 @@ public class MyPage extends JFrame {
 
     private JButton supportStatusBtn;
     private JButton myPostsBtn;
-    private JButton testBtn;
+    // private JButton testBtn;
 
     private JLabel idValueLabel;
     private JButton changePasswordBtn;
@@ -72,10 +73,10 @@ public class MyPage extends JFrame {
         mainPanel.add(sep1);
 
         // 프로필 섹션
-        y += 10;
+        y += 0;
         JPanel profSec = new JPanel(null);
         profSec.setBackground(Color.decode("#F5F5F5"));
-        profSec.setBounds(0, y, 393, 140);
+        profSec.setBounds(0, y, 393, 115);
         mainPanel.add(profSec);
 
         String nick = profile != null && profile.getNickname() != null
@@ -116,7 +117,7 @@ public class MyPage extends JFrame {
 
 
         // 서비스 섹션
-        y += 140;
+        y += 115;
         JSeparator sep2 = new JSeparator();
         sep2.setBounds(0, y, 393, 1);
         mainPanel.add(sep2);
@@ -135,9 +136,9 @@ public class MyPage extends JFrame {
         myPostsBtn = makeMenuButton("작성한 글", y);
         mainPanel.add(myPostsBtn);
 
-        y += H40;
-        testBtn = makeMenuButton("협업 유형 테스트", y);
-        mainPanel.add(testBtn);
+        // y += H40;
+        // testBtn = makeMenuButton("협업 유형 테스트", y);
+        // mainPanel.add(testBtn);
 
         // 계정 섹션
         y += H40;
@@ -153,7 +154,7 @@ public class MyPage extends JFrame {
 
         y += 30;
         JLabel idLabel = new JLabel("아이디");
-        idLabel.setBounds(20, y, 100, 25);
+        idLabel.setBounds(40, y, 100, 25);
         mainPanel.add(idLabel);
 
         idValueLabel = new JLabel(user.getUserID(), SwingConstants.RIGHT);
@@ -202,8 +203,11 @@ public class MyPage extends JFrame {
 
         BottomNavBar nav = new BottomNavBar(
             e -> { new TeamListPage(user, manager); dispose(); },
-            e -> { /* 나중에 채팅 페이지 */ },
-            e -> { new NotificationPage(user, manager); dispose(); },
+            e -> { new chatMainFrame(user, manager); dispose(); },
+            e -> { NotificationPage page = new NotificationPage(user, manager);
+                    page.setVisible(true);
+                    dispose();
+                 },
             e -> { new MyPage(user, manager); dispose(); }
         );
         wrapper.add(nav, BorderLayout.SOUTH);
@@ -216,23 +220,25 @@ public class MyPage extends JFrame {
             dispose();
             new ProfilePage(user, manager, true, this);
         });
-        supportStatusBtn.addActionListener(e ->
-            JOptionPane.showMessageDialog(this, "지원 현황")
-        );
+        supportStatusBtn.addActionListener(e -> {
+            new MyApplicationsPage(user, manager);
+            dispose();
+        });
+
         myPostsBtn.addActionListener(e ->
             {                                  // ← 중괄호로 묶고
                new MyPostsPage(user, manager, profile.getProfileID());
              dispose();                     // ← 창 닫기
             }
         );
-        testBtn.addActionListener(e -> {
-            test.takeTest(user, manager);
-            profile.updateType(test.getUserResultType(), test.getResultImagePath());
-            refreshProfileDisplay();
-            JOptionPane.showMessageDialog(this,
-                "테스트 완료: " + test.getUserResultType().name()
-            );
-        });
+        // testBtn.addActionListener(e -> {
+        //     test.takeTest(user, manager);
+        //     profile.updateType(test.getUserResultType(), test.getResultImagePath());
+        //     refreshProfileDisplay();
+        //     JOptionPane.showMessageDialog(this,
+        //         "테스트 완료: " + test.getUserResultType().name()
+        //     );
+        // });
         changePasswordBtn.addActionListener(e -> {
             new ChangePwPage(user, manager); 
         });
