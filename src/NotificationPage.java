@@ -51,7 +51,9 @@ public class NotificationPage extends JFrame {
         listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
         listPanel.setBackground(Color.WHITE);
 
-        List<Notification> sorted = user.getNotifications().stream()
+        //채빈 0523 변경
+        List<Notification> sorted = manager.getNotificationsFor(user.getUserID()).stream()
+        //List<Notification> sorted = user.getNotifications().stream()
             .sorted((a, b) -> Integer.compare(b.getNotificationId(), a.getNotificationId()))
             .collect(Collectors.toList());
 
