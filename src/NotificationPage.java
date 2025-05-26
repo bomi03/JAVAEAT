@@ -1,7 +1,7 @@
-import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.swing.*;
 import model.*;
 
 public class NotificationPage extends JFrame {
@@ -86,11 +86,26 @@ public class NotificationPage extends JFrame {
             card.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     noti.markAsRead();
-                    JOptionPane.showMessageDialog(null, "📌 이동: " + noti.getRedirectUrl());
                     dispose();
-                    new NotificationPage(user, manager); // 새로고침
+
+                    // 👉 postId 가져오기
+                    int postId = noti.getPostID();
+
+                    // 👉 postId에 해당하는 Post 찾기
+                    Post post = Post.getAllPosts().stream()
+                        .filter(p -> p.getPostID() == postId)
+                        .findFirst()
+                        .orElse(null);
+
+                    if (post != null) {
+                        // 👉 게시물 상세 페이지로 이동
+                        new PostDetailPage(user, manager, post);
+                    } else {
+                        // ❌ 해당 게시물이 없는 경우
+                        JOptionPane.showMessageDialog(null, "해당 게시물을 찾을 수 없습니다.");
+                    }
                 }
-            });
+});
 
             listPanel.add(card);
         }
@@ -117,3 +132,5 @@ public class NotificationPage extends JFrame {
 
 
 
+
+}

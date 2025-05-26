@@ -1,3 +1,4 @@
+package model;
 // 알림 유형 enum
 public enum NotificationType {
     APPLY,    // 지원

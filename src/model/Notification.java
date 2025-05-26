@@ -8,6 +8,7 @@ public class Notification {
     private final NotificationType type;
     private boolean isRead;
     private final String redirectUrl;
+    private final int postId; 
 
     // 전체 필드 초기화
     public Notification(int notificationId,
@@ -15,13 +16,15 @@ public class Notification {
                         String message,
                         NotificationType type,
                         boolean isRead,
-                        String redirectUrl) {
+                        String redirectUrl,
+                        int postId) {
         this.notificationId = notificationId;
         this.receiverId    = receiverId;
         this.message       = message;
         this.type          = type;
         this.isRead        = isRead;
         this.redirectUrl   = redirectUrl;
+        this.postId = postId; 
     }
 
     // 읽음 처리리
@@ -63,6 +66,11 @@ public class Notification {
     public String getRedirectUrl() {
         return redirectUrl;
     }
+
+    public int getPostId() {
+    return postId;
+    }
+    
 }
 
 //         알림 예시 
