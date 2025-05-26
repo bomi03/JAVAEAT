@@ -21,7 +21,11 @@ public class JoinFrame extends JFrame {
         JButton backButton = new JButton("<");
         backButton.setBounds(10, 10, 50, 30);
         styleGray(backButton);
-        backButton.addActionListener(e -> dispose()); // ✅ 창만 닫기
+        backButton.addActionListener(e -> {
+            new LoginFrame(manager); // 메인 프레임 다시 열기
+            dispose();               // 현재 JoinFrame 닫기
+        });
+
         add(backButton);
 
         JLabel titleLabel = new JLabel("회원가입", SwingConstants.CENTER);

@@ -115,28 +115,5 @@ public class NotificationPage extends JFrame {
     }
 
 
-    
-public static void main(String[] args) {
-    SwingUtilities.invokeLater(() -> {
-        Management mgr = new Management();
-        User u = new User("김서연", "sy123", "pw123!", "sy@sookmyung.ac.kr");
-
-        // 🔔 테스트 알림 추가
-        Notification n1 = new Notification(1, u.getUserID(), "📝 [피티송이] 님이 팀에 지원했습니다.", NotificationType.APPLY, false, "지원서 #001");
-        Notification n2 = new Notification(2, u.getUserID(), "💬 새 채팅 메시지가 도착했습니다.", NotificationType.MESSAGE, false, "채팅방 #123");
-        Notification n3 = new Notification(3, u.getUserID(), "📢 모집 마감 1일 전입니다!", NotificationType.MESSAGE, true, "공모전 #ABC");
-
-        u.addNotification(n1);
-        u.addNotification(n2);
-        u.addNotification(n3);
-
-        mgr.addUser(u); // 안 해도 되지만 혹시 모를 참조 대비
-
-        // 🔍 알림 페이지 띄우기
-        new NotificationPage(u, mgr);
-
-    });
-}
-}
 
 
