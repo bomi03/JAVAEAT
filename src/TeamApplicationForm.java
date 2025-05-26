@@ -1,14 +1,12 @@
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-// 보미 수정
-import model.User;
+import javax.swing.*;
 import model.Application;
 import model.Management;
 import model.NotificationType;
 import model.Post;
-// 보미 수정
 import model.Profile;
+import model.User;
 
 public class TeamApplicationForm extends JFrame {
     //보미 수정
@@ -133,12 +131,14 @@ public class TeamApplicationForm extends JFrame {
             user.apply(app); // 지원현황 추가
 
             // ✅ 팀장에게 알림 보내기 (채빈 수정)
+            //0526 서연 수정 getPostId 추가
             if (manager != null) {
                 Profile writerProfile = manager.getProfileByID(post.getProfileID()); // 팀장 프로필
                 if (writerProfile != null) {
                     String writerUserId = writerProfile.getUserID(); // 팀장 userID
                     String msg = user.getProfile().getNickname() + " 님이 [" + post.getTitle() + "]에 지원했어요!";
-                    manager.addNotification(writerUserId, msg, NotificationType.APPLY, "/post/" + post.getPostID());
+                    int postId = post.getPostID(); // 변수 선언
+                    manager.addNotification(writerUserId, msg, NotificationType.APPLY, "/post/" + postId, postId);
                 }
             }
 

@@ -1,17 +1,14 @@
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.LineBorder;
 import model.Application;
 import model.ChatRoom;
 import model.ChatRoomManager;
 import model.Management;
 import model.NotificationType;
-import model.Profile;
-// import popup.ProfilePopup;
-//추가 import
 import model.Post;
+import model.Profile;
 import model.Team;
 public class ApplicantDetailPage extends JFrame {
     private Application application;
@@ -158,12 +155,13 @@ public class ApplicantDetailPage extends JFrame {
             application.reject();
             if (post != null) post.removeApplicationByProfileId(profile.getProfileID()); // ✅ 지원자 제거 추가
             //0523 채빈 알림기능 추가
+            //0526 서연 수정 post.getPostID() 추가가
             if (manager != null) {
                 manager.addNotification(
                     profile.getUserID(),
                     post.getTitle() + ": 팀 매칭이 거절되었어요.",
                     NotificationType.REJECT,
-                    "/post/" + post.getPostID()
+                    "/post/" + post.getPostID(), post.getPostID()
                 );
             }
             JOptionPane.showMessageDialog(this, "지원자가 거절되었습니다.");
@@ -184,12 +182,13 @@ public class ApplicantDetailPage extends JFrame {
                 ChatRoom chatRoom = team.getChatRooms().get(team.getChatRooms().size()-1);
 
                 //0523 채빈 알림 기능 추가
+                //0526 서연 수정 post.getPostID() 추가가
                 if (manager != null) {
                     manager.addNotification(
                         profile.getUserID(),
                         post.getTitle() + ": 팀원이 되었어요!",
                         NotificationType.ACCEPT,
-                        "/post/" + post.getPostID()
+                        "/post/" + post.getPostID(), post.getPostID()
                     );
                 }
 

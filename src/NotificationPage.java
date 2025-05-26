@@ -91,7 +91,7 @@ public class NotificationPage extends JFrame {
                     dispose();
 
                     // 👉 postId 가져오기
-                    int postId = noti.getPostID();
+                    int postId = noti.getPostId();
 
                     // 👉 postId에 해당하는 Post 찾기
                     Post post = Post.getAllPosts().stream()
