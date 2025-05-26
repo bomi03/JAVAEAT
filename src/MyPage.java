@@ -73,10 +73,10 @@ public class MyPage extends JFrame {
         mainPanel.add(sep1);
 
         // 프로필 섹션
-        y += 10;
+        y += 0;
         JPanel profSec = new JPanel(null);
         profSec.setBackground(Color.decode("#F5F5F5"));
-        profSec.setBounds(0, y, 393, 140);
+        profSec.setBounds(0, y, 393, 115);
         mainPanel.add(profSec);
 
         String nick = profile != null && profile.getNickname() != null
@@ -117,7 +117,7 @@ public class MyPage extends JFrame {
 
 
         // 서비스 섹션
-        y += 140;
+        y += 115;
         JSeparator sep2 = new JSeparator();
         sep2.setBounds(0, y, 393, 1);
         mainPanel.add(sep2);
@@ -154,7 +154,7 @@ public class MyPage extends JFrame {
 
         y += 30;
         JLabel idLabel = new JLabel("아이디");
-        idLabel.setBounds(20, y, 100, 25);
+        idLabel.setBounds(40, y, 100, 25);
         mainPanel.add(idLabel);
 
         idValueLabel = new JLabel(user.getUserID(), SwingConstants.RIGHT);
