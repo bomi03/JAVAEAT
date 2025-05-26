@@ -1,7 +1,7 @@
-import javax.swing.*;
 import java.awt.*;
-import model.User;
+import javax.swing.*;
 import model.Management;
+import model.User;
 
 public class ChangePwPage extends JFrame {
     private final User user;
@@ -27,7 +27,6 @@ public class ChangePwPage extends JFrame {
 
         // 표제
         JLabel titleLabel = new JLabel("비밀번호 변경", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
         titleLabel.setBounds(120, 10, 150, 30);
         add(titleLabel);
 
