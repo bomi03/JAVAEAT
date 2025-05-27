@@ -12,7 +12,6 @@ public class User {
     private String password;
     private String email;
     private Profile profile;
-    private List<Post> bookmark;
     private List<Post> myPosts;
     private List<Application> myApplications;
     private boolean isLoggedIn = false;
@@ -24,7 +23,6 @@ public class User {
         this.userID = userID;
         this.password = password;
         this.email = email;
-        this.bookmark = new ArrayList<>();
         this.myPosts = new ArrayList<>();
         this.myApplications = new ArrayList<>();
     }
@@ -133,45 +131,6 @@ public class User {
     public Profile getProfile() { return profile; }
     //User 객체 안에 있는 profile 객체를 외부에서 접근할 수 있게 
 
-    /* 사용 예시 
-        User user = ...; // 로그인한 사용자 객체
-        Profile p = user.getProfile();
-
-        System.out.println("한 줄 소개: " + p.getBio());
-        System.out.println("전공: " + p.getMajor());
-     */
-
-
-     //모집글 스크랩 하기 
-    public void bookmark(Post post) {
-        if (post == null) {
-            System.out.println("유효하지 않은 게시글입니다.");
-            return;
-        }
-    
-        if (bookmark.contains(post)) {
-            System.out.println("이미 스크랩한 게시글입니다.");
-        } else {
-            bookmark.add(post);
-        }
-    }
-
-    /* 
-        사용 예시
-        Post post1 = new Post("글 제목", "내용", ...);
-        user.bookmark(post1);
-        user.unbookmark(post1);
-
-    */
-    // 모집글 스크랩 해제
-    public void unbookmark(Post post) {
-        if (bookmark.contains(post)) {
-            bookmark.remove(post);
-            System.out.println("스크랩이 해제되었습니다.");
-        } else {
-            System.out.println("스크랩한 게시글이 아닙니다.");
-        }
-    }
     
     //알림 수신
     public void receiveNotification(String message) {
@@ -184,12 +143,6 @@ public class User {
 
     }
 
-    /*
-    사용 예시
-    user.receiveNotification("새로운 댓글이 있습니다.")
-    user.receiveNotification("새로운 지원자가 있습니다.")
-     */
-    
 
     //회원 탈퇴
     public void withdraw() {
@@ -198,9 +151,10 @@ public class User {
         this.password = null;
         this.email = null;
         this.profile = null;
-        this.bookmark.clear();
         this.myPosts.clear();
         this.myApplications.clear();
+        notifications.clear();  // 사용자의 모든 알림 삭제
+
 
         System.out.println("탈퇴가 완료되었습니다.");
     }
@@ -221,10 +175,6 @@ public class User {
     return password;
 }
 
-
-    //사용자가 스크랩한 글 불러오기
-    public List<Post> getBookmarkedPosts() { 
-        return bookmark; }
 
     //사용자가 작성한 모집글 불러오기 
     public List<Post> getMyPosts() { 
