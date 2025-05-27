@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import model.ChatRoom;
 import model.Message;
@@ -21,89 +22,51 @@ public class ChatDetailPanel extends JPanel {
         this.myProfile = frame.getUser().getProfile();
         setLayout(new BorderLayout());
 
-        //게시믈 정보 불러오기
+        // 게시물 정보
         int postID = chatRoom.getPostID();
         Post post = frame.getManager().getPostByID(postID);
 
-
-        // ✅ 상단 영역: 뒤로가기 + 타이틀 + 모집글 요약
-        JPanel topSection = new JPanel();
-        topSection.setLayout(new BoxLayout(topSection, BoxLayout.Y_AXIS));
-
+        // 상단: 뒤로가기 + 타이틀
         JPanel topBar = new JPanel(new BorderLayout());
         topBar.setBackground(Color.WHITE);
         topBar.setPreferredSize(new Dimension(0, 50));
         topBar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
 
         JButton backButton = new JButton("←");
-        backButton.setPreferredSize(new Dimension(50, 50));
+        backButton.setPreferredSize(new Dimension(50, 30));
         backButton.setFocusPainted(false);
-        backButton.setContentAreaFilled(false);
-        backButton.setBorderPainted(false);
-        backButton.setFont(new Font("SansSerif", Font.BOLD, 18));
-        backButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         backButton.addActionListener(e -> frame.showPanel("list"));
 
         JLabel titleLabel = new JLabel("채팅방", SwingConstants.CENTER);
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
-        titleLabel.setForeground(Color.decode("#003087"));
+        titleLabel.setForeground(Color.BLACK);
 
         topBar.add(backButton, BorderLayout.WEST);
         topBar.add(titleLabel, BorderLayout.CENTER);
+        add(topBar, BorderLayout.NORTH);
 
-        // 모집글 요약 패널
-        JPanel summaryPanel = new JPanel(new BorderLayout());
-        summaryPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        summaryPanel.setBackground(new Color(245, 245, 245));
-
-        JPanel infoPanel = new JPanel(new GridLayout(3, 1));
-        infoPanel.setOpaque(false);
-
-        if(post != null){
-            String title = post.getTitle();
-            String deadline;
-            if (post.getRecruitDeadline() != null) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-                deadline = sdf.format(post.getRecruitDeadline());
-            } else {
-                deadline = "정해진 기간이 없습니다.";
+        // ✅ 채팅 내용 패널 (텍스트만)
+        chatContentPanel = new JPanel() {
+            @Override
+            public Dimension getPreferredSize() {
+                int lineHeight = 20;
+                return new Dimension(0, getComponentCount() * lineHeight);
             }
-            String members = post.getCurrentApplicants() + "/" + post.getMaxApplicants() + "명";
-
-            infoPanel.add(new JLabel(title));
-            infoPanel.add(new JLabel("모집마감: "+ deadline));
-            infoPanel.add(new JLabel("모집인원: "+ members));
-        }else{
-            infoPanel.add(new JLabel("게시물 정보를 찾을 수 없습니다."));
-        }
-        
-
-        JPanel thumbnail = new JPanel();
-        thumbnail.setPreferredSize(new Dimension(60, 60));
-        thumbnail.setBackground(Color.LIGHT_GRAY);
-
-        summaryPanel.add(infoPanel, BorderLayout.CENTER);
-        summaryPanel.add(thumbnail, BorderLayout.EAST);
-
-        topSection.add(topBar);
-        topSection.add(summaryPanel);
-        add(topSection, BorderLayout.NORTH);
-
-        // ✅ 채팅 내용 영역 (말풍선 정렬)
-        chatContentPanel = new JPanel();
+        };
         chatContentPanel.setLayout(new BoxLayout(chatContentPanel, BoxLayout.Y_AXIS));
         chatContentPanel.setBackground(Color.WHITE);
 
         scrollPane = new JScrollPane(chatContentPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         add(scrollPane, BorderLayout.CENTER);
 
-        // 초기 메시지 렌더링
+        // ✅ 초기 메시지
         for (Message msg : chatRoom.getMessages()) {
-            addMessageBubble(msg);
+            addMessageLine(msg);
         }
 
-        // ✅ 입력창 영역
+        // ✅ 입력창
         JPanel inputPanel = new JPanel(new BorderLayout());
         inputField = new JTextField();
         JButton sendButton = new JButton("전송");
@@ -119,45 +82,62 @@ public class ChatDetailPanel extends JPanel {
     private void sendMessage() {
         String text = inputField.getText().trim();
         if (!text.isEmpty()) {
-            String senderName = myProfile.getUserID();
+            String sender = myProfile.getUserID();
             Message msg = new Message(
                 chatRoom.getMessages().size() + 1,
                 chatRoom.getChatRoomID(),
-                senderName,
+                sender,
                 text
             );
             chatRoom.addMessage(msg);
-            addMessageBubble(msg);
+            addMessageLine(msg);
             inputField.setText("");
         }
     }
 
-    private void addMessageBubble(Message msg) {
-        boolean isMe = msg.getSenderID().equals(myProfile.getUserID());
+private void addMessageLine(Message msg) {
+    boolean isMe = msg.getSenderID().equals(myProfile.getUserID());
 
-        JPanel bubblePanel = new JPanel(new FlowLayout(isMe ? FlowLayout.RIGHT : FlowLayout.LEFT));
-        bubblePanel.setOpaque(false);
-        bubblePanel.setBorder(BorderFactory.createEmptyBorder(4 , 5, 4, 5)); // 간격 줄이기
+    // ✅ HTML로 max-width 제한 (텍스트에 맞게 줄바꿈)
+    String text = "<html><div style='max-width: 250px;'>" + msg.getSenderID() + ": " + msg.getContent() + "</div></html>";
 
-        JTextArea bubble = new JTextArea(msg.getContent());
-        bubble.setEditable(false);
-        bubble.setLineWrap(true);
-        bubble.setWrapStyleWord(true);
-        bubble.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        bubble.setBackground(isMe ? new Color(220, 240, 255) : new Color(240, 240, 240));
-        bubble.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+    JLabel label = new JLabel(text);
+    label.setFont(new Font("SansSerif", Font.PLAIN, 13));
+    label.setOpaque(true);
+    label.setBackground(isMe ? new Color(200, 230, 255) : new Color(240, 240, 240));
+    label.setForeground(Color.BLACK);
+    label.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
 
-        bubble.setMargin(new Insets(0, 0, 0, 0));
-        bubble.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // ✅ 내부 패딩
-        bubble.setMaximumSize(new Dimension(250, Short.MAX_VALUE));
+    // ✅ label 크기를 텍스트에 맞게 조절 (고정 폭 방지)
+    label.setMaximumSize(label.getPreferredSize());
 
-        bubblePanel.add(bubble);
-        chatContentPanel.add(bubblePanel);
-        chatContentPanel.revalidate();
-        chatContentPanel.repaint();
+    // ✅ 정렬용 줄 패널
+    JPanel linePanel = new JPanel();
+    linePanel.setLayout(new BoxLayout(linePanel, BoxLayout.X_AXIS));
+    linePanel.setOpaque(false);
+    linePanel.setBorder(BorderFactory.createEmptyBorder(2, 10, 2, 10));
 
-        SwingUtilities.invokeLater(() ->
-            scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum())
-        );
+    if (isMe) {
+        linePanel.add(Box.createHorizontalGlue());
+        linePanel.add(label);
+    } else {
+        linePanel.add(label);
+        linePanel.add(Box.createHorizontalGlue());
     }
+
+    chatContentPanel.add(linePanel);
+    chatContentPanel.revalidate();
+    chatContentPanel.repaint();
+
+    SwingUtilities.invokeLater(() -> {
+        JScrollBar bar = scrollPane.getVerticalScrollBar();
+        bar.setValue(bar.getMaximum());
+    });
+}
+
+    
+    
+
+
+    
 }
