@@ -197,7 +197,7 @@ public class PostDetailPage extends JFrame {
 
                         //chatMainFrame 열기
                         chatMainFrame frame = new chatMainFrame(user, manager);
-                        frame.setLocationRelativeTo(null);
+                        frame.setLocation(this.getX(), this.getY());  // 또는 frame.setLocationRelativeTo(null);
                         frame.openChatRoom(chatRoom);
 
                     

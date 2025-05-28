@@ -51,7 +51,12 @@ public class TeamListPage extends JFrame {
         // 하단바
         BottomNavBar nav = new BottomNavBar(
             e -> { new TeamListPage(user, manager); dispose(); },
-            e -> { new chatMainFrame(user, manager); dispose(); },
+            e -> { 
+                    chatMainFrame frame = new chatMainFrame(user, manager);
+                    frame.setVisible(true);
+                    frame.setLocationRelativeTo(null);
+                    dispose();
+                 },
             e -> { NotificationPage page = new NotificationPage(user, manager);
                     page.setVisible(true);
                     dispose();
