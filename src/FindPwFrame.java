@@ -22,7 +22,7 @@ public class FindPwFrame extends JFrame {
         styleGray(backButton);
         add(backButton);
 
-        backButton.addActionListener(e -> dispose());
+        backButton.addActionListener(e -> new LoginFrame(manager));
 
         JLabel titleLabel = new JLabel("비밀번호 찾기", SwingConstants.CENTER);
         titleLabel.setBounds(120, 10, 150, 30);
@@ -201,7 +201,7 @@ public class FindPwFrame extends JFrame {
             }
 
             JOptionPane.showMessageDialog(this, "비밀번호가 성공적으로 변경되었습니다.");
-            dispose();
+            new LoginFrame(manager);
         });
 
         setLocationRelativeTo(null);
