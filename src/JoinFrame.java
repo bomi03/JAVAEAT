@@ -343,7 +343,7 @@ public class JoinFrame extends JFrame {
             String passwordCheck = new String(pwCheckField.getPassword()).trim();
             String email = emailField.getText().trim();
             String inputAuthCode = authCodeField.getText().trim();
-            String actualAuthCode = "1234";
+            String actualAuthCode = "385880";
             boolean isVerified = true;
             boolean isAgreed = term1.isSelected() && term2.isSelected() && term3.isSelected();
 
