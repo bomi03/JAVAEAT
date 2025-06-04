@@ -100,7 +100,10 @@ public class FindIdFrame extends JFrame {
         styleBlue(goToLoginButton);
         add(goToLoginButton);
 
-        goToLoginButton.addActionListener(e2 -> dispose());
+        goToLoginButton.addActionListener(e2 -> {
+        new LoginFrame(manager);  // 로그인 프레임 띄우기
+        dispose();                // 현재 창 닫기
+        });
 
         JLabel[] toHide = {
             guideLabel, nameLabel, emailLabel, nameErrorLabel, emailErrorLabel
