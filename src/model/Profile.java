@@ -23,9 +23,9 @@ public class Profile {
     public Profile(int profileID, String userID) {
         this.profileID = profileID;
         this.userID = userID;
-        this.majors = new ArrayList<>();  // 내부에서 new ArrayList()로 초기화하므로 생성자의 매개변수로 받지 않음(빈 상태로 시작하여 addMajor() 메서드로 하나씩 추가하는 구조)
-        this.careers = new ArrayList<>();  // 내부에서 new ArrayList()로 초기화하므로 생성자의 매개변수로 받지 않음(빈 상태로 시작하여 addCareer() 메서드로 하나씩 추가하는 구조)
-        this.certificates = new ArrayList<>();  // 내부에서 new ArrayList()로 초기화하므로 생성자의 매개변수로 받지 않음(빈 상태로 시작하여 addCertification() 메서드로 하나씩 추가하는 구조)
+        this.majors = new ArrayList<>();  
+        this.careers = new ArrayList<>(); 
+        this.certificates = new ArrayList<>(); 
     }
 
     // Profile 클래스의 메소드 - 프로필 정보 수정 메소드

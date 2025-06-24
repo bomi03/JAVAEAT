@@ -38,7 +38,7 @@ public class TeamApplicationForm extends JFrame {
         backButton.setBounds(10, 10, 50, 30);
         backButton.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
         backButton.setFocusPainted(false);
-        backButton.setBackground(new Color(230, 230, 230));  // Gray style 대체
+        backButton.setBackground(new Color(230, 230, 230)); 
         backButton.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         backButton.addActionListener(e -> {
             dispose(); // 변경: 창 닫기 후
@@ -184,8 +184,4 @@ public class TeamApplicationForm extends JFrame {
     }
     // 보미 수정
 
-
-    // public static void main(String[] args) {
-    //     SwingUtilities.invokeLater(TeamApplicationForm::new);
-    // }
 }

@@ -36,7 +36,6 @@ public class ProfilePopup extends JDialog {
         setVisible(true);
     }
 
-    // ────────────────────────────────────────
     // 요약 화면: 사진 / 유형명+이미지 / 닉네임·학번·소개
     private JPanel buildSummaryCard(Profile p, CardLayout cards, JPanel parent) {
         JPanel panel = new JPanel(new BorderLayout());
@@ -129,7 +128,6 @@ public class ProfilePopup extends JDialog {
         return panel;
     }
 
-    // ────────────────────────────────────────
     // 세부 화면: 학년·재학여부 / 전공 / 경력 / 자격증
     private JPanel buildDetailsCard(Profile p, CardLayout cards, JPanel parent) {
         JPanel panel = new JPanel(new BorderLayout());
@@ -205,12 +203,11 @@ public class ProfilePopup extends JDialog {
         return b;
     }
 
-    // ────────────────────────────────────────
-    // standalone 테스트용 main (IDE에서 이 파일만 실행할 때)
+    // 테스트용 main
     public static void main(String[] args) {
         // 더미 프로필 세팅
         Profile p = new Profile(1, "tester");
-        p.setProfileImagePath("");  // 실제 이미지 경로 넣으세요
+        p.setProfileImagePath(""); 
         p.updateType(SongiType.평화송이, "");
         p.setNickname("테스트닉네임");
         p.setAdmissionYear("22학번");

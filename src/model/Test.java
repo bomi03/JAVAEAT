@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Test {
 
-    private Map<Integer, String> questionAnswerMap = new HashMap<>();//질문 번호, 응답 결과를 저장해 Management에게 넘겨줌줌
+    private Map<Integer, String> questionAnswerMap = new HashMap<>();//질문 번호, 응답 결과를 저장해 Management에게 넘겨줌
     private SongiType testResult;
     private String resultImagePath;
 

@@ -50,11 +50,6 @@ public class Post {
         }
     }
 
-    // // Post 클래스의 메소드 - 모집글 삭제 메소드
-    // public void deletePost() {
-    //     this.status = "삭제됨";
-    // }
-
     // Post 클래스의 메소드 - 모집 마감 메소드
     public void closePost() {
         if(!this.status.equals("삭제됨")) {
@@ -62,7 +57,7 @@ public class Post {
         }
     }
 
-    //Post 클래스의 메소드 - 마감일이 지났는지 확인하는 메소드 (임의로 추가)
+    //Post 클래스의 메소드 - 마감일이 지났는지 확인하는 메소드
     public boolean isRecruitDeadlinePassed() {
         // 마감일이 설정되지 않은 경우(=null)이면 false 반환
         if (recruitDeadline == null) {
@@ -72,13 +67,13 @@ public class Post {
         return today.after(recruitDeadline);
     }
 
-    //post 클래스의 메소드 - 모집이 마감되었는지 확인하는 메소드(임의로 추가(하원))
+    //post 클래스의 메소드 - 모집이 마감되었는지 확인하는 메소드
     public boolean isClosed(){
 
         return "모집완료".equals(this.status);
     }
 
-    // Post 클래스의 메소드 - 마감일이 지났으면 자동으로 상태 변경 (임의로 추가)
+    // Post 클래스의 메소드 - 마감일이 지났으면 자동으로 상태 변경
     public void autoClosePost() {
         if(this.isRecruitDeadlinePassed() && this.status.equals("모집중")) {
             this.status = "모집완료";

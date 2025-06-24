@@ -136,10 +136,6 @@ public class MyPage extends JFrame {
         myPostsBtn = makeMenuButton("작성한 글", y);
         mainPanel.add(myPostsBtn);
 
-        // y += H40;
-        // testBtn = makeMenuButton("협업 유형 테스트", y);
-        // mainPanel.add(testBtn);
-
         // 계정 섹션
         y += H40;
         JSeparator sep3 = new JSeparator();
@@ -231,14 +227,7 @@ public class MyPage extends JFrame {
              dispose();                     // ← 창 닫기
             }
         );
-        // testBtn.addActionListener(e -> {
-        //     test.takeTest(user, manager);
-        //     profile.updateType(test.getUserResultType(), test.getResultImagePath());
-        //     refreshProfileDisplay();
-        //     JOptionPane.showMessageDialog(this,
-        //         "테스트 완료: " + test.getUserResultType().name()
-        //     );
-        // });
+
         changePasswordBtn.addActionListener(e -> {
             new ChangePwPage(user, manager); 
         });

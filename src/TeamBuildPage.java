@@ -370,9 +370,9 @@ public class TeamBuildPage extends JFrame {
                 dispose();
                 new PostDetailPage(user,manager, editingPost);
             } else {
-                int myProfileId=user.getProfile().getProfileID(); // 원래 0으로 저장했었는데, 프로필 아이디 설정해서 지금 완료 눌러도 안넘어감 (원래는 이코드 없고 아래가 0이었음)
+                int myProfileId=user.getProfile().getProfileID(); 
                 Post p=new Post(
-                    nextPostId++,myProfileId,  // 원래 0으로 저장했었는데, 프로필 아이디 설정해서 지금 완료 눌러도 안넘어감
+                    nextPostId++,myProfileId, 
                     imgPath,category,title,status,
                     deadline,max,curr,desc
                 );

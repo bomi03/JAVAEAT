@@ -14,7 +14,7 @@ public class ApplicantDetailPage extends JFrame {
     private Application application;
     private Profile profile;
 
-    //의존성 주입용 필드(생성자에서 안 받음음)
+    //의존성 주입용 필드(생성자에서 안 받음)
     private Post post;
     private Team team;
     private ChatRoomManager chatRoomManager;
@@ -173,16 +173,15 @@ public class ApplicantDetailPage extends JFrame {
         acceptButton.setBackground(Color.WHITE);
         acceptButton.setForeground(Color.GRAY);
         acceptButton.setFocusPainted(false);
-        //하원 수정해야할 부분
         acceptButton.addActionListener(e -> {
             try {
-                application.accept();//1단계 지원 상태 변경경
+                application.accept();//1단계 지원 상태 변경
                 team.acceptAndCreateChat(profile, post, chatRoomManager, manager);
 
                 ChatRoom chatRoom = team.getChatRooms().get(team.getChatRooms().size()-1);
 
                 //0523 채빈 알림 기능 추가
-                //0526 서연 수정 post.getPostID() 추가가
+                //0526 서연 수정 post.getPostID() 추가
                 if (manager != null) {
                     manager.addNotification(
                         profile.getUserID(),

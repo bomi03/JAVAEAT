@@ -46,7 +46,7 @@ public class Team {
         if (!memberProfiles.contains(profile)){
             memberProfiles.add(profile);
             
-            post.increaseCurrentApplicants();; // 현재 인원 수 반영 기능 추가 할꺼면 Post.java에 메서드 생성하기기
+            post.increaseCurrentApplicants();
 
              
             

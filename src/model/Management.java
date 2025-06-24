@@ -95,7 +95,7 @@ public class Management {
         }
         return null;
     }
-    //하원 추가 ApplicantDetailPage 에서 호출출
+    //하원 추가 ApplicantDetailPage 에서 호출
     public User getUserByProfile(Profile profile) {
         for (User u : allUsers) {
             if (u.getProfile() != null && u.getProfile().getProfileID() == profile.getProfileID()) {

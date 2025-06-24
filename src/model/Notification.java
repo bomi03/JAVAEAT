@@ -27,7 +27,7 @@ public class Notification {
         this.postId = postId; 
     }
 
-    // 읽음 처리리
+    // 읽음 처리
     public void markAsRead() {
         this.isRead = true;
     }
